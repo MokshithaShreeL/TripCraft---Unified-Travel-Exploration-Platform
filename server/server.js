@@ -618,7 +618,7 @@ if (fs.existsSync(publicRoot)) {
 app.use(express.static(staticRoot, { extensions: ['html'] }));
 
 // Fallback to index.html for root or unknown route
-app.get('*', (req, res) => {
+app.get('/{*splat}', (req, res) => {
   const reqClean = req.path.replace(/^\//, '');
   if (reqClean) {
     const pubTarget = path.join(publicRoot, reqClean);
