@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle & Motorcycle Rentals with Verified Fleets — TripCraft</title>
+    <meta name="description" content="Rent Royal Enfield bikes, SUVs, and automatic sedans with unlimited kilometers, included helmets, and smart hotel cross-booking sync.">
+    <meta property="og:title" content="Vehicle & Motorcycle Rentals with Verified Fleets — TripCraft">
+    <meta property="og:description" content="Rent Royal Enfield bikes, SUVs, and automatic sedans with unlimited kilometers, included helmets, and smart hotel cross-booking sync.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=1200&auto=format&fit=crop">
+    <link rel="stylesheet" href="shared.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        .vehicle-hero {
+            background: linear-gradient(135deg, #090E2B, #101B4B);
+            padding: 56px var(--px);
+            position: relative;
+            overflow: hidden;
+        }
+        .vehicle-hero-overlay {
+            position: absolute;
+            inset: 0;
+            background-image: url('https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=1920&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.16;
+        }
+        .vehicle-hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 680px;
+        }
+        .vehicle-hero h1 {
+            font-family: 'Bricolage Grotesque', 'Plus Jakarta Sans', sans-serif;
+            font-size: 42px;
+            font-weight: 700;
+            color: #FFFFFF;
+            line-height: 1.15;
+            margin-bottom: 12px;
+        }
+        .vehicle-hero h1 em {
+            color: var(--gold);
+            font-style: normal;
+        }
+        .vehicle-hero p {
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.75);
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+        .vehicle-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+        .vehicle-card {
+            background: var(--white);
+            border-radius: var(--r-lg);
+            border: 1px solid var(--gray-100);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+        }
+        .vehicle-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+        .vehicle-img {
+            height: 190px;
+            position: relative;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: flex-end;
+            padding: 14px;
+        }
+        .vehicle-img-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(11, 31, 58, 0.75) 0%, transparent 60%);
+        }
+        .vehicle-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: rgba(11, 31, 58, 0.75);
+            backdrop-filter: blur(6px);
+            color: var(--white);
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: var(--r-full);
+            z-index: 1;
+        }
+        .vehicle-body {
+            padding: 18px 20px 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .vehicle-name {
+            font-family: 'Bricolage Grotesque', 'Plus Jakarta Sans', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+        .vehicle-category {
+            font-size: 12.5px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+        .vehicle-specs-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            background: var(--gray-50);
+            border-radius: var(--r-sm);
+            padding: 10px 12px;
+            margin-bottom: 16px;
+        }
+        .vehicle-spec-item {
+            font-size: 12px;
+            color: var(--text-mid);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .vehicle-spec-item svg {
+            width: 13px;
+            height: 13px;
+            stroke: var(--teal);
+            fill: none;
+            stroke-width: 2;
+        }
+        .vehicle-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 14px;
+            border-top: 1px solid var(--gray-100);
+            margin-top: auto;
+        }
+        .vehicle-price {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--teal);
+        }
+        .vehicle-price-sub {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="nav">
+        <a href="index.html" class="nav-logo">
+            <div class="nav-logo-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            </div>
+            <div class="nav-logo-text">Trip<span>Craft</span></div>
+        </a>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="destinations.html">Destinations</a>
+            <a href="transport.html">Transport</a>
+            <a href="hotels.html">Hotels</a>
+            <a href="vehicle.html" class="active">Vehicles</a>
+            <a href="guides.html">Local Guides</a>
+            <a href="packages.html">Packages</a>
+            <a href="itinerary.html">Itinerary</a>
+            <a href="budget.html">Budget</a>
+            <a href="community.html">Community</a>
+            <a href="solo.html">Solo Trip</a>
+            <a href="album.html">Photo Albums</a>
+            <a href="bookings.html">My Bookings</a>
+        </div>
+        <div class="nav-cta">
+            <a href="login.html" class="btn btn-ghost">Sign In</a>
+            <a href="signup.html" class="btn btn-gold">Get Started</a>
+        </div>
+    </nav>
+
+    <div class="breadcrumb">
+        <a href="index.html">Home</a>
+        <span class="breadcrumb-sep">&gt;</span>
+        <span>Vehicle &amp; Bike Rentals</span>
+    </div>
+
+    <div class="vehicle-hero">
+        <div class="vehicle-hero-overlay"></div>
+        <div class="vehicle-hero-content">
+            <div class="chip chip-gold" style="margin-bottom: 14px;">
+                <svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                Zero Security Deposit &middot; Unlimited Kilometers
+            </div>
+            <h1>Hit the road with<br/><em>verified self-drive rentals</em></h1>
+            <p>Adventure motorcycles, rugged 4x4 off-roaders, and luxury chauffeur SUVs &mdash; fully serviced with roadside assistance.</p>
+        </div>
+    </div>
+
+    <div class="layout-2col">
+        <!-- Filter Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-title">Filter Vehicles</div>
+            
+            <div class="filter-group">
+                <div class="filter-label">Vehicle Type</div>
+                <label class="filter-opt"><input type="checkbox" checked> Adventure Motorcycle</label>
+                <label class="filter-opt"><input type="checkbox" checked> 4x4 Off-Road SUV</label>
+                <label class="filter-opt"><input type="checkbox" checked> Premium MPV / Family Car</label>
+                <label class="filter-opt"><input type="checkbox" checked> Compact Hatchback</label>
+            </div>
+
+            <div class="filter-group">
+                <div class="filter-label">Transmission</div>
+                <label class="filter-opt"><input type="checkbox" checked> Manual</label>
+                <label class="filter-opt"><input type="checkbox" checked> Automatic</label>
+            </div>
+
+            <div class="filter-group">
+                <div class="filter-label">Fuel Policy</div>
+                <label class="filter-opt"><input type="radio" name="fuel" checked> Full to Full</label>
+                <label class="filter-opt"><input type="radio" name="fuel"> Flexible Fuel</label>
+            </div>
+
+            <div class="filter-group">
+                <div class="filter-label">Daily Rental Rate</div>
+                <div class="range-wrap">
+                    <input type="range" min="800" max="6000" step="200" value="2800">
+                    <div class="range-labels"><span>&#8377;800</span><span class="range-val">&#8377;2,800</span><span>&#8377;6,000+</span></div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Vehicles Grid -->
+        <main class="results-bg">
+            <div class="results-header">
+                <div class="results-count">Showing <strong>6 available vehicles</strong> (Click any card for full details)</div>
+                <select class="sort-select">
+                    <option>Recommended</option>
+                    <option>Daily Rate: Low to High</option>
+                    <option>Daily Rate: High to Low</option>
+                    <option>Seating Capacity</option>
+                </select>
+            </div>
+
+            <div class="vehicle-grid">
+                <!-- Vehicle 1: Himalayan 450 -->
+                <div class="vehicle-card" onclick="openDetailModal({
+                    title: 'Royal Enfield Himalayan 450',
+                    category: 'Adventure Touring Motorcycle',
+                    subtitle: 'Sherpa 450 Engine &middot; Long Travel Suspension',
+                    image: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=1920&auto=format&fit=crop',
+                    price: '&#8377;1,400',
+                    rating: '4.9 (184 Rentals)',
+                    description: 'Engineered for high-altitude mountain passes and rugged ghat roads. Equipped with dual-channel switchable ABS, TFT navigation console, and dual pannier racks.',
+                    specs: [
+                        { label: 'Fuel Mileage', val: '30 km/litre' },
+                        { label: 'Transmission', val: '6-Speed with Slipper Clutch' },
+                        { label: 'Included Gear', val: '2 DOT Helmets, Toolkit, Puncture Kit' },
+                        { label: 'Kilometers', val: 'Unlimited Km Included' }
+                    ],
+                    highlights: ['Unlimited Km', '2 DOT Helmets', 'Pannier Racks', 'Roadside Assistance']
+                })">
+                    <div class="vehicle-img" style="background-image: url('https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=1920&auto=format&fit=crop');">
+                        <div class="vehicle-img-overlay"></div>
+                        <div class="vehicle-badge">Adventure Bike</div>
+                    </div>
+                    <div class="vehicle-body">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                            <h3 class="vehicle-name">Himalayan 450</h3>
+                            <div class="rating"><span class="rating-star">&#9733;</span><span class="rating-val">4.9</span></div>
+                        </div>
+                        <div class="vehicle-category">Royal Enfield &middot; 452cc Liquid-Cooled</div>
+                        <div class="vehicle-specs-grid">
+                            <div class="vehicle-spec-item"><svg viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> 30 km/l</div>
+                            <div class="vehicle-spec-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> 6-Speed</div>
+                            <div class="vehicle-spec-item"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Dual ABS</div>
+                            <div class="vehicle-spec-item"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Unlimited Km</div>
+                        </div>
+                        <div class="vehicle-footer">
+                            <div>
+                                <div class="vehicle-price">&#8377;1,400</div>
+                                <div class="vehicle-price-sub">per day &middot; 2 helmets included</div>
+                            </div>
+                            <button class="btn btn-teal" onclick="event.stopPropagation(); openBookingModal({
+                                title: 'Royal Enfield Himalayan 450',
+                                category: 'Motorcycle Rental',
+                                image: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=1920&auto=format&fit=crop',
+                                price: '&#8377;1,400',
+                                description: 'Adventure motorcycle equipped with dual-channel ABS, pannier racks, and 2 DOT certified helmets.',
+                                specs: [
+                                    { label: 'Transmission', val: '6-Speed Manual' },
+                                    { label: 'Inclusions', val: '2 Helmets, Toolkit, 24/7 Roadside Assistance' },
+                                    { label: 'Kilometers', val: 'Unlimited km included' }
+                                ]
+                            })">Book Rental</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Vehicle 2: Thar 4x4 -->
+                <div class="vehicle-card" onclick="openDetailModal({
+                    title: 'Mahindra Thar 4x4 Hardtop',
+                    category: 'Off-Road 4x4 SUV',
+                    subtitle: '2.0L mStallion Turbo &middot; 4WD Low Range',
+                    image: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=1920&auto=format&fit=crop',
+                    price: '&#8377;3,200',
+                    rating: '4.8 (240 Rentals)',
+                    description: 'Conquer mountain trails, river crossings, and coastal sand tracks. Features automatic transmission, touchscreen with off-road telemetry, and 4-seater hardtop.',
+                    specs: [
+                        { label: 'Engine', val: '2.0L Turbo Petrol 150 BHP' },
+                        { label: 'Transmission', val: 'Automatic 4x4 with Low Ratio' },
+                        { label: 'Seating', val: '4 Adults with Luggage Space' },
+                        { label: 'Insurance', val: 'Zero Depreciation Comprehensive' }
+                    ],
+                    highlights: ['4x4 Low Range', 'Touchscreen GPS', 'Zero Deposit', 'Unlimited Km']
+                })">
+                    <div class="vehicle-img" style="background-image: url('https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=1920&auto=format&fit=crop');">
+                        <div class="vehicle-img-overlay"></div>
+                        <div class="vehicle-badge">4x4 Off-Roader</div>
+                    </div>
+                    <div class="vehicle-body">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                            <h3 class="vehicle-name">Mahindra Thar 4x4</h3>
+                            <div class="rating"><span class="rating-star">&#9733;</span><span class="rating-val">4.8</span></div>
+                        </div>
+                        <div class="vehicle-category">Mahindra &middot; Hardtop Automatic</div>
+                        <div class="vehicle-specs-grid">
+                            <div class="vehicle-spec-item"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> 4 Seater</div>
+                            <div class="vehicle-spec-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Automatic</div>
+                            <div class="vehicle-spec-item"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> 4x4 Drive</div>
+                            <div class="vehicle-spec-item"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Touch GPS</div>
+                        </div>
+                        <div class="vehicle-footer">
+                            <div>
+                                <div class="vehicle-price">&#8377;3,200</div>
+                                <div class="vehicle-price-sub">per day &middot; 4x4 automatic</div>
+                            </div>
+                            <button class="btn btn-teal" onclick="event.stopPropagation(); openBookingModal({
+                                title: 'Mahindra Thar 4x4 Hardtop',
+                                category: 'Self-Drive SUV Rental',
+                                image: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=1920&auto=format&fit=crop',
+                                price: '&#8377;3,200',
+                                description: 'Hardtop 4x4 SUV with automatic transmission, off-road telemetry, and GPS navigation.',
+                                specs: [
+                                    { label: 'Transmission', val: 'Automatic 4WD' },
+                                    { label: 'Capacity', val: '4 Seater with luggage boot' },
+                                    { label: 'Insurance', val: 'Zero Depreciation Comprehensive Coverage' }
+                                ]
+                            })">Book Rental</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Vehicle 3: Innova Crysta -->
+                <div class="vehicle-card" onclick="openDetailModal({
+                    title: 'Toyota Innova Crysta ZX',
+                    category: 'Premium Family MPV / Chauffeur',
+                    subtitle: '2.4L Diesel &middot; Captain Seats',
+                    image: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?q=80&w=1920&auto=format&fit=crop',
+                    price: '&#8377;3,800',
+                    rating: '4.9 (410 Rentals)',
+                    description: 'The undisputed king of comfortable family highway road trips. Features reclining captain seats, ambient lighting, dual AC, and large luggage capacity.',
+                    specs: [
+                        { label: 'Seating Capacity', val: '7 Adults (Captain Seats)' },
+                        { label: 'Fuel Efficiency', val: '14.5 km/litre Diesel' },
+                        { label: 'Inclusions', val: 'Fastag Enabled, Chauffeur Optional, Roadside Assistance' }
+                    ],
+                    highlights: ['7 Seater Captain', 'Dual Zone AC', 'Fastag Enabled', 'Large Boot']
+                })">
+                    <div class="vehicle-img" style="background-image: url('https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?q=80&w=1920&auto=format&fit=crop');">
+                        <div class="vehicle-img-overlay"></div>
+                        <div class="vehicle-badge">Premium MPV</div>
+                    </div>
+                    <div class="vehicle-body">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                            <h3 class="vehicle-name">Innova Crysta ZX</h3>
+                            <div class="rating"><span class="rating-star">&#9733;</span><span class="rating-val">4.9</span></div>
+                        </div>
+                        <div class="vehicle-category">Toyota &middot; 7-Seater Captain Seats</div>
+                        <div class="vehicle-specs-grid">
+                            <div class="vehicle-spec-item"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> 7 Seater</div>
+                            <div class="vehicle-spec-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Diesel</div>
+                            <div class="vehicle-spec-item"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Dual AC</div>
+                            <div class="vehicle-spec-item"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Fastag Ready</div>
+                        </div>
+                        <div class="vehicle-footer">
+                            <div>
+                                <div class="vehicle-price">&#8377;3,800</div>
+                                <div class="vehicle-price-sub">per day &middot; 7 seats</div>
+                            </div>
+                            <button class="btn btn-teal" onclick="event.stopPropagation(); openBookingModal({
+                                title: 'Toyota Innova Crysta ZX',
+                                category: 'MPV Rental',
+                                image: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?q=80&w=1920&auto=format&fit=crop',
+                                price: '&#8377;3,800',
+                                description: 'Spacious 7-seater MPV with captain seats, dual AC, and large luggage capacity for family road trips.',
+                                specs: [
+                                    { label: 'Capacity', val: '7 Adults' },
+                                    { label: 'Fuel', val: 'Diesel (Full to Full)' },
+                                    { label: 'Features', val: 'Fastag, Bluetooth Sound System, GPS' }
+                                ]
+                            })">Book Rental</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Vehicle 4: Hyundai Creta Turbo -->
+                <div class="vehicle-card" onclick="openDetailModal({
+                    title: 'Hyundai Creta Turbo Automatic',
+                    category: 'Compact Executive SUV',
+                    subtitle: '1.5L Turbo GDi &middot; Panoramic Sunroof',
+                    image: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=1920&auto=format&fit=crop',
+                    price: '&#8377;2,600',
+                    rating: '4.8 (310 Rentals)',
+                    description: 'Modern executive SUV with panoramic sunroof, ventilated leather seats, Bose premium audio, and ADAS safety suite for effortless long distance cruising.',
+                    specs: [
+                        { label: 'Transmission', val: '7-Speed DCT Automatic' },
+                        { label: 'Seating', val: '5 Adults' },
+                        { label: 'Features', val: 'Panoramic Sunroof, Ventilated Seats, Bose Audio' }
+                    ],
+                    highlights: ['Panoramic Sunroof', 'Bose Sound', 'Ventilated Seats', 'ADAS Level 2']
+                })">
+                    <div class="vehicle-img" style="background-image: url('https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=1920&auto=format&fit=crop');">
+                        <div class="vehicle-img-overlay"></div>
+                        <div class="vehicle-badge">Executive SUV</div>
+                    </div>
+                    <div class="vehicle-body">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                            <h3 class="vehicle-name">Hyundai Creta Turbo</h3>
+                            <div class="rating"><span class="rating-star">&#9733;</span><span class="rating-val">4.8</span></div>
+                        </div>
+                        <div class="vehicle-category">Hyundai &middot; 5-Seater Automatic</div>
+                        <div class="vehicle-specs-grid">
+                            <div class="vehicle-spec-item"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> 5 Seater</div>
+                            <div class="vehicle-spec-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> DCT Auto</div>
+                            <div class="vehicle-spec-item"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Sunroof</div>
+                            <div class="vehicle-spec-item"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Bose Audio</div>
+                        </div>
+                        <div class="vehicle-footer">
+                            <div>
+                                <div class="vehicle-price">&#8377;2,600</div>
+                                <div class="vehicle-price-sub">per day &middot; DCT automatic</div>
+                            </div>
+                            <button class="btn btn-teal" onclick="event.stopPropagation(); openBookingModal({
+                                title: 'Hyundai Creta Turbo Automatic',
+                                category: 'SUV Rental',
+                                image: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=1920&auto=format&fit=crop',
+                                price: '&#8377;2,600',
+                                description: 'Executive SUV featuring panoramic sunroof, ventilated front seats, Bose audio, and smooth DCT automatic.',
+                                specs: [
+                                    { label: 'Transmission', val: '7-Speed DCT Automatic' },
+                                    { label: 'Seating', val: '5 Adults' },
+                                    { label: 'Features', val: 'Panoramic Sunroof, Bose Sound System' }
+                                ]
+                            })">Book Rental</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Vehicle 5: Maruti Swift -->
+                <div class="vehicle-card" onclick="openDetailModal({
+                    title: 'Maruti Suzuki Swift ZXi',
+                    category: 'Fuel-Efficient City &amp; Hill Hatchback',
+                    subtitle: '1.2L DualJet &middot; Manual',
+                    image: 'https://images.unsplash.com/photo-1542362567-b07e54358753?q=80&w=1920&auto=format&fit=crop',
+                    price: '&#8377;1,200',
+                    rating: '4.7 (520 Rentals)',
+                    description: 'Agile and hyper-efficient hatchback ideal for narrow winding mountain hairpin roads and busy city exploration. Delivers over 22 km/l.',
+                    specs: [
+                        { label: 'Fuel Economy', val: '22.5 km/litre Petrol' },
+                        { label: 'Seating', val: '4-5 Adults' },
+                        { label: 'Features', val: 'Touchscreen with Apple CarPlay, Reverse Camera' }
+                    ],
+                    highlights: ['22.5 km/l Mileage', 'Apple CarPlay', 'Reverse Camera', 'Easy Parking']
+                })">
+                    <div class="vehicle-img" style="background-image: url('https://images.unsplash.com/photo-1542362567-b07e54358753?q=80&w=1920&auto=format&fit=crop');">
+                        <div class="vehicle-img-overlay"></div>
+                        <div class="vehicle-badge">Economy Hatchback</div>
+                    </div>
+                    <div class="vehicle-body">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                            <h3 class="vehicle-name">Maruti Suzuki Swift</h3>
+                            <div class="rating"><span class="rating-star">&#9733;</span><span class="rating-val">4.7</span></div>
+                        </div>
+                        <div class="vehicle-category">Maruti &middot; 5-Seater Petrol</div>
+                        <div class="vehicle-specs-grid">
+                            <div class="vehicle-spec-item"><svg viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> 22.5 km/l</div>
+                            <div class="vehicle-spec-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Manual</div>
+                            <div class="vehicle-spec-item"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> 5 Seater</div>
+                            <div class="vehicle-spec-item"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> CarPlay</div>
+                        </div>
+                        <div class="vehicle-footer">
+                            <div>
+                                <div class="vehicle-price">&#8377;1,200</div>
+                                <div class="vehicle-price-sub">per day &middot; top mileage</div>
+                            </div>
+                            <button class="btn btn-teal" onclick="event.stopPropagation(); openBookingModal({
+                                title: 'Maruti Suzuki Swift ZXi',
+                                category: 'Hatchback Rental',
+                                image: 'https://images.unsplash.com/photo-1542362567-b07e54358753?q=80&w=1920&auto=format&fit=crop',
+                                price: '&#8377;1,200',
+                                description: 'Fuel efficient hatchback delivering 22+ km/l, equipped with Apple CarPlay and reverse parking camera.',
+                                specs: [
+                                    { label: 'Transmission', val: '5-Speed Manual' },
+                                    { label: 'Fuel Economy', val: '22.5 km/l Petrol' },
+                                    { label: 'Features', val: 'Touchscreen, Reverse Camera' }
+                                ]
+                            })">Book Rental</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Vehicle 6: Royal Enfield Classic 350 -->
+                <div class="vehicle-card" onclick="openDetailModal({
+                    title: 'Royal Enfield Classic 350 Reborn',
+                    category: 'Heritage Cruiser Motorcycle',
+                    subtitle: 'J-Series 349cc &middot; Dual Channel ABS',
+                    image: 'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?q=80&w=1920&auto=format&fit=crop',
+                    price: '&#8377;1,100',
+                    rating: '4.8 (390 Rentals)',
+                    description: 'The iconic thump cruiser with counterbalanced J-series engine, ultra comfortable touring split seats, and classic retro styling for relaxed highway rides.',
+                    specs: [
+                        { label: 'Fuel Mileage', val: '36 km/litre' },
+                        { label: 'Transmission', val: '5-Speed Manual' },
+                        { label: 'Included Gear', val: '2 Helmets, Mobile Mount with Fast Charger' }
+                    ],
+                    highlights: ['Iconic Thump', 'Split Touring Seat', '2 Helmets', 'Fast Charger']
+                })">
+                    <div class="vehicle-img" style="background-image: url('https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?q=80&w=1920&auto=format&fit=crop');">
+                        <div class="vehicle-img-overlay"></div>
+                        <div class="vehicle-badge">Classic Cruiser</div>
+                    </div>
+                    <div class="vehicle-body">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                            <h3 class="vehicle-name">Classic 350 Reborn</h3>
+                            <div class="rating"><span class="rating-star">&#9733;</span><span class="rating-val">4.8</span></div>
+                        </div>
+                        <div class="vehicle-category">Royal Enfield &middot; 350cc Cruiser</div>
+                        <div class="vehicle-specs-grid">
+                            <div class="vehicle-spec-item"><svg viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> 36 km/l</div>
+                            <div class="vehicle-spec-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> 5-Speed</div>
+                            <div class="vehicle-spec-item"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Dual ABS</div>
+                            <div class="vehicle-spec-item"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Split Seat</div>
+                        </div>
+                        <div class="vehicle-footer">
+                            <div>
+                                <div class="vehicle-price">&#8377;1,100</div>
+                                <div class="vehicle-price-sub">per day &middot; 2 helmets included</div>
+                            </div>
+                            <button class="btn btn-teal" onclick="event.stopPropagation(); openBookingModal({
+                                title: 'Royal Enfield Classic 350 Reborn',
+                                category: 'Cruiser Motorcycle Rental',
+                                image: 'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?q=80&w=1920&auto=format&fit=crop',
+                                price: '&#8377;1,100',
+                                description: 'Iconic retro cruiser motorcycle with touring split seats, mobile mount, and 2 helmets.',
+                                specs: [
+                                    { label: 'Transmission', val: '5-Speed Manual' },
+                                    { label: 'Inclusions', val: '2 Helmets, Mobile Mount, 24/7 Roadside Assistance' }
+                                ]
+                            })">Book Rental</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pagination">
+                <button class="page-btn active">1</button>
+                <button class="page-btn">2</button>
+                <button class="page-btn">&rarr;</button>
+            </div>
+        </main>
+    </div>
+
+    <footer class="footer">
+    <div class="footer-grid">
+        <div class="footer-brand">
+            <div class="footer-logo">
+                <div class="nav-logo-mark">
+                    <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                </div>
+                <span>TripCraft</span>
+            </div>
+            <p>AI-orchestrated end-to-end travel intelligence platform. Engineered for seamless discovery, instant reservations, solo safety, and creator photobook monetization.</p>
+            <div class="footer-social-strip">
+                <a href="https://twitter.com" target="_blank" class="footer-social-link" title="Twitter / X"><svg viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg></a>
+                <a href="https://instagram.com" target="_blank" class="footer-social-link" title="Instagram"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
+                <a href="https://linkedin.com" target="_blank" class="footer-social-link" title="LinkedIn"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a>
+                <a href="https://github.com" target="_blank" class="footer-social-link" title="GitHub"><svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg></a>
+            </div>
+        </div>
+        <div class="footer-col">
+            <h4>Explore</h4>
+            <ul>
+                <li><a href="destinations.html">Destinations</a></li>
+                <li><a href="packages.html">Curated Packages</a></li>
+                <li><a href="hotels.html">Stays &amp; Resorts</a></li>
+                <li><a href="transport.html">Flights &amp; Rail</a></li>
+                <li><a href="vehicle.html">Car &amp; Bike Rentals</a></li>
+                <li><a href="guides.html">Certified Local Guides</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Special Hubs</h4>
+            <ul>
+                <li><a href="solo.html">Solo Traveler Engine</a></li>
+                <li><a href="community.html">Community &amp; Buddies</a></li>
+                <li><a href="album.html">Photo Album Studio</a></li>
+                <li><a href="budget.html">40/25/20/15 Budgeter</a></li>
+                <li><a href="itinerary.html">Interactive Itinerary</a></li>
+                <li><a href="wishlist.html">Saved Wishlist</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Trust &amp; Legal</h4>
+            <ul>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="contact.html">Customer Support</a></li>
+                <li><a href="faq.html">FAQ &amp; Help Desk</a></li>
+                <li><a href="terms.html">Terms &amp; Conditions</a></li>
+                <li><a href="privacy.html">Privacy Policy</a></li>
+                <li><a href="refund.html">Refund Policy</a></li>
+                <li><a href="sitemap.html">Sitemap</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <div>&copy; 2026 TripCraft Technologies Inc. All rights reserved. 256-bit SSL Encrypted Booking System.</div>
+        <div style="display:flex; gap:16px;">
+            <a href="terms.html">Terms</a>
+            <a href="privacy.html">Privacy</a>
+            <a href="refund.html">Refunds</a>
+            <a href="sitemap.html">Sitemap</a>
+        </div>
+    </div>
+</footer>
+
+    <script src="tc-config.js"></script>
+    <script src="shared.js"></script>
+    <script src="tc-layer.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const hotelFk = urlParams.get('hotelBookingId');
+            const dest = urlParams.get('dest');
+            const startDate = urlParams.get('startDate');
+            const endDate = urlParams.get('endDate');
+
+            if (hotelFk) {
+                const mainContainer = document.querySelector('main') || document.querySelector('.vehicle-grid')?.parentElement;
+                if (mainContainer) {
+                    const banner = document.createElement('div');
+                    banner.style.background = 'linear-gradient(135deg, #101B4B, #0E7C6B)';
+                    banner.style.color = '#FFFFFF';
+                    banner.style.padding = '16px 20px';
+                    banner.style.borderRadius = 'var(--r-md)';
+                    banner.style.marginBottom = '24px';
+                    banner.style.display = 'flex';
+                    banner.style.alignItems = 'center';
+                    banner.style.justifyContent = 'space-between';
+                    banner.style.boxShadow = 'var(--shadow-md)';
+                    banner.innerHTML = `
+                        <div style="display:flex; align-items:center; gap:12px;">
+                            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                            <div>
+                                <div style="font-weight:700; font-size:14px; color:var(--gold);">Smart Synergy Trigger Active!</div>
+                                <div style="font-size:12.5px; color:rgba(255,255,255,0.9);">
+                                    Linked to Hotel Reservation: <strong>#${hotelFk}</strong> in <strong>${dest || 'Munnar'}</strong> &middot; Dates: ${startDate || 'Auto-synced'} to ${endDate || 'Auto-synced'}
+                                </div>
+                            </div>
+                        </div>
+                        <span class="chip chip-gold" style="font-size:11px;">FK Linked &middot; 0% Deposit</span>
+                    `;
+                    mainContainer.insertBefore(banner, mainContainer.firstChild);
+                }
+
+                // Monkey-patch openBookingModal on this page to always forward the FK
+                const originalOpenModal = window.openBookingModal;
+                window.openBookingModal = function(options) {
+                    const opt = { ...options };
+                    opt.hotel_booking_id = hotelFk;
+                    opt.hotelBookingId = hotelFk;
+                    opt.travelDate = startDate;
+                    if (!opt.specs) opt.specs = [];
+                    opt.specs.unshift({ label: 'Linked Hotel Booking (FK)', val: hotelFk });
+                    opt.specs.unshift({ label: 'Destination', val: dest || 'Munnar' });
+                    originalOpenModal(opt);
+                };
+
+                showToast(`Smart Trigger: Auto-linked vehicle rental to hotel booking #${hotelFk}`, 'success');
+            }
+        });
+    </script>
+</body>
+</html>

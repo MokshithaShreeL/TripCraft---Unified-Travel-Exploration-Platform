@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Your Account — TripCraft</title>
+    <meta name="description" content="Sign up for TripCraft to build custom itineraries, book verified stays and transports, and connect with global travelers.">
+    <meta property="og:title" content="Create Your Account — TripCraft">
+    <meta property="og:description" content="Sign up for TripCraft to build custom itineraries, book verified stays and transports.">
+    <meta property="og:type" content="website">
+    <link rel="stylesheet" href="shared.css">
+    <style>
+        .auth-logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: #ffffff;
+            font-size: 20px;
+            font-weight: 700;
+        }
+        .auth-lead {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-top: 4px;
+            margin-bottom: 20px;
+        }
+        .pw-hint {
+            font-size: 11.5px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+        .step-link-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 16px;
+            font-size: 13px;
+        }
+        .step-link-row a {
+            color: var(--teal);
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .step-link-row a:hover {
+            text-decoration: underline;
+        }
+        /* Hide floating share button on signup */
+        .float-share-btn, .share-menu {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-shell">
+        <!-- Left Art Column -->
+        <div class="auth-art" style="background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=2070&auto=format&fit=crop');">
+            <div>
+                <a href="index.html" class="auth-logo">
+                    <span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:8px;background:var(--teal);color:#fff;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
+                    </span>
+                    <span>TripCraft</span>
+                </a>
+            </div>
+            <div>
+                <h2 style="font-size:36px;font-weight:800;line-height:1.2;margin-bottom:12px;color:#ffffff;" data-i18n="signup_art_title">Start with one account. Plan everything.</h2>
+                <p style="font-size:16px;color:rgba(255,255,255,0.85);max-width:440px;line-height:1.6;" data-i18n="signup_art_desc">Smart AI itineraries, transparent cost estimation, curated stays and verified local guides.</p>
+            </div>
+            <div style="font-size:12.5px;color:rgba(255,255,255,0.65);" data-i18n="signup_art_sec">
+                256-bit Encrypted Session &bull; ISO 27001 Certified Security
+            </div>
+        </div>
+
+        <!-- Right Form Column -->
+        <div class="auth-pane">
+            <div class="auth-card">
+                <!-- STEP 1: Registration Form -->
+                <div id="signup-step-1">
+                    <h1 style="font-size:24px;font-weight:800;color:var(--ink);" data-i18n="signup_title">Create your account</h1>
+                    <p class="auth-lead" data-i18n="signup_lead">Sign up to get personalized recommendations and manage trips.</p>
+
+                    <form id="step-1-form">
+                        <div class="auth-field">
+                            <label for="reg-name" data-i18n="fullname">Full name</label>
+                            <input type="text" id="reg-name" placeholder="Priya Sharma" required autocomplete="name">
+                        </div>
+
+                        <div class="auth-field">
+                            <label for="reg-email" data-i18n="email">Email address</label>
+                            <input type="email" id="reg-email" placeholder="priya@example.com" required autocomplete="email">
+                        </div>
+
+                        <div class="auth-field">
+                            <label for="reg-phone" data-i18n="mobile">Mobile number</label>
+                            <div class="phone-wrap">
+                                <select id="reg-cc">
+                                    <option value="+91">+91 (IN)</option>
+                                    <option value="+1">+1 (US)</option>
+                                    <option value="+44">+44 (UK)</option>
+                                    <option value="+65">+65 (SG)</option>
+                                    <option value="+971">+971 (UAE)</option>
+                                </select>
+                                <input type="tel" id="reg-phone" placeholder="9876543210" required autocomplete="tel-national">
+                            </div>
+                        </div>
+
+                        <div class="auth-field">
+                            <label for="reg-password" data-i18n="password">Password</label>
+                            <input type="password" id="reg-password" placeholder="••••••••" required autocomplete="new-password">
+                            <div class="pw-meter">
+                                <div class="pw-meter-fill" id="pw-bar"></div>
+                            </div>
+                            <div class="pw-hint" data-i18n="pw_hint">Use 8+ characters with a number and a capital letter.</div>
+                        </div>
+
+                        <div class="auth-field">
+                            <label for="reg-confirm" data-i18n="confirm_pw">Confirm password</label>
+                            <input type="password" id="reg-confirm" placeholder="••••••••" required autocomplete="new-password">
+                        </div>
+
+                        <div style="margin-bottom: 20px;">
+                            <label class="chk">
+                                <input type="checkbox" id="reg-terms" required>
+                                <span><span data-i18n="terms_agree">I accept the</span> <a href="terms.html" target="_blank" style="color:var(--teal);" data-i18n="terms_service">Terms of Service</a> and <a href="privacy.html" target="_blank" style="color:var(--teal);" data-i18n="privacy_policy">Privacy Policy</a>.</span>
+                            </label>
+                        </div>
+
+                        <button type="submit" class="auth-btn" id="send-code-btn" data-i18n="create_account">
+                            Create Account
+                        </button>
+                    </form>
+
+                    <div class="auth-foot">
+                        <span data-i18n="have_account">Already have an account?</span> <a href="login.html" data-i18n="signin_btn">Sign in</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="tc-config.js"></script>
+    <script src="shared.js"></script>
+    <script src="tc-layer.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var step1 = document.getElementById('signup-step-1');
+            var step2 = document.getElementById('signup-step-2');
+            var dot1 = document.getElementById('dot-1');
+            var dot2 = document.getElementById('dot-2');
+
+            var form1 = document.getElementById('step-1-form');
+            var form2 = document.getElementById('step-2-form');
+
+            var nameInput = document.getElementById('reg-name');
+            var emailInput = document.getElementById('reg-email');
+            var ccSelect = document.getElementById('reg-cc');
+            var phoneInput = document.getElementById('reg-phone');
+            var pwInput = document.getElementById('reg-password');
+            var pwConfirm = document.getElementById('reg-confirm');
+            var termsInput = document.getElementById('reg-terms');
+            var pwBar = document.getElementById('pw-bar');
+            var sendBtn = document.getElementById('send-code-btn');
+
+            var otpInfo = document.getElementById('otp-info-box');
+            var otpBoxes = document.querySelectorAll('.otp-digit');
+            var verifyBtn = document.getElementById('verify-create-btn');
+            var resendBtn = document.getElementById('resend-otp-btn');
+            var backBtn = document.getElementById('back-step1-btn');
+            var registeredData = {};
+            var activeOtpCode = '';
+
+            if (pwInput && pwBar) {
+                pwInput.addEventListener('input', function() {
+                    var val = pwInput.value;
+                    var score = 0;
+                    if (val.length >= 8) score++;
+                    if (/[A-Z]/.test(val)) score++;
+                    if (/[0-9]/.test(val)) score++;
+                    if (/[^A-Za-z0-9]/.test(val)) score++;
+                    pwBar.className = 'pw-meter-fill';
+                    if (score > 0) pwBar.classList.add('lvl-' + score);
+                });
+            }
+
+            // Step 1 Validation & Direct Account Creation (No Verification Code)
+            form1.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                var name = nameInput.value.trim();
+                var email = emailInput.value.trim().toLowerCase();
+                var phone = phoneInput.value.trim().replace(/\D/g, '');
+                var password = pwInput.value;
+                var confirm = pwConfirm.value;
+                var terms = termsInput.checked;
+
+                if (!name) {
+                    showToast('Enter your full name.', 'error');
+                    return;
+                }
+                if (!email || !email.includes('@') || !email.includes('.')) {
+                    showToast('Enter a valid email address.', 'error');
+                    return;
+                }
+                if (phone.length < 10) {
+                    showToast('Enter a 10-digit mobile number.', 'error');
+                    return;
+                }
+                if (password.length < 8 || !/[A-Z]/.test(password) || !/[0-9]/.test(password)) {
+                    showToast('Password needs 8+ characters, a number and a capital letter.', 'error');
+                    return;
+                }
+                if (password !== confirm) {
+                    showToast('The two passwords do not match.', 'error');
+                    return;
+                }
+                if (!terms) {
+                    showToast('Please accept the Terms to continue.', 'error');
+                    return;
+                }
+
+                // Check duplicate email
+                var accounts = [];
+                try {
+                    accounts = JSON.parse(localStorage.getItem('tc_accounts') || '[]');
+                } catch(e) {}
+                if (accounts.some(function(a) { return a.email === email; })) {
+                    showToast('An account with this email already exists. Please sign in.', 'error');
+                    return;
+                }
+
+                registeredData = {
+                    name: name,
+                    email: email,
+                    phone: ccSelect.value + ' ' + phone,
+                    password: password,
+                    avatar: registeredData.avatar || undefined,
+                    auth_provider: registeredData.via || 'local'
+                };
+
+                sendBtn.disabled = true;
+                sendBtn.textContent = 'Creating account...';
+
+                // Directly create account and sync
+                var createPromise;
+                if (window.TC && window.TC.Auth && window.TC.Auth.createAccount) {
+                    createPromise = window.TC.Auth.createAccount(registeredData);
+                } else if (window.TripCraftAuth && window.TripCraftAuth.createAccount) {
+                    createPromise = window.TripCraftAuth.createAccount(registeredData);
+                } else {
+                    createPromise = Promise.resolve(registeredData);
+                }
+
+                createPromise.then(function(user) {
+                    try { localStorage.setItem('tc_has_account', 'true'); } catch(e) {}
+                    // Try to sync with backend /api/users
+                    fetch('/api/users', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(registeredData)
+                    }).catch(function() {});
+
+                    var firstName = (name || 'Explorer').split(' ')[0];
+                    showToast('Welcome to TripCraft, ' + firstName + '! Account created successfully.', 'success');
+                    setTimeout(function() {
+                        if (window.TC && window.TC.Auth && window.TC.Auth.redirectAfter) {
+                            window.TC.Auth.redirectAfter();
+                        } else {
+                            window.location.href = 'index.html';
+                        }
+                    }, 600);
+                }).catch(function(err) {
+                    sendBtn.disabled = false;
+                    sendBtn.textContent = 'Create Account';
+                    showToast(err.message || 'Registration failed. Please try again.', 'error');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

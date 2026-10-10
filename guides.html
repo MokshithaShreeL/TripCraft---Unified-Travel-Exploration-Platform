@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certified Local Guides & Storytellers — TripCraft</title>
+    <meta name="description" content="Connect with ASI-certified historians, tea naturalists, and mountain trekking leaders across Tamil, English, Hindi, and Malayalam.">
+    <meta property="og:title" content="Certified Local Guides & Storytellers — TripCraft">
+    <meta property="og:description" content="Connect with ASI-certified historians, tea naturalists, and mountain trekking leaders across Tamil, English, Hindi, and Malayalam.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=1200&auto=format&fit=crop">
+    <link rel="stylesheet" href="shared.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        .guides-hero {
+            background: linear-gradient(135deg, #090E2B, #101B4B);
+            padding: 56px var(--px);
+            position: relative;
+            overflow: hidden;
+        }
+        .guides-hero-overlay {
+            position: absolute;
+            inset: 0;
+            background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.12;
+        }
+        .guides-hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 680px;
+        }
+        .guides-hero h1 {
+            font-family: 'Bricolage Grotesque', 'Plus Jakarta Sans', sans-serif;
+            font-size: 42px;
+            font-weight: 700;
+            color: #FFFFFF;
+            line-height: 1.15;
+            margin-bottom: 12px;
+        }
+        .guides-hero h1 em {
+            color: var(--gold);
+            font-style: normal;
+        }
+        .guides-hero p {
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.72);
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+        .guide-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+        .guide-card {
+            background: var(--white);
+            border-radius: var(--r-lg);
+            border: 1px solid var(--gray-100);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+        }
+        .guide-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+        .guide-banner {
+            height: 120px;
+            position: relative;
+            background-size: cover;
+            background-position: center;
+        }
+        .guide-banner-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(11,31,58,0.2), rgba(11,31,58,0.6));
+        }
+        .guide-avatar-wrap {
+            padding: 0 20px;
+            margin-top: -40px;
+            position: relative;
+            z-index: 2;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+        .guide-avatar {
+            width: 76px;
+            height: 76px;
+            border-radius: 50%;
+            border: 3px solid var(--white);
+            background-size: cover;
+            background-position: center;
+            box-shadow: var(--shadow-md);
+        }
+        .guide-badge-verified {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(14, 124, 107, 0.12);
+            color: var(--teal);
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: var(--r-full);
+            border: 1px solid rgba(14, 124, 107, 0.25);
+        }
+        .guide-badge-verified svg {
+            width: 12px;
+            height: 12px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2.5;
+        }
+        .guide-body {
+            padding: 16px 20px 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .guide-name {
+            font-family: 'Bricolage Grotesque', 'Plus Jakarta Sans', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 2px;
+        }
+        .guide-location {
+            font-size: 12.5px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 12px;
+        }
+        .guide-location svg {
+            width: 12px;
+            height: 12px;
+            stroke: var(--teal);
+            fill: none;
+            stroke-width: 2;
+        }
+        .guide-specialties {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 14px;
+        }
+        .guide-desc {
+            font-size: 13px;
+            color: var(--text-mid);
+            line-height: 1.55;
+            margin-bottom: 16px;
+            flex: 1;
+        }
+        .guide-meta {
+            background: var(--gray-50);
+            border-radius: var(--r-sm);
+            padding: 10px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+        .guide-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .guide-meta-item svg {
+            width: 13px;
+            height: 13px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+        }
+        .guide-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 12px;
+            border-top: 1px solid var(--gray-100);
+        }
+        .guide-price {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--teal);
+        }
+        .guide-price-sub {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="nav">
+        <a href="index.html" class="nav-logo">
+            <div class="nav-logo-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            </div>
+            <div class="nav-logo-text">Trip<span>Craft</span></div>
+        </a>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="destinations.html">Destinations</a>
+            <a href="transport.html">Transport</a>
+            <a href="hotels.html">Hotels</a>
+            <a href="vehicle.html">Vehicles</a>
+            <a href="guides.html" class="active">Local Guides</a>
+            <a href="packages.html">Packages</a>
+            <a href="itinerary.html">Itinerary</a>
+            <a href="budget.html">Budget</a>
+            <a href="community.html">Community</a>
+            <a href="solo.html">Solo Trip</a>
+            <a href="album.html">Photo Albums</a>
+            <a href="bookings.html">My Bookings</a>
+        </div>
+        <div class="nav-cta">
+            <a href="login.html" class="btn btn-ghost">Sign In</a>
+            <a href="signup.html" class="btn btn-gold">Get Started</a>
+        </div>
+    </nav>
+
+    <div class="breadcrumb">
+        <a href="index.html">Home</a>
+        <span class="breadcrumb-sep">&gt;</span>
+        <span>Local Guides</span>
+    </div>
+
+    <div class="guides-hero">
+        <div class="guides-hero-overlay"></div>
+        <div class="guides-hero-content">
+            <div class="chip chip-gold" style="margin-bottom: 14px;">
+                <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                Verified Government Certified
+            </div>
+            <h1>Explore with genuine<br/><em>local experts</em></h1>
+            <p>Connect with vetted local storytellers, wildlife naturalists, and mountain leaders who know the hidden gems beyond standard guidebooks.</p>
+        </div>
+    </div>
+
+    <div class="layout-2col">
+        <!-- Filter Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-title">Filter Guides</div>
+            
+            <div class="filter-group">
+                <div class="filter-label">Destination</div>
+                <label class="filter-opt"><input type="checkbox" checked> Munnar (Kerala)</label>
+                <label class="filter-opt"><input type="checkbox" checked> Jaipur (Rajasthan)</label>
+                <label class="filter-opt"><input type="checkbox" checked> Andaman &amp; Nicobar</label>
+                <label class="filter-opt"><input type="checkbox" checked> Manali (Himachal)</label>
+                <label class="filter-opt"><input type="checkbox"> Hampi (Karnataka)</label>
+            </div>
+
+            <div class="filter-group">
+                <div class="filter-label">Specialty</div>
+                <label class="filter-opt"><input type="checkbox" checked> Heritage &amp; History</label>
+                <label class="filter-opt"><input type="checkbox" checked> Nature &amp; Trekking</label>
+                <label class="filter-opt"><input type="checkbox"> Scuba &amp; Marine</label>
+                <label class="filter-opt"><input type="checkbox"> Photography Tours</label>
+                <label class="filter-opt"><input type="checkbox"> Food &amp; Culture</label>
+            </div>
+
+            <div class="filter-group">
+                <div class="filter-label">Languages</div>
+                <label class="filter-opt"><input type="checkbox" checked> English</label>
+                <label class="filter-opt"><input type="checkbox" checked> Hindi</label>
+                <label class="filter-opt"><input type="checkbox"> Malayalam</label>
+                <label class="filter-opt"><input type="checkbox"> Tamil</label>
+                <label class="filter-opt"><input type="checkbox"> French / German</label>
+            </div>
+
+            <div class="filter-group">
+                <div class="filter-label">Daily Fee (INR)</div>
+                <div class="range-wrap">
+                    <input type="range" min="1000" max="6000" step="250" value="3500">
+                    <div class="range-labels"><span>&#8377;1,000</span><span class="range-val">&#8377;3,500</span><span>&#8377;6,000</span></div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Results Grid -->
+        <main class="results-bg">
+            <div class="results-header">
+                <div class="results-count">Showing <strong>6 verified guides</strong> available</div>
+                <select class="sort-select">
+                    <option>Highest Rated (★ 4.8+)</option>
+                    <option>Most Experienced</option>
+                    <option>Price: Low to High</option>
+                    <option>Price: High to Low</option>
+                </select>
+            </div>
+
+            <!-- Language Filter Strip -->
+            <div style="background:var(--white); border:1px solid var(--gray-200); border-radius:var(--r-md); padding:12px 16px; margin-bottom:20px; display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                <span style="font-size:12.5px; font-weight:700; color:var(--navy); display:flex; align-items:center; gap:6px;">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--teal)" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    Filter by Language:
+                </span>
+                <button class="btn btn-teal lang-pill active" onclick="filterByLang('all', this)" style="padding:4px 12px; font-size:12px;">All (6)</button>
+                <button class="btn btn-ghost lang-pill" onclick="filterByLang('Tamil', this)" style="padding:4px 12px; font-size:12px; border-color:var(--gray-200);">Tamil (தமிழ்)</button>
+                <button class="btn btn-ghost lang-pill" onclick="filterByLang('English', this)" style="padding:4px 12px; font-size:12px; border-color:var(--gray-200);">English</button>
+                <button class="btn btn-ghost lang-pill" onclick="filterByLang('Hindi', this)" style="padding:4px 12px; font-size:12px; border-color:var(--gray-200);">Hindi (हिंदी)</button>
+                <button class="btn btn-ghost lang-pill" onclick="filterByLang('Malayalam', this)" style="padding:4px 12px; font-size:12px; border-color:var(--gray-200);">Malayalam (മലയാളം)</button>
+            </div>
+
+            <div class="guide-grid" id="guideGridContainer">
+                <!-- Guide 1 -->
+                <div class="guide-card" data-languages="English, Malayalam, Tamil, Hindi">
+                    <div class="guide-banner" style="background-image: url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=1932&auto=format&fit=crop');">
+                        <div class="guide-banner-overlay"></div>
+                    </div>
+                    <div class="guide-avatar-wrap">
+                        <div class="guide-avatar" style="background-image: url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1974&auto=format&fit=crop');"></div>
+                        <div class="guide-badge-verified">
+                            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                            Govt Certified Naturalist
+                        </div>
+                    </div>
+                    <div class="guide-body">
+                        <h3 class="guide-name">Rajesh Kumar</h3>
+                        <div class="guide-location">
+                            <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            Munnar &middot; Kerala
+                        </div>
+                        <div class="guide-specialties">
+                            <span class="chip chip-teal">Tea Plantation Treks</span>
+                            <span class="chip chip-gold">Bird Watching</span>
+                        </div>
+                        <p class="guide-desc">Botanist and certified naturalist with 9+ years guiding solo explorers and families across Western Ghat trails and spice gardens.</p>
+                        <div class="guide-meta">
+                            <div class="guide-meta-item">
+                                <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                                English, Malayalam, Tamil, Hindi
+                            </div>
+                            <div class="rating">
+                                <span class="rating-star">&#9733;</span>
+                                <span class="rating-val">4.9</span>
+                                <span class="rating-count">(184)</span>
+                            </div>
+                        </div>
+                        <div class="guide-footer">
+                            <div>
+                                <div class="guide-price">&#8377;1,800</div>
+                                <div class="guide-price-sub">per day &middot; custom group</div>
+                            </div>
+                            <button class="btn btn-teal" onclick="openBookingModal({
+                                title: 'Rajesh Kumar — Munnar Naturalist',
+                                category: 'Local Guide',
+                                image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=1932&auto=format&fit=crop',
+                                price: '&#8377;1,800',
+                                description: 'Book 1-on-1 or group guided trekking with Rajesh Kumar across Munnar peaks and hidden spice trails.',
+                                specs: [
+                                    { label: 'Language Expertise', val: 'English, Malayalam, Tamil, Hindi' },
+                                    { label: 'Experience', val: '9+ Years (Govt Certified)' },
+                                    { label: 'Included Equipment', val: 'Trail Maps, First-Aid Kit, Binoculars' },
+                                    { label: 'Rating', val: '★ 4.9 (184 reviews)' }
+                                ]
+                            })">Book Guide</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Guide 2 -->
+                <div class="guide-card" data-languages="English, Hindi, French">
+                    <div class="guide-banner" style="background-image: url('https://images.unsplash.com/photo-1587474260584-136574528ed5?q=80&w=2070&auto=format&fit=crop');">
+                        <div class="guide-banner-overlay"></div>
+                    </div>
+                    <div class="guide-avatar-wrap">
+                        <div class="guide-avatar" style="background-image: url('https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=1976&auto=format&fit=crop');"></div>
+                        <div class="guide-badge-verified">
+                            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                            ASI Certified Historian
+                        </div>
+                    </div>
+                    <div class="guide-body">
+                        <h3 class="guide-name">Amina Banu</h3>
+                        <div class="guide-location">
+                            <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            Jaipur &middot; Rajasthan
+                        </div>
+                        <div class="guide-specialties">
+                            <span class="chip chip-gold">Royal Heritage</span>
+                            <span class="chip chip-navy">Bazaar Walks</span>
+                        </div>
+                        <p class="guide-desc">Historian specializing in Rajput architecture and Pink City craft artisan quarters. Known for VIP palace passes and evening heritage walks.</p>
+                        <div class="guide-meta">
+                            <div class="guide-meta-item">
+                                <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                                English, Hindi, French
+                            </div>
+                            <div class="rating">
+                                <span class="rating-star">&#9733;</span>
+                                <span class="rating-val">4.9</span>
+                                <span class="rating-count">(215)</span>
+                            </div>
+                        </div>
+                        <div class="guide-footer">
+                            <div>
+                                <div class="guide-price">&#8377;2,200</div>
+                                <div class="guide-price-sub">per day &middot; custom tour</div>
+                            </div>
+                            <button class="btn btn-teal" onclick="openBookingModal({
+                                title: 'Amina Banu — Jaipur Heritage Historian',
+                                category: 'Local Guide',
+                                image: 'https://images.unsplash.com/photo-1587474260584-136574528ed5?q=80&w=2070&auto=format&fit=crop',
+                                price: '&#8377;2,200',
+                                description: 'Immersive guided heritage tour covering Amber Fort, City Palace, and hidden artisan workshops.',
+                                specs: [
+                                    { label: 'Language Expertise', val: 'English, Hindi, French' },
+                                    { label: 'Experience', val: '7+ Years (ASI Certified)' },
+                                    { label: 'Included Perks', val: 'Skip-the-line Palace Access &amp; Audio Transmitters' },
+                                    { label: 'Rating', val: '★ 4.9 (215 reviews)' }
+                                ]
+                            })">Book Guide</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Guide 3 -->
+                <div class="guide-card" data-languages="English, Bengali, Hindi">
+                    <div class="guide-banner" style="background-image: url('https://images.unsplash.com/photo-1528892952291-009c663ce843?q=80&w=1932&auto=format&fit=crop');">
+                        <div class="guide-banner-overlay"></div>
+                    </div>
+                    <div class="guide-avatar-wrap">
+                        <div class="guide-avatar" style="background-image: url('https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=1961&auto=format&fit=crop');"></div>
+                        <div class="guide-badge-verified">
+                            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                            Verified
+                        </div>
+                    </div>
+                    <div class="guide-body">
+                        <h3 class="guide-name">Ananya Roy</h3>
+                        <div class="guide-location">
+                            <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            Havelock &middot; Andaman
+                        </div>
+                        <div class="guide-specialties">
+                            <span class="chip chip-teal">PADI Divemaster</span>
+                            <span class="chip chip-navy">Coral Reef Ecology</span>
+                        </div>
+                        <p class="guide-desc">Certified scuba instructor and island conservationist leading private snorkeling, scuba dives, and mangrove kayak expeditions.</p>
+                        <div class="guide-meta">
+                            <div class="guide-meta-item">
+                                <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                                English, Bengali, Hindi
+                            </div>
+                            <div class="rating">
+                                <span class="rating-star">&#9733;</span>
+                                <span class="rating-val">5.0</span>
+                                <span class="rating-count">(96)</span>
+                            </div>
+                        </div>
+                        <div class="guide-footer">
+                            <div>
+                                <div class="guide-price">&#8377;3,200</div>
+                                <div class="guide-price-sub">per day &middot; dive charter</div>
+                            </div>
+                            <button class="btn btn-teal" onclick="openBookingModal({
+                                title: 'Ananya Roy — Andaman Dive Master',
+                                category: 'Local Guide',
+                                image: 'https://images.unsplash.com/photo-1528892952291-009c663ce843?q=80&w=1932&auto=format&fit=crop',
+                                price: '&#8377;3,200',
+                                description: 'Private underwater coral exploration and sea kayaking excursion with PADI certified master.',
+                                specs: [
+                                    { label: 'Certification', val: 'PADI Master Scuba Diver Trainer' },
+                                    { label: 'Languages', val: 'English, Bengali, Hindi' },
+                                    { label: 'Gear Included', val: 'Full Scuba Regulators, Wetsuit, GoPro Video' },
+                                    { label: 'Rating', val: '★ 5.0 (96 reviews)' }
+                                ]
+                            })">Book Guide</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Guide 4 -->
+                <div class="guide-card" data-languages="English, Hindi, Punjabi">
+                    <div class="guide-banner" style="background-image: url('https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=2070&auto=format&fit=crop');">
+                        <div class="guide-banner-overlay"></div>
+                    </div>
+                    <div class="guide-avatar-wrap">
+                        <div class="guide-avatar" style="background-image: url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1964&auto=format&fit=crop');"></div>
+                        <div class="guide-badge-verified">
+                            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                            Verified
+                        </div>
+                    </div>
+                    <div class="guide-body">
+                        <h3 class="guide-name">Vikas Sharma</h3>
+                        <div class="guide-location">
+                            <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            Manali &middot; Himachal Pradesh
+                        </div>
+                        <div class="guide-specialties">
+                            <span class="chip chip-gold">High Altitude Trekking</span>
+                            <span class="chip chip-teal">Skiing</span>
+                        </div>
+                        <p class="guide-desc">IMF-certified mountaineering leader with 12+ years experience in Solang Valley, Hampta Pass, and Beas Kund expeditions.</p>
+                        <div class="guide-meta">
+                            <div class="guide-meta-item">
+                                <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                                English, Hindi, Punjabi
+                            </div>
+                            <div class="rating">
+                                <span class="rating-star">&#9733;</span>
+                                <span class="rating-val">4.8</span>
+                                <span class="rating-count">(142)</span>
+                            </div>
+                        </div>
+                        <div class="guide-footer">
+                            <div>
+                                <div class="guide-price">&#8377;2,500</div>
+                                <div class="guide-price-sub">per day &middot; trek leader</div>
+                            </div>
+                            <button class="btn btn-teal" onclick="openBookingModal({
+                                title: 'Vikas Sharma — Manali Trek Leader',
+                                category: 'Local Guide',
+                                image: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=2070&auto=format&fit=crop',
+                                price: '&#8377;2,500',
+                                description: 'Guided high-altitude trek with professional safety gear and mountain route navigation.',
+                                specs: [
+                                    { label: 'Accreditation', val: 'IMF Mountaineering Certified' },
+                                    { label: 'Languages', val: 'English, Hindi, Punjabi' },
+                                    { label: 'Safety Support', val: 'Satellite SOS &amp; Oxygen Cylinder' },
+                                    { label: 'Rating', val: '★ 4.8 (142 reviews)' }
+                                ]
+                            })">Book Guide</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Guide 5 -->
+                <div class="guide-card" data-languages="English, Kannada, Telugu, Tamil">
+                    <div class="guide-banner" style="background-image: url('https://images.unsplash.com/photo-1600100397608-f010e421d3fa?q=80&w=1974&auto=format&fit=crop');">
+                        <div class="guide-banner-overlay"></div>
+                    </div>
+                    <div class="guide-avatar-wrap">
+                        <div class="guide-avatar" style="background-image: url('https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=1974&auto=format&fit=crop');"></div>
+                        <div class="guide-badge-verified">
+                            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                            Verified
+                        </div>
+                    </div>
+                    <div class="guide-body">
+                        <h3 class="guide-name">Guru Prasad</h3>
+                        <div class="guide-location">
+                            <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            Hampi &middot; Karnataka
+                        </div>
+                        <div class="guide-specialties">
+                            <span class="chip chip-gold">Archaeology</span>
+                            <span class="chip chip-navy">Bouldering</span>
+                        </div>
+                        <p class="guide-desc">Native Hampi researcher decoding Vijayanagara empire epigraphy, boulder climbing routes, and sunset vantage points.</p>
+                        <div class="guide-meta">
+                            <div class="guide-meta-item">
+                                <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                                English, Kannada, Telugu
+                            </div>
+                            <div class="rating">
+                                <span class="rating-star">&#9733;</span>
+                                <span class="rating-val">4.9</span>
+                                <span class="rating-count">(88)</span>
+                            </div>
+                        </div>
+                        <div class="guide-footer">
+                            <div>
+                                <div class="guide-price">&#8377;1,500</div>
+                                <div class="guide-price-sub">per day &middot; archaeological walk</div>
+                            </div>
+                            <button class="btn btn-teal" onclick="openBookingModal({
+                                title: 'Guru Prasad — Hampi Archaeologist',
+                                category: 'Local Guide',
+                                image: 'https://images.unsplash.com/photo-1600100397608-f010e421d3fa?q=80&w=1974&auto=format&fit=crop',
+                                price: '&#8377;1,500',
+                                description: 'Guided archaeological exploration through UNESCO monuments and Virupaksha temple secrets.',
+                                specs: [
+                                    { label: 'Expertise', val: 'Epigraphy &amp; Vijayanagara History' },
+                                    { label: 'Languages', val: 'English, Kannada, Telugu' },
+                                    { label: 'Included', val: 'Coracle boat crossing &amp; heritage map' },
+                                    { label: 'Rating', val: '★ 4.9 (88 reviews)' }
+                                ]
+                            })">Book Guide</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Guide 6 -->
+                <div class="guide-card" data-languages="English, Konkani, Hindi, Portuguese">
+                    <div class="guide-banner" style="background-image: url('https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?q=80&w=1974&auto=format&fit=crop');">
+                        <div class="guide-banner-overlay"></div>
+                    </div>
+                    <div class="guide-avatar-wrap">
+                        <div class="guide-avatar" style="background-image: url('https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=1976&auto=format&fit=crop');"></div>
+                        <div class="guide-badge-verified">
+                            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                            Verified
+                        </div>
+                    </div>
+                    <div class="guide-body">
+                        <h3 class="guide-name">Sara D'Souza</h3>
+                        <div class="guide-location">
+                            <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            Panaji &middot; Goa
+                        </div>
+                        <div class="guide-specialties">
+                            <span class="chip chip-gold">Portuguese Heritage</span>
+                            <span class="chip chip-teal">Culinary Walks</span>
+                        </div>
+                        <p class="guide-desc">Culinary author and architectural historian curating Latin Quarter Fontainhas walking tours and traditional Goan spice plantation tastings.</p>
+                        <div class="guide-meta">
+                            <div class="guide-meta-item">
+                                <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                                English, Konkani, Portuguese
+                            </div>
+                            <div class="rating">
+                                <span class="rating-star">&#9733;</span>
+                                <span class="rating-val">4.9</span>
+                                <span class="rating-count">(110)</span>
+                            </div>
+                        </div>
+                        <div class="guide-footer">
+                            <div>
+                                <div class="guide-price">&#8377;1,900</div>
+                                <div class="guide-price-sub">per day &middot; culinary &amp; heritage</div>
+                            </div>
+                            <button class="btn btn-teal" onclick="openBookingModal({
+                                title: 'Sara D\'Souza — Goa Heritage &amp; Food Guide',
+                                category: 'Local Guide',
+                                image: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?q=80&w=1974&auto=format&fit=crop',
+                                price: '&#8377;1,900',
+                                description: 'Fontainhas walking tour, spice farm visit, and authentic Portuguese-Goan dining experience.',
+                                specs: [
+                                    { label: 'Specialty', val: 'Goan Gastronomy &amp; Colonial History' },
+                                    { label: 'Languages', val: 'English, Konkani, Portuguese' },
+                                    { label: 'Included', val: 'Tasting sampler &amp; heritage recipe booklet' },
+                                    { label: 'Rating', val: '★ 4.9 (110 reviews)' }
+                                ]
+                            })">Book Guide</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pagination">
+                <button class="page-btn active">1</button>
+                <button class="page-btn">2</button>
+                <button class="page-btn">&rarr;</button>
+            </div>
+        </main>
+    </div>
+
+    <footer class="footer">
+    <div class="footer-grid">
+        <div class="footer-brand">
+            <div class="footer-logo">
+                <div class="nav-logo-mark">
+                    <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                </div>
+                <span>TripCraft</span>
+            </div>
+            <p>AI-orchestrated end-to-end travel intelligence platform. Engineered for seamless discovery, instant reservations, solo safety, and creator photobook monetization.</p>
+            <div class="footer-social-strip">
+                <a href="https://twitter.com" target="_blank" class="footer-social-link" title="Twitter / X"><svg viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg></a>
+                <a href="https://instagram.com" target="_blank" class="footer-social-link" title="Instagram"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
+                <a href="https://linkedin.com" target="_blank" class="footer-social-link" title="LinkedIn"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a>
+                <a href="https://github.com" target="_blank" class="footer-social-link" title="GitHub"><svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg></a>
+            </div>
+        </div>
+        <div class="footer-col">
+            <h4>Explore</h4>
+            <ul>
+                <li><a href="destinations.html">Destinations</a></li>
+                <li><a href="packages.html">Curated Packages</a></li>
+                <li><a href="hotels.html">Stays &amp; Resorts</a></li>
+                <li><a href="transport.html">Flights &amp; Rail</a></li>
+                <li><a href="vehicle.html">Car &amp; Bike Rentals</a></li>
+                <li><a href="guides.html">Certified Local Guides</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Special Hubs</h4>
+            <ul>
+                <li><a href="solo.html">Solo Traveler Engine</a></li>
+                <li><a href="community.html">Community &amp; Buddies</a></li>
+                <li><a href="album.html">Photo Album Studio</a></li>
+                <li><a href="budget.html">40/25/20/15 Budgeter</a></li>
+                <li><a href="itinerary.html">Interactive Itinerary</a></li>
+                <li><a href="wishlist.html">Saved Wishlist</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Trust &amp; Legal</h4>
+            <ul>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="contact.html">Customer Support</a></li>
+                <li><a href="faq.html">FAQ &amp; Help Desk</a></li>
+                <li><a href="terms.html">Terms &amp; Conditions</a></li>
+                <li><a href="privacy.html">Privacy Policy</a></li>
+                <li><a href="refund.html">Refund Policy</a></li>
+                <li><a href="sitemap.html">Sitemap</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <div>&copy; 2026 TripCraft Technologies Inc. All rights reserved. 256-bit SSL Encrypted Booking System.</div>
+        <div style="display:flex; gap:16px;">
+            <a href="terms.html">Terms</a>
+            <a href="privacy.html">Privacy</a>
+            <a href="refund.html">Refunds</a>
+            <a href="sitemap.html">Sitemap</a>
+        </div>
+    </div>
+</footer>
+
+    <script src="tc-config.js"></script>
+    <script src="shared.js"></script>
+    <script src="tc-layer.js"></script>
+    <script>
+        function filterByLang(lang, btn) {
+            document.querySelectorAll('.lang-pill').forEach(b => {
+                b.classList.remove('btn-teal', 'active');
+                b.classList.add('btn-ghost');
+                b.style.borderColor = 'var(--gray-200)';
+            });
+            btn.classList.remove('btn-ghost');
+            btn.classList.add('btn-teal', 'active');
+            btn.style.borderColor = 'transparent';
+
+            const cards = document.querySelectorAll('#guideGridContainer .guide-card');
+            let matchCount = 0;
+
+            cards.forEach(card => {
+                const cardLangs = card.getAttribute('data-languages') || '';
+                if (lang === 'all' || cardLangs.toLowerCase().includes(lang.toLowerCase())) {
+                    card.style.display = 'flex';
+                    matchCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            showToast(`Showing ${matchCount} verified guide(s) speaking ${lang === 'all' ? 'any language' : lang}.`);
+        }
+    </script>
+</body>
+</html>

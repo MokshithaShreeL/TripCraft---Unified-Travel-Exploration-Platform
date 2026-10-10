@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Munnar, Kerala Travel Guide & Interactive Dossier — TripCraft</title>
+    <meta name="description" content="Complete travel guide to Munnar hill station: KDHP tea museums, Top Station cloud sunrise, authentic cuisine, local guide bookings, and similar hill destination comparisons.">
+    <meta property="og:title" content="Munnar, Kerala Travel Guide & Interactive Dossier — TripCraft">
+    <meta property="og:description" content="Complete travel guide to Munnar hill station: KDHP tea museums, Top Station cloud sunrise, authentic cuisine, local guide bookings, and similar hill destination comparisons.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1593693397690-362cb9666fc2?q=80&w=1200&auto=format&fit=crop">
+    <link rel="stylesheet" href="shared.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        .detail-hero {
+            height: 480px;
+            position: relative;
+            background-image: url('https://images.unsplash.com/photo-1593693397690-362cb9666fc2?q=80&w=1920&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: flex-end;
+            padding: 48px var(--px);
+        }
+        .detail-hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(11, 31, 58, 0.9) 0%, rgba(11, 31, 58, 0.4) 50%, rgba(11, 31, 58, 0.2) 100%);
+        }
+        .detail-hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 840px;
+        }
+        .detail-hero h1 {
+            font-family: 'Bricolage Grotesque', 'Plus Jakarta Sans', sans-serif;
+            font-size: 52px;
+            font-weight: 700;
+            color: #FFFFFF;
+            line-height: 1.1;
+            margin-bottom: 12px;
+        }
+        .detail-hero-tags {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+        }
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 36px;
+            padding: 48px var(--px);
+        }
+        .detail-section-title {
+            font-family: 'Bricolage Grotesque', 'Plus Jakarta Sans', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--gray-100);
+        }
+        .detail-gallery {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+        .gallery-item {
+            height: 130px;
+            border-radius: var(--r-md);
+            background-size: cover;
+            background-position: center;
+            border: 1px solid var(--gray-100);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .gallery-item:hover {
+            transform: scale(1.02);
+        }
+        .fact-card {
+            background: var(--white);
+            border: 1px solid var(--gray-100);
+            border-radius: var(--r-lg);
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 24px;
+        }
+        .fact-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--gray-100);
+        }
+        .fact-item:last-child {
+            border-bottom: none;
+        }
+        .fact-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: var(--teal-pale);
+            color: var(--teal);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .fact-icon svg {
+            width: 18px;
+            height: 18px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+        }
+        .fact-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            color: var(--text-muted);
+            margin-bottom: 2px;
+        }
+        .fact-val {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        .itinerary-step {
+            display: flex;
+            gap: 18px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .itinerary-step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 36px;
+            bottom: -16px;
+            left: 17px;
+            width: 2px;
+            background: var(--gray-200);
+        }
+        .step-num {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--teal);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+            flex-shrink: 0;
+            z-index: 1;
+        }
+        .step-content {
+            background: var(--white);
+            border: 1px solid var(--gray-100);
+            border-radius: var(--r-md);
+            padding: 16px 18px;
+            flex: 1;
+        }
+        .step-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+        .step-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="nav">
+        <a href="index.html" class="nav-logo">
+            <div class="nav-logo-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            </div>
+            <div class="nav-logo-text">Trip<span>Craft</span></div>
+        </a>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="destinations.html" class="active">Destinations</a>
+            <a href="transport.html">Transport</a>
+            <a href="hotels.html">Hotels</a>
+            <a href="vehicle.html">Vehicles</a>
+            <a href="guides.html">Local Guides</a>
+            <a href="packages.html">Packages</a>
+            <a href="itinerary.html">Itinerary</a>
+            <a href="budget.html">Budget</a>
+            <a href="community.html">Community</a>
+            <a href="solo.html">Solo Trip</a>
+            <a href="album.html">Photo Albums</a>
+            <a href="bookings.html">My Bookings</a>
+        </div>
+        <div class="nav-cta">
+            <a href="login.html" class="btn btn-ghost">Sign In</a>
+            <a href="signup.html" class="btn btn-gold">Get Started</a>
+        </div>
+    </nav>
+
+    <div class="breadcrumb">
+        <a href="index.html">Home</a>
+        <span class="breadcrumb-sep">&gt;</span>
+        <a href="destinations.html">Destinations</a>
+        <span class="breadcrumb-sep">&gt;</span>
+        <span id="destBreadcrumbName">Munnar, Kerala</span>
+    </div>
+
+    <!-- DYNAMIC HERO -->
+    <div class="detail-hero" id="destHeroSection" style="background-image: url('https://images.unsplash.com/photo-1593693397690-362cb9666fc2?q=80&w=1920&auto=format&fit=crop');">
+        <div class="detail-hero-overlay"></div>
+        <div class="detail-hero-content">
+            <div class="detail-hero-tags" id="destHeroTags">
+                <span class="chip chip-gold" id="destBadgeTag">Hill Station</span>
+                <span class="chip chip-teal" id="destSafetyTag">Safety Score: 8.8 / 10</span>
+                <div class="rating" style="background: rgba(255,255,255,0.15); padding: 3px 10px; border-radius: var(--r-full); color: #fff;">
+                    <span class="rating-star">&#9733;</span>
+                    <span class="rating-val" style="color:#fff;" id="destRatingVal">4.8</span>
+                    <span class="rating-count" style="color:rgba(255,255,255,0.7);" id="destRatingReviews">(2,450 Reviews)</span>
+                </div>
+            </div>
+            <h1 id="destHeroTitle">Munnar &mdash; Kashmir of South India</h1>
+            <p style="color: rgba(255,255,255,0.8); font-size: 16px; line-height: 1.6;" id="destHeroLead">Rolling emerald tea plantations, misty valleys, and the home of the endangered Nilgiri Tahr in the Western Ghats.</p>
+        </div>
+    </div>
+
+    <div class="detail-grid">
+        <!-- Main Info -->
+        <div>
+            <h2 class="detail-section-title">Overview &amp; Experience</h2>
+            <p style="font-size: 14.5px; color: var(--text-mid); line-height: 1.7; margin-bottom: 24px;" id="destOverviewText">
+                Situated at 1,600 metres above sea level, Munnar was once the summer resort of the British Government in South India. Today it is renowned for its vast expanse of tea gardens, colonial bungalows, aromatic spice trails, and pristine trekking routes like Anamudi (South India's highest peak).
+            </p>
+
+            <div class="detail-gallery" id="destGalleryContainer">
+                <!-- Dynamically populated reference photos -->
+            </div>
+
+            <h2 class="detail-section-title">Suggested 4-Day Itinerary</h2>
+            <div id="destItineraryContainer">
+                <!-- Dynamically populated itinerary steps -->
+            </div>
+
+            <!-- Authentic Food & Culinary Delights -->
+            <h2 class="detail-section-title" style="margin-top: 36px;" id="destFoodsHeading">Authentic Regional Culinary Specialties</h2>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin-bottom: 32px;" id="destFoodsContainer">
+                <!-- Dynamically populated foods -->
+            </div>
+
+            <!-- Hidden Gems -->
+            <h2 class="detail-section-title">Offbeat Spots &amp; Hidden Gems</h2>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin-bottom: 32px;" id="destGemsContainer">
+                <!-- Dynamically populated hidden gems -->
+            </div>
+
+            <!-- HANDPICKED HOTELS IN THIS DESTINATION -->
+            <div style="margin-top: 36px; margin-bottom: 32px;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 18px;">
+                    <div>
+                        <div class="sec-eyebrow" style="color:var(--teal); margin-bottom:4px;">Handpicked Accommodations</div>
+                        <h2 class="detail-section-title" style="margin: 0;" id="destHotelsSectionTitle">Verified Hotels &amp; Resorts</h2>
+                    </div>
+                    <a href="hotels.html" class="btn btn-ghost" style="font-size:12.5px; padding:6px 14px;">View All Stays &rarr;</a>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;" id="destHotelsContainer">
+                    <!-- Dynamically populated hotel cards with real images, prices, ratings, and Book Hotel buttons -->
+                </div>
+            </div>
+
+            <!-- SECTION 2: VERIFIED REVIEWS & RATINGS BREAKDOWN -->
+            <div id="destReviewsSectionMount"></div>
+
+            <!-- SECTION 5: COMPARE WITH SIMILAR DESTINATIONS -->
+            <div class="dest-compare-section">
+                <div class="dest-compare-header">
+                    <div>
+                        <h2 style="font-family:'Bricolage Grotesque', 'Plus Jakarta Sans', sans-serif; font-size:22px; color:var(--navy); margin-bottom:4px;" id="destCompareTitle">Compare with Top Escapes</h2>
+                        <p style="font-size:13px; color:var(--text-muted);">See how this destination stacks up on pricing, connectivity, and authentic experience.</p>
+                    </div>
+                    <span class="chip chip-gold" style="font-size:11px;" id="destCompareBadge">Curated Escape</span>
+                </div>
+
+                <div class="dest-compare-table-wrapper">
+                    <table class="dest-compare-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 25%;">Feature</th>
+                                <th class="col-current" style="width: 25%;" id="destCompareCurrentName">
+                                    Current Place <span class="dest-compare-badge">Viewing</span>
+                                </th>
+                                <th style="width: 25%;">Alternative Escapes</th>
+                                <th style="width: 25%;">Budget Stays</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Avg Daily Cost (Stay + Meals)</strong></td>
+                                <td class="col-current"><span class="compare-price-val" id="destComparePrice">&#8377;3,200</span> / day</td>
+                                <td>&#8377;2,900 / day</td>
+                                <td>&#8377;1,800 / day</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Best Season to Visit</strong></td>
+                                <td class="col-current" id="destCompareSeason">Sept &ndash; March</td>
+                                <td>Oct &ndash; June</td>
+                                <td>Round the Year</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Signature Highlight</strong></td>
+                                <td class="col-current" id="destCompareHighlight">Heritage Sights &amp; Scenic Vistas</td>
+                                <td>Toy Train &amp; Flora</td>
+                                <td>Nature Walks</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Safety &amp; Traveler Rating</strong></td>
+                                <td class="col-current" id="destCompareSafety">&#9733; 4.8 / 5.0 (Safety 8.8)</td>
+                                <td>&#9733; 4.6 / 5.0</td>
+                                <td>&#9733; 4.5 / 5.0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fact Sidebar -->
+        <div>
+            <!-- Google Maps Preview Box -->
+            <div class="fact-card" style="padding:16px; margin-bottom:20px;">
+                <div style="font-size:12px; font-weight:700; text-transform:uppercase; color:var(--navy); margin-bottom:10px; display:flex; align-items:center; gap:6px;">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--teal)" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    Interactive Map Route
+                </div>
+                <div style="height:170px; border-radius:var(--r-md); background-image:url('https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=2074&auto=format&fit=crop'); background-size:cover; background-position:center; position:relative; overflow:hidden; border:1px solid var(--gray-200); display:flex; align-items:center; justify-content:center;">
+                    <div style="position:absolute; inset:0; background:rgba(11,31,58,0.45);"></div>
+                    <div style="position:relative; z-index:1; background:var(--teal); color:#fff; padding:6px 12px; border-radius:var(--r-full); font-size:11.5px; font-weight:700; box-shadow:var(--shadow-md);" id="destMapBadge">
+                        Highlights Route (32 km)
+                    </div>
+                </div>
+                <div style="margin-top:12px; font-size:12px; color:var(--text-mid); line-height:1.6;" id="destMapWaypoints">
+                    <strong>Waypoints:</strong> Scenic Viewpoints &rarr; Cultural Centers &rarr; Historic Landmarks
+                </div>
+            </div>
+
+            <div class="fact-card">
+                <h3 style="font-family:'Bricolage Grotesque', 'Plus Jakarta Sans', sans-serif; font-size: 18px; font-weight:700; margin-bottom:14px; color:var(--navy);">Essential Info</h3>
+                
+                <div class="fact-item">
+                    <div class="fact-icon">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    </div>
+                    <div>
+                        <div class="fact-label">Best Time to Visit</div>
+                        <div class="fact-val" id="destFactSeason">September to March (15&deg;C &ndash; 25&deg;C)</div>
+                    </div>
+                </div>
+
+                <div class="fact-item">
+                    <div class="fact-icon">
+                        <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8"/></svg>
+                    </div>
+                    <div>
+                        <div class="fact-label">Nearest Transit Hub</div>
+                        <div class="fact-val" id="destFactAirport">Cochin International (COK) &mdash; 110 km</div>
+                    </div>
+                </div>
+
+                <div class="fact-item">
+                    <div class="fact-icon">
+                        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                    </div>
+                    <div>
+                        <div class="fact-label">Ideal Duration</div>
+                        <div class="fact-val" id="destFactDuration">4 Days &middot; 3 Nights</div>
+                    </div>
+                </div>
+
+                <div class="fact-item">
+                    <div class="fact-icon">
+                        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    </div>
+                    <div>
+                        <div class="fact-label">Safety Index</div>
+                        <div class="fact-val" style="color:var(--success);" id="destFactSafety">8.8 / 10 &middot; High Safety Rating</div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px;">
+                    <a href="itinerary.html?dest=Munnar&days=4" class="btn btn-gold" id="destBuildItineraryBtn" style="width: 100%; display:flex; justify-content:center; align-items:center; gap:8px;">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                        <span>Build Itinerary</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+<footer class="footer">
+    <div class="footer-grid">
+        <div class="footer-brand">
+            <div class="footer-logo">
+                <div class="nav-logo-mark">
+                    <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                </div>
+                <span>TripCraft</span>
+            </div>
+            <p>AI-orchestrated end-to-end travel intelligence platform. Engineered for seamless discovery, instant reservations, solo safety, and creator photobook monetization.</p>
+            <div class="footer-social-strip">
+                <a href="https://twitter.com" target="_blank" class="footer-social-link" title="Twitter / X"><svg viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg></a>
+                <a href="https://instagram.com" target="_blank" class="footer-social-link" title="Instagram"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
+                <a href="https://linkedin.com" target="_blank" class="footer-social-link" title="LinkedIn"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a>
+                <a href="https://github.com" target="_blank" class="footer-social-link" title="GitHub"><svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg></a>
+            </div>
+        </div>
+        <div class="footer-col">
+            <h4>Explore</h4>
+            <ul>
+                <li><a href="destinations.html">Destinations</a></li>
+                <li><a href="packages.html">Curated Packages</a></li>
+                <li><a href="hotels.html">Stays &amp; Resorts</a></li>
+                <li><a href="transport.html">Flights &amp; Rail</a></li>
+                <li><a href="vehicle.html">Car &amp; Bike Rentals</a></li>
+                <li><a href="guides.html">Certified Local Guides</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Special Hubs</h4>
+            <ul>
+                <li><a href="solo.html">Solo Traveler Engine</a></li>
+                <li><a href="community.html">Community &amp; Buddies</a></li>
+                <li><a href="album.html">Photo Album Studio</a></li>
+                <li><a href="budget.html">40/25/20/15 Budgeter</a></li>
+                <li><a href="itinerary.html">Interactive Itinerary</a></li>
+                <li><a href="wishlist.html">Saved Wishlist</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Trust &amp; Legal</h4>
+            <ul>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="contact.html">Customer Support</a></li>
+                <li><a href="faq.html">FAQ &amp; Help Desk</a></li>
+                <li><a href="terms.html">Terms &amp; Conditions</a></li>
+                <li><a href="privacy.html">Privacy Policy</a></li>
+                <li><a href="refund.html">Refund Policy</a></li>
+                <li><a href="sitemap.html">Sitemap</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <div>&copy; 2026 TripCraft Technologies Inc. All rights reserved. 256-bit SSL Encrypted Booking System.</div>
+        <div style="display:flex; gap:16px;">
+            <a href="terms.html">Terms</a>
+            <a href="privacy.html">Privacy</a>
+            <a href="refund.html">Refunds</a>
+            <a href="sitemap.html">Sitemap</a>
+        </div>
+    </div>
+</footer>
+
+        <script src="tc-config.js"></script>
+    <script src="shared.js"></script>
+    <script src="tc-layer.js"></script>
+    <script src="dest-detail-engine.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const queryDest = params.get('dest') || 'Munnar';
+            if (window.renderDestinationDetail) {
+                window.renderDestinationDetail(queryDest);
+            }
+        });
+    </script>
+</body>
+</html>

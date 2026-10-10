@@ -1,0 +1,1639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traveler Community Lounge & Solo Buddy Matcher — TripCraft</title>
+    <meta name="description" content="Join verified travelers, propose joint meetups with destination peers, and exchange real-time travel advice in the TripCraft Lounge.">
+    <meta property="og:title" content="Traveler Community Lounge & Solo Buddy Matcher — TripCraft">
+    <meta property="og:description" content="Join verified travelers, propose joint meetups with destination peers, and exchange real-time travel advice in the TripCraft Lounge.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=1200&auto=format&fit=crop">
+    <link rel="stylesheet" href="shared.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        .comm-hero {
+            background: linear-gradient(135deg, #090E2B, #101B4B);
+            padding: 64px var(--px);
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+        .comm-hero-overlay {
+            position: absolute;
+            inset: 0;
+            background-image: url('https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=2000&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center 35%;
+            opacity: 0.18;
+        }
+        .comm-hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 780px;
+            margin: 0 auto;
+        }
+        .comm-hero h1 {
+            font-family: 'Bricolage Grotesque', 'Plus Jakarta Sans', sans-serif;
+            font-size: 46px;
+            font-weight: 700;
+            color: #FFFFFF;
+            line-height: 1.15;
+            margin-bottom: 14px;
+        }
+        .comm-hero h1 em {
+            color: var(--gold);
+            font-style: normal;
+        }
+        .comm-hero p {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.65;
+            margin-bottom: 28px;
+            max-width: 620px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .comm-hero-actions {
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Stats Bar */
+        .comm-stats-bar {
+            background: var(--navy-mid);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 28px var(--px);
+        }
+        .comm-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+        }
+        .comm-stat-card {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
+            padding-right: 16px;
+        }
+        .comm-stat-card:last-child {
+            border-right: none;
+            padding-right: 0;
+        }
+        .comm-stat-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .comm-stat-icon.teal { background: rgba(14, 124, 107, 0.2); color: var(--teal-light); }
+        .comm-stat-icon.gold { background: rgba(232, 168, 56, 0.2); color: var(--gold); }
+        .comm-stat-icon.green { background: rgba(26, 122, 74, 0.2); color: #2ecc71; }
+        .comm-stat-icon.navy { background: rgba(255, 255, 255, 0.1); color: #FAFAF8; }
+        .comm-stat-icon svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 2; }
+        .comm-stat-val {
+            font-family: 'Bricolage Grotesque', 'Plus Jakarta Sans', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: #FFFFFF;
+            line-height: 1.1;
+            margin-bottom: 2px;
+        }
+        .comm-stat-lbl {
+            font-size: 11.5px;
+            color: rgba(255, 255, 255, 0.65);
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            font-weight: 600;
+        }
+
+        /* Controls / Filter Bar */
+        .comm-controls-wrapper {
+            background: var(--white);
+            border-bottom: 1px solid var(--gray-100);
+            padding: 20px var(--px);
+            position: sticky;
+            top: var(--nav-h);
+            z-index: 100;
+            box-shadow: var(--shadow-sm);
+        }
+        .comm-controls-flex {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .comm-tabs-list {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 2px;
+        }
+        .comm-tab-pill {
+            padding: 8px 16px;
+            border-radius: var(--r-full);
+            background: var(--gray-50);
+            border: 1px solid var(--gray-200);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-mid);
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .comm-tab-pill:hover {
+            border-color: var(--teal);
+            color: var(--teal);
+        }
+        .comm-tab-pill.active {
+            background: var(--teal);
+            color: #FFFFFF;
+            border-color: var(--teal);
+        }
+        .comm-search-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--gray-50);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--r-full);
+            padding: 6px 14px;
+            width: 280px;
+        }
+        .comm-search-box svg {
+            width: 15px;
+            height: 15px;
+            stroke: var(--text-muted);
+            fill: none;
+            stroke-width: 2;
+        }
+        .comm-search-box input {
+            border: none;
+            background: transparent;
+            font-size: 13px;
+            outline: none;
+            width: 100%;
+            color: var(--text);
+        }
+
+        /* Feed Section */
+        .comm-main-layout {
+            padding: 40px var(--px);
+            max-width: 900px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 36px;
+        }
+        .comm-posts-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+        }
+        .post-card {
+            background: var(--white);
+            border-radius: var(--r-lg);
+            border: 1px solid var(--gray-100);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            transition: box-shadow 0.2s;
+        }
+        .post-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+        .post-header {
+            padding: 18px 20px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .post-user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .post-avatar-img {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background-size: cover;
+            background-position: center;
+            border: 2px solid var(--gray-100);
+            flex-shrink: 0;
+        }
+        .post-user-name {
+            font-size: 14.5px;
+            font-weight: 700;
+            color: var(--navy);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .post-verified-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--teal);
+        }
+        .post-verified-badge svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2.5; }
+        .post-meta-sub {
+            font-size: 11.5px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .post-loc-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            color: var(--teal);
+            font-weight: 600;
+        }
+        .post-loc-tag svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; }
+        
+        .post-image-wrap {
+            height: 320px;
+            position: relative;
+            background-size: cover;
+            background-position: center;
+            cursor: pointer;
+        }
+        .post-image-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(11, 31, 58, 0.4) 0%, transparent 60%);
+        }
+        .post-cat-badge {
+            position: absolute;
+            top: 14px;
+            left: 14px;
+            background: rgba(11, 31, 58, 0.75);
+            backdrop-filter: blur(6px);
+            color: #FFFFFF;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: var(--r-full);
+            z-index: 1;
+        }
+
+        .post-body {
+            padding: 18px 20px;
+        }
+        .post-title {
+            font-family: 'Bricolage Grotesque', 'Plus Jakarta Sans', sans-serif;
+            font-size: 19px;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+        .post-caption {
+            font-size: 13.5px;
+            color: var(--text-mid);
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+        .post-footer {
+            padding-top: 14px;
+            border-top: 1px solid var(--gray-100);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .post-actions-group {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .post-action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: transparent;
+            border: none;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s;
+            padding: 4px 6px;
+            border-radius: var(--r-sm);
+        }
+        .post-action-btn:hover {
+            color: var(--teal);
+            background: var(--gray-50);
+        }
+        .post-action-btn.liked {
+            color: #e74c3c;
+        }
+        .post-action-btn.liked svg {
+            fill: #e74c3c;
+            stroke: #e74c3c;
+        }
+        .post-action-btn svg {
+            width: 16px;
+            height: 16px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            transition: all 0.2s;
+        }
+
+        /* Travel Buddies Sidebar */
+        .buddy-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+        .buddy-box {
+            background: var(--white);
+            border-radius: var(--r-lg);
+            border: 1px solid var(--gray-100);
+            padding: 22px;
+            box-shadow: var(--shadow-sm);
+        }
+        .buddy-box-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--gray-100);
+        }
+        .buddy-box-title {
+            font-family: 'Bricolage Grotesque', 'Plus Jakarta Sans', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--navy);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .buddy-box-title svg {
+            width: 18px;
+            height: 18px;
+            stroke: var(--gold);
+            fill: none;
+            stroke-width: 2;
+        }
+        .buddy-card {
+            background: var(--gray-50);
+            border: 1px solid var(--gray-100);
+            border-radius: var(--r-md);
+            overflow: hidden;
+            margin-bottom: 14px;
+            transition: all 0.2s;
+        }
+        .buddy-card:hover {
+            border-color: var(--teal);
+            box-shadow: var(--shadow-sm);
+        }
+        .buddy-card-img {
+            height: 110px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            padding: 10px 12px;
+        }
+        .buddy-card-img-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(11, 31, 58, 0.75) 0%, transparent 60%);
+        }
+        .buddy-dest-name {
+            position: relative;
+            z-index: 1;
+            font-family: 'Bricolage Grotesque', 'Plus Jakarta Sans', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            color: #FFFFFF;
+        }
+        .buddy-card-body {
+            padding: 12px 14px;
+        }
+        .buddy-trip-title {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 4px;
+        }
+        .buddy-trip-meta {
+            font-size: 11.5px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .buddy-progress-wrap {
+            margin-bottom: 12px;
+        }
+        .buddy-progress-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+        .buddy-progress-bar {
+            height: 5px;
+            background: var(--gray-200);
+            border-radius: var(--r-full);
+            overflow: hidden;
+        }
+        .buddy-progress-fill {
+            height: 100%;
+            background: var(--teal);
+            border-radius: var(--r-full);
+        }
+        .buddy-card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 8px;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        .buddy-cost {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--teal);
+        }
+        .btn-join-buddy {
+            padding: 6px 14px;
+            font-size: 12px;
+            border-radius: var(--r-sm);
+        }
+        .btn-join-buddy.joined {
+            background: var(--success);
+            color: #FFFFFF;
+            border-color: var(--success);
+            cursor: default;
+        }
+
+        /* Create Post Modal */
+        .post-modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(11, 31, 58, 0.65);
+            backdrop-filter: blur(5px);
+            z-index: 950;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.25s ease;
+            padding: 20px;
+        }
+        .post-modal-backdrop.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .post-modal-box {
+            background: var(--white);
+            border-radius: var(--r-xl);
+            max-width: 580px;
+            width: 100%;
+            box-shadow: var(--shadow-xl);
+            overflow: hidden;
+            border: 1px solid var(--gray-100);
+            transform: scale(0.95) translateY(10px);
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .post-modal-backdrop.active .post-modal-box {
+            transform: scale(1) translateY(0);
+        }
+        .post-modal-header {
+            background: var(--navy);
+            padding: 18px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: #FFFFFF;
+        }
+        .post-modal-title {
+            font-family: 'Bricolage Grotesque', 'Plus Jakarta Sans', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+        }
+        .post-modal-body {
+            padding: 24px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="nav">
+        <a href="index.html" class="nav-logo">
+            <div class="nav-logo-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            </div>
+            <div class="nav-logo-text">Trip<span>Craft</span></div>
+        </a>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="destinations.html">Destinations</a>
+            <a href="transport.html">Transport</a>
+            <a href="hotels.html">Hotels</a>
+            <a href="vehicle.html">Vehicles</a>
+            <a href="guides.html">Local Guides</a>
+            <a href="packages.html">Packages</a>
+            <a href="itinerary.html">Itinerary</a>
+            <a href="budget.html">Budget</a>
+            <a href="solo.html">Solo Trip</a>
+            <a href="community.html" class="active">Community</a>
+            <a href="album.html">Photo Albums</a>
+            <a href="bookings.html">My Bookings</a>
+        </div>
+        <div class="nav-cta">
+            <a href="login.html" class="btn btn-ghost">Sign In</a>
+            <a href="signup.html" class="btn btn-gold">Get Started</a>
+        </div>
+    </nav>
+
+    <div class="breadcrumb">
+        <a href="index.html">Home</a>
+        <span class="breadcrumb-sep">&gt;</span>
+        <span>Traveler Community &amp; Travel Buddies</span>
+    </div>
+
+    <!-- HERO -->
+    <div class="comm-hero">
+        <div class="comm-hero-overlay"></div>
+        <div class="comm-hero-content">
+            <div class="chip chip-gold" style="margin-bottom: 14px;">
+                <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                Active Global Explorer Network
+            </div>
+            <h1>Connect with authentic explorers &amp;<br/><em>find your next travel buddy</em></h1>
+            <p>Discover unfiltered trip reports, transparent budget breakdowns, verified solo travel tips, and join scheduled group trips with trusted companions.</p>
+            
+            <div class="comm-hero-actions">
+                <button class="btn btn-gold" onclick="openCreatePostModal()">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    Share Your Trip Story
+                </button>
+                <button class="btn btn-ghost" onclick="document.getElementById('travelBuddiesSection').scrollIntoView({behavior: 'smooth'})">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/></svg>
+                    Find Travel Buddies
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- STATS STRIP -->
+    <div class="comm-stats-bar">
+        <div class="comm-stats-grid">
+            <div class="comm-stat-card">
+                <div class="comm-stat-icon teal">
+                    <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                </div>
+                <div>
+                    <div class="comm-stat-val">14,800+</div>
+                    <div class="comm-stat-lbl">Verified Members</div>
+                </div>
+            </div>
+            <div class="comm-stat-card">
+                <div class="comm-stat-icon gold">
+                    <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                </div>
+                <div>
+                    <div class="comm-stat-val">920+</div>
+                    <div class="comm-stat-lbl">Active Group Trips</div>
+                </div>
+            </div>
+            <div class="comm-stat-card">
+                <div class="comm-stat-icon green">
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/></svg>
+                </div>
+                <div>
+                    <div class="comm-stat-val">140+</div>
+                    <div class="comm-stat-lbl">Destinations Covered</div>
+                </div>
+            </div>
+            <div class="comm-stat-card">
+                <div class="comm-stat-icon navy">
+                    <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                </div>
+                <div>
+                    <div class="comm-stat-val">99.2%</div>
+                    <div class="comm-stat-lbl">Verified Safety Rating</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODE TOGGLE & FILTER BAR -->
+    <div class="comm-controls-wrapper">
+        <div style="display:flex; justify-content:center; margin-bottom:16px;">
+            <div style="display:inline-flex; background:var(--gray-50); border:1.5px solid var(--gray-200); border-radius:var(--r-full); padding:4px; gap:6px;">
+                <button id="modeAllCommunity" class="comm-tab-pill active" style="padding:8px 24px; font-size:13.5px; display:inline-flex; align-items:center; gap:7px;" onclick="setCommunityMode('all', this)">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/></svg>
+                    All Community (General Feed)
+                </button>
+                <button id="modeSoloCommunity" class="comm-tab-pill" style="padding:8px 24px; font-size:13.5px; display:inline-flex; align-items:center; gap:7px;" onclick="setCommunityMode('solo', this)">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    Solo Travelers Only (Verified Space)
+                </button>
+            </div>
+        </div>
+
+        <div class="comm-controls-flex">
+            <div class="comm-tabs-list" id="categoryTabs">
+                <button class="comm-tab-pill active" onclick="filterCategory('all', this)">All Stories</button>
+                <button class="comm-tab-pill" onclick="filterCategory('Solo Travel', this)">Solo Travel</button>
+                <button class="comm-tab-pill" onclick="filterCategory('Budget Breakdown', this)">Budget Breakdowns</button>
+                <button class="comm-tab-pill" onclick="filterCategory('Hidden Gems', this)">Hidden Gems</button>
+                <button class="comm-tab-pill" onclick="filterCategory('Culture & Food', this)">Culture &amp; Food</button>
+                <button class="comm-tab-pill" onclick="filterCategory('Adventure', this)">Adventure &amp; Treks</button>
+            </div>
+
+            <div style="display:flex; align-items:center; gap:12px;">
+                <div class="comm-search-box">
+                    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                    <input type="text" id="commSearchInput" placeholder="Search stories, cities, tags..." oninput="handleCommunitySearch()" />
+                </div>
+                <button class="btn btn-teal" style="padding:8px 16px; font-size:13px;" onclick="openCreatePostModal()">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    Post Story
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN COMMUNITY CONTENT -->
+    <div class="comm-main-layout">
+        <!-- Feed Column -->
+        <div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
+                <div>
+                    <h2 style="font-family:'Bricolage Grotesque', 'Plus Jakarta Sans', sans-serif; font-size:24px; font-weight:700; color:var(--navy);">Traveler Feed &amp; Stories</h2>
+                    <p style="font-size:13px; color:var(--text-muted);">Real insights from real travelers who recently visited these places.</p>
+                </div>
+                <span style="font-size:13px; font-weight:600; color:var(--teal);" id="postCountLabel">Showing 6 stories</span>
+            </div>
+
+            <div class="comm-posts-grid" id="communityFeedContainer">
+                <!-- Dynamically rendered via JS -->
+            </div>
+        </div>
+
+    </div>
+
+    <!-- DEDICATED SOLO TRAVEL LOUNGE & BUDDY MEETUP MATCHER -->
+    <div style="background: linear-gradient(135deg, #090E2B, #101B4B); padding: 56px var(--px); color: #fff; margin-top: 40px;" id="soloLoungeSection">
+        <div style="max-width: 1200px; margin: 0 auto;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom: 32px; flex-wrap:wrap; gap:16px;">
+                <div>
+                    <div style="display:inline-flex; align-items:center; gap:8px; background:rgba(232,168,56,0.15); border:1px solid rgba(232,168,56,0.3); padding:4px 14px; border-radius:var(--r-full); font-size:11.5px; font-weight:700; color:var(--gold); text-transform:uppercase; margin-bottom:10px;">
+                        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/></svg>
+                        Dedicated Solo Traveler Network
+                    </div>
+                    <h2 style="font-family:'Bricolage Grotesque', 'Plus Jakarta Sans', sans-serif; font-size:32px; font-weight:700; color:#FFFFFF; margin-bottom:8px;">
+                        Find Solo Companions &amp; <em style="color:var(--gold);">Plan Joint Meetups</em>
+                    </h2>
+                    <p style="font-size:14.5px; color:rgba(255,255,255,0.78); max-width:640px; margin:0; line-height:1.55;">
+                        Connect with verified independent explorers traveling to the same destination. Share transport costs, team up for sunrise hikes, or meet at verified cafes.
+                    </p>
+                </div>
+                <div style="display:flex; gap:10px; align-items:center;">
+                    <a href="solo.html" class="btn btn-gold" style="font-size:13px; padding:10px 20px;">
+                        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+                        Open Solo Trip Planner
+                    </a>
+                </div>
+            </div>
+
+            <!-- Destination Filter Chips for Solo Matcher -->
+            <div style="display:flex; gap:8px; margin-bottom:24px; flex-wrap:wrap;">
+                <button class="comm-tab-pill active" style="background:var(--gold); color:var(--navy); border-color:var(--gold);" onclick="filterSoloBuddies('all', this)">All Destinations</button>
+                <button class="comm-tab-pill" style="background:rgba(255,255,255,0.08); color:#fff; border-color:rgba(255,255,255,0.2);" onclick="filterSoloBuddies('Munnar', this)">Munnar</button>
+                <button class="comm-tab-pill" style="background:rgba(255,255,255,0.08); color:#fff; border-color:rgba(255,255,255,0.2);" onclick="filterSoloBuddies('Jaipur', this)">Jaipur</button>
+                <button class="comm-tab-pill" style="background:rgba(255,255,255,0.08); color:#fff; border-color:rgba(255,255,255,0.2);" onclick="filterSoloBuddies('Havelock', this)">Andaman</button>
+                <button class="comm-tab-pill" style="background:rgba(255,255,255,0.08); color:#fff; border-color:rgba(255,255,255,0.2);" onclick="filterSoloBuddies('Goa', this)">South Goa</button>
+                <button class="comm-tab-pill" style="background:rgba(255,255,255,0.08); color:#fff; border-color:rgba(255,255,255,0.2);" onclick="filterSoloBuddies('Ladakh', this)">Ladakh</button>
+            </div>
+
+            <!-- Solo Buddies Grid -->
+            <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:24px;" id="soloBuddyGrid">
+                <!-- Dynamically populated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- MEETUP PROPOSAL MODAL -->
+    <div class="post-modal-backdrop" id="meetupModalBackdrop">
+        <div class="post-modal-box" style="max-width:540px;">
+            <div class="post-modal-header" style="background:var(--navy);">
+                <div class="post-modal-title" style="color:#fff;" id="meetupModalTitle">Propose Meetup / Travel Together</div>
+                <button class="tc-modal-close-btn" style="position:static; width:28px; height:28px;" onclick="closeMeetupModal()">&times;</button>
+            </div>
+            <div class="post-modal-body" style="padding:24px;">
+                <p style="font-size:13px; color:var(--text-mid); margin-bottom:16px;">
+                    Send an encrypted meetup proposal to coordinate shared transit, day sightseeing, or a safe cafe meetup without sharing personal phone numbers.
+                </p>
+
+                <div class="form-field" style="margin-bottom:12px;">
+                    <label class="form-label">Meetup Type</label>
+                    <select class="form-select" id="meetupTypeSelect">
+                        <option value="Share 4x4 Jeep / Cab Transit">Share 4x4 Jeep / Cab Transit (Cost Split)</option>
+                        <option value="Sunrise Hike / Trail Partner">Sunrise Hike / Trail Partner</option>
+                        <option value="Sightseeing &amp; Photography Walk">Sightseeing &amp; Photography Walk</option>
+                        <option value="Evening Cafe / Dinner Catchup">Evening Cafe / Dinner Catchup</option>
+                    </select>
+                </div>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">
+                    <div class="form-field">
+                        <label class="form-label">Proposed Date</label>
+                        <input type="date" class="form-input" id="meetupDateInput" />
+                    </div>
+                    <div class="form-field">
+                        <label class="form-label">Proposed Time</label>
+                        <input type="time" class="form-input" id="meetupTimeInput" value="06:00" />
+                    </div>
+                </div>
+
+                <div class="form-field" style="margin-bottom:12px;">
+                    <label class="form-label">Suggested Meeting Spot</label>
+                    <input type="text" class="form-input" id="meetupSpotInput" placeholder="e.g. Suryanelli Jeep Stand or Zostel Cafe" required />
+                </div>
+
+                <div class="form-field" style="margin-bottom:20px;">
+                    <label class="form-label">Personal Note to Traveler</label>
+                    <textarea class="form-input" id="meetupNoteInput" rows="3" placeholder="Hi! I'm also traveling solo in Munnar this week and would love to team up for the sunrise safari to split costs!"></textarea>
+                </div>
+
+                <div style="display:flex; justify-content:flex-end; gap:10px;">
+                    <button type="button" class="btn btn-ghost" onclick="closeMeetupModal()">Cancel</button>
+                    <button type="button" class="btn btn-teal" onclick="submitMeetupProposal()">
+                        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                        Send Meetup Proposal
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CREATE STORY / POST MODAL -->
+    <div class="post-modal-backdrop" id="createPostModalBackdrop">
+        <div class="post-modal-box">
+            <div class="post-modal-header">
+                <div class="post-modal-title">Share Your Travel Story</div>
+                <button class="tc-modal-close-btn" style="position:static; width:28px; height:28px;" onclick="closeCreatePostModal()">&times;</button>
+            </div>
+            <div class="post-modal-body">
+                <form id="createPostForm" onsubmit="event.preventDefault(); submitNewPost();">
+                    <div class="form-field">
+                        <label class="form-label">Story Headline / Title</label>
+                        <input type="text" class="form-input" id="newPostTitle" placeholder="e.g. 4 Days in Munnar on a Budget &mdash; Tips &amp; Route" required />
+                    </div>
+
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                        <div class="form-field">
+                            <label class="form-label">Destination / City</label>
+                            <input type="text" class="form-input" id="newPostLocation" placeholder="e.g. Munnar, Kerala" required />
+                        </div>
+                        <div class="form-field">
+                            <label class="form-label">Category</label>
+                            <select class="form-select" id="newPostCategory">
+                                <option value="Solo Travel">Solo Travel</option>
+                                <option value="Budget Breakdown">Budget Breakdown</option>
+                                <option value="Hidden Gems">Hidden Gems</option>
+                                <option value="Culture &amp; Food">Culture &amp; Food</option>
+                                <option value="Adventure">Adventure &amp; Treks</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-field">
+                        <label class="form-label">Featured Photo</label>
+                        <select class="form-select" id="newPostPhotoSelect">
+                            <option value="https://images.unsplash.com/photo-1593693397690-362cb9666fc2?q=80&w=1200&auto=format&fit=crop">Munnar Tea Valleys</option>
+                            <option value="https://images.unsplash.com/photo-1599661046289-e31897846e41?q=80&w=1200&auto=format&fit=crop">Jaipur Forts &amp; Bazaars</option>
+                            <option value="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200&auto=format&fit=crop">Andaman Turquoise Shores</option>
+                            <option value="https://images.unsplash.com/photo-1600100397608-f010e421d3fa?q=80&w=1200&auto=format&fit=crop">Hampi Ancient Ruins</option>
+                            <option value="https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?q=80&w=1200&auto=format&fit=crop">Goa Coastal Cliffs</option>
+                            <option value="https://images.unsplash.com/photo-1581793745862-99fde7fa73d2?q=80&w=1200&auto=format&fit=crop">Ladakh High Altitude Pass</option>
+                        </select>
+                    </div>
+
+                    <div class="form-field">
+                        <label class="form-label">Your Story &amp; Tips</label>
+                        <textarea class="form-input" id="newPostCaption" rows="4" placeholder="Share your experience, recommendations, local food tips, and what other travelers should watch out for..." style="resize:vertical;" required></textarea>
+                    </div>
+
+                    <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:16px;">
+                        <button type="button" class="btn btn-ghost" style="color:var(--text-mid); border-color:var(--gray-200);" onclick="closeCreatePostModal()">Cancel</button>
+                        <button type="submit" class="btn btn-teal">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                            Publish Story
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+    <div class="footer-grid">
+        <div class="footer-brand">
+            <div class="footer-logo">
+                <div class="nav-logo-mark">
+                    <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                </div>
+                <span>TripCraft</span>
+            </div>
+            <p>AI-orchestrated end-to-end travel intelligence platform. Engineered for seamless discovery, instant reservations, solo safety, and creator photobook monetization.</p>
+            <div class="footer-social-strip">
+                <a href="https://twitter.com" target="_blank" class="footer-social-link" title="Twitter / X"><svg viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg></a>
+                <a href="https://instagram.com" target="_blank" class="footer-social-link" title="Instagram"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
+                <a href="https://linkedin.com" target="_blank" class="footer-social-link" title="LinkedIn"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a>
+                <a href="https://github.com" target="_blank" class="footer-social-link" title="GitHub"><svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg></a>
+            </div>
+        </div>
+        <div class="footer-col">
+            <h4>Explore</h4>
+            <ul>
+                <li><a href="destinations.html">Destinations</a></li>
+                <li><a href="packages.html">Curated Packages</a></li>
+                <li><a href="hotels.html">Stays &amp; Resorts</a></li>
+                <li><a href="transport.html">Flights &amp; Rail</a></li>
+                <li><a href="vehicle.html">Car &amp; Bike Rentals</a></li>
+                <li><a href="guides.html">Certified Local Guides</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Special Hubs</h4>
+            <ul>
+                <li><a href="solo.html">Solo Traveler Engine</a></li>
+                <li><a href="community.html">Community &amp; Buddies</a></li>
+                <li><a href="album.html">Photo Album Studio</a></li>
+                <li><a href="budget.html">40/25/20/15 Budgeter</a></li>
+                <li><a href="itinerary.html">Interactive Itinerary</a></li>
+                <li><a href="wishlist.html">Saved Wishlist</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Trust &amp; Legal</h4>
+            <ul>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="contact.html">Customer Support</a></li>
+                <li><a href="faq.html">FAQ &amp; Help Desk</a></li>
+                <li><a href="terms.html">Terms &amp; Conditions</a></li>
+                <li><a href="privacy.html">Privacy Policy</a></li>
+                <li><a href="refund.html">Refund Policy</a></li>
+                <li><a href="sitemap.html">Sitemap</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <div>&copy; 2026 TripCraft Technologies Inc. All rights reserved. 256-bit SSL Encrypted Booking System.</div>
+        <div style="display:flex; gap:16px;">
+            <a href="terms.html">Terms</a>
+            <a href="privacy.html">Privacy</a>
+            <a href="refund.html">Refunds</a>
+            <a href="sitemap.html">Sitemap</a>
+        </div>
+    </div>
+</footer>
+
+    <script src="tc-config.js"></script>
+    <script src="shared.js"></script>
+    <script src="tc-layer.js"></script>
+    <script>
+        // Community Posts Data Source
+        let communityPosts = [
+            {
+                id: 'post-1',
+                userName: 'Priya Sunder',
+                userAvatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=200&auto=format&fit=crop',
+                userSub: 'Verified Explorer &middot; 6 trips logged',
+                location: 'Munnar, Kerala',
+                category: 'Budget Breakdown',
+                title: '5 Days in Munnar on a ₹12,000 Budget — Detailed Receipts & Route',
+                caption: 'Here is exactly how I budgeted public KSRTC buses from Ernakulam (₹180), cozy home stays in Chithirapuram (₹1,200/night), local tea stall meals, and entry tickets to Eravikulam National Park without missing any top view.',
+                image: 'https://images.unsplash.com/photo-1593693397690-362cb9666fc2?q=80&w=1200&auto=format&fit=crop',
+                likes: 342,
+                comments: 56,
+                isLiked: false,
+                createdAt: '2 days ago'
+            },
+            {
+                id: 'post-2',
+                userName: 'Arjun Kapoor',
+                userAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&auto=format&fit=crop',
+                userSub: 'Local Foodie &middot; Jaipur Resident',
+                location: 'Jaipur, Rajasthan',
+                category: 'Culture & Food',
+                title: 'The Secret Walled City Street Food Trail in Jaipur',
+                caption: 'Skip the generic tourist restaurants! Here are the 6 generational eateries inside Johari and Tripolia Bazaars for authentic pyaz kachori, mawa kachori, and special clay-pot lassi. Best time to visit is 8:30 AM before the market crowds.',
+                image: 'https://images.unsplash.com/photo-1599661046289-e31897846e41?q=80&w=1200&auto=format&fit=crop',
+                likes: 488,
+                comments: 72,
+                isLiked: false,
+                createdAt: '3 days ago'
+            },
+            {
+                id: 'post-3',
+                userName: 'Meera Raghunathan',
+                userAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=200&auto=format&fit=crop',
+                userSub: 'Solo Female Explorer &middot; 11 countries',
+                location: 'Havelock, Andaman',
+                category: 'Solo Travel',
+                title: 'Solo Female Travel in Andaman: Ferries, Stays, and Scuba Dive Tips',
+                caption: 'Everything you need to know about booking inter-island govt catamarans (Makruzz), safe beachfront eco-cottages on Beach No. 5, and certified local PADI dive operators. The local community is exceptionally helpful and safe.',
+                image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200&auto=format&fit=crop',
+                likes: 615,
+                comments: 114,
+                isLiked: true,
+                createdAt: '4 days ago'
+            },
+            {
+                id: 'post-4',
+                userName: 'Rohan Nair',
+                userAvatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=200&auto=format&fit=crop',
+                userSub: 'Bikers Club &middot; Manali to Leh',
+                location: 'Leh Ladakh',
+                category: 'Adventure',
+                title: 'Manali to Leh Motorcycle Expedition: Essential Packing & High Passes',
+                caption: 'A complete checklist for altitude acclimatization, fuel backup stops along the highway, and safety measures across Baralacha La and Tanglang La. Always give yourself 48 hours in Leh before riding toward Khardung La.',
+                image: 'https://images.unsplash.com/photo-1581793745862-99fde7fa73d2?q=80&w=1200&auto=format&fit=crop',
+                likes: 520,
+                comments: 83,
+                isLiked: false,
+                createdAt: '5 days ago'
+            },
+            {
+                id: 'post-5',
+                userName: 'Deepak Verma',
+                userAvatar: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?q=80&w=200&auto=format&fit=crop',
+                userSub: 'Architecture Historian &middot; Karnataka',
+                location: 'Hampi, Karnataka',
+                category: 'Hidden Gems',
+                title: 'Bouldering & Sunset Walks Across Hampi\'s Sacred Valley',
+                caption: 'Exploring the surreal boulder landscape, Matanga Hill sunrise viewpoints, and coracle river crossings across the Tungabhadra. Rent a bicycle for ₹150/day to cover the royal enclosure smoothly.',
+                image: 'https://images.unsplash.com/photo-1600100397608-f010e421d3fa?q=80&w=1200&auto=format&fit=crop',
+                likes: 298,
+                comments: 41,
+                isLiked: false,
+                createdAt: '6 days ago'
+            },
+            {
+                id: 'post-6',
+                userName: 'Siddharth Menon',
+                userAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&auto=format&fit=crop',
+                userSub: 'South Goa Local Explorer',
+                location: 'South Goa',
+                category: 'Hidden Gems',
+                title: 'Beyond Baga: The Quietest Secret Beaches of South Goa',
+                caption: 'Cola Beach freshwater lagoon, Butterfly Beach boat access from Palolem, and serene cliffside cafes in Agonda where peace still lives. Perfect for remote workers looking for calm sea views.',
+                image: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?q=80&w=1200&auto=format&fit=crop',
+                likes: 470,
+                comments: 65,
+                isLiked: false,
+                createdAt: '1 week ago'
+            }
+        ];
+
+        // Travel Buddies / Group Trips Data
+        let travelBuddies = [
+            {
+                id: 'tb-1',
+                title: 'Munnar Tea Trail & Peak Hike',
+                destination: 'Munnar, Kerala',
+                dates: 'Aug 10 – Aug 14 (5 Days)',
+                hostName: 'Priya Sunder',
+                hostAvatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=200&auto=format&fit=crop',
+                image: 'https://images.unsplash.com/photo-1593693397690-362cb9666fc2?q=80&w=600&auto=format&fit=crop',
+                spotsFilled: 3,
+                totalSpots: 5,
+                estCost: '₹8,500',
+                joined: false
+            },
+            {
+                id: 'tb-2',
+                title: 'Jaipur Forts & Desert Stays',
+                destination: 'Jaipur, Rajasthan',
+                dates: 'Sep 04 – Sep 08 (5 Days)',
+                hostName: 'Arjun Kapoor',
+                hostAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&auto=format&fit=crop',
+                image: 'https://images.unsplash.com/photo-1599661046289-e31897846e41?q=80&w=600&auto=format&fit=crop',
+                spotsFilled: 4,
+                totalSpots: 6,
+                estCost: '₹9,800',
+                joined: false
+            },
+            {
+                id: 'tb-3',
+                title: 'Andaman Scuba & Island Hop',
+                destination: 'Havelock, Andaman',
+                dates: 'Oct 15 – Oct 20 (6 Days)',
+                hostName: 'Meera Raghunathan',
+                hostAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=200&auto=format&fit=crop',
+                image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=600&auto=format&fit=crop',
+                spotsFilled: 2,
+                totalSpots: 4,
+                estCost: '₹16,500',
+                joined: false
+            }
+        ];
+
+        let currentCommunityMode = 'all'; // 'all' or 'solo'
+        let currentActiveCategory = 'all';
+        let currentSearchQuery = '';
+
+        function setCommunityMode(mode, btn) {
+            currentCommunityMode = mode;
+            document.getElementById('modeAllCommunity')?.classList.toggle('active', mode === 'all');
+            document.getElementById('modeSoloCommunity')?.classList.toggle('active', mode === 'solo');
+
+            if (mode === 'solo') {
+                document.getElementById('categoryTabs').style.display = 'none';
+                showToast('Switched to Solo Travelers Space (Verified Only)', 'info');
+            } else {
+                document.getElementById('categoryTabs').style.display = 'flex';
+                showToast('Switched to All Community General Feed', 'info');
+            }
+            renderCommunityFeed();
+            renderTravelBuddies();
+        }
+
+        function renderCommunityFeed() {
+            const container = document.getElementById('communityFeedContainer');
+            if (!container) return;
+
+            let filtered = communityPosts.filter(p => {
+                const isSoloItem = p.category === 'Solo Travel' || p.type === 'solo';
+                const matchesMode = currentCommunityMode === 'all' || (currentCommunityMode === 'solo' && isSoloItem);
+                const matchesCat = currentCommunityMode === 'solo' || currentActiveCategory === 'all' || p.category.toLowerCase() === currentActiveCategory.toLowerCase();
+                const q = currentSearchQuery.toLowerCase();
+                const matchesSearch = !q || p.title.toLowerCase().includes(q) || p.caption.toLowerCase().includes(q) || p.location.toLowerCase().includes(q) || p.userName.toLowerCase().includes(q);
+                return matchesMode && matchesCat && matchesSearch;
+            });
+
+            document.getElementById('postCountLabel').textContent = `Showing ${filtered.length} stories ${currentCommunityMode === 'solo' ? '(Solo Travelers Only)' : ''}`;
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-bookings-box" style="background:var(--white); border:1px solid var(--gray-100); border-radius:var(--r-lg); padding:40px; text-align:center;">
+                        <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="var(--text-muted)" stroke-width="1.8" style="margin:0 auto 12px;"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                        <h3 style="font-family:'Bricolage Grotesque', 'Plus Jakarta Sans', sans-serif; font-size:18px; color:var(--navy); margin-bottom:6px;">No stories match your filter</h3>
+                        <p style="font-size:13px; color:var(--text-muted); margin-bottom:16px;">Try adjusting your search terms or mode selection to view more traveler experiences.</p>
+                        <button class="btn btn-teal" onclick="resetCommunityFilters()">Reset Filters</button>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            filtered.forEach(p => {
+                const likeClass = p.isLiked ? 'liked' : '';
+                html += `
+                    <div class="post-card" id="card-${p.id}">
+                        <div class="post-header">
+                            <div class="post-user-info">
+                                <div class="post-avatar-img" style="background-image: url('${p.userAvatar}');"></div>
+                                <div>
+                                    <div class="post-user-name">
+                                        ${p.userName}
+                                        <span class="post-verified-badge" title="Identity Verified Traveler">
+                                            <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                                        </span>
+                                    </div>
+                                    <div class="post-meta-sub">
+                                        <span>${p.userSub}</span>
+                                        <span>&middot;</span>
+                                        <span class="post-loc-tag">
+                                            <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                            ${p.location}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <span style="font-size:11.5px; color:var(--text-muted);">${p.createdAt}</span>
+                        </div>
+
+                        <div class="post-image-wrap" style="background-image: url('${p.image}');" onclick="showStoryDetails('${p.id}')">
+                            <div class="post-image-overlay"></div>
+                            <span class="post-cat-badge">${p.category}</span>
+                        </div>
+
+                        <div class="post-body">
+                            <h3 class="post-title">${p.title}</h3>
+                            <p class="post-caption">${p.caption}</p>
+
+                            <div class="post-footer">
+                                <div class="post-actions-group">
+                                    <button class="post-action-btn ${likeClass}" onclick="togglePostLike('${p.id}', this)">
+                                        <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                                        <span class="like-count">${p.likes}</span> Likes
+                                    </button>
+                                    <button class="post-action-btn" onclick="handleCommentClick('${p.id}')">
+                                        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                                        <span>${p.comments}</span> Comments
+                                    </button>
+                                </div>
+                                <button class="post-action-btn" onclick="sharePostStory('${p.id}')">
+                                    <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                                    Share
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function renderTravelBuddies() {
+            const container = document.getElementById('travelBuddiesContainer');
+            if (!container) return;
+
+            let html = '';
+            travelBuddies.forEach(tb => {
+                const percent = Math.round((tb.spotsFilled / tb.totalSpots) * 100);
+                const joinBtnText = tb.joined ? 'Joined ✓' : 'Join as Companion &rarr;';
+                const joinBtnClass = tb.joined ? 'btn-teal joined' : 'btn-teal';
+
+                html += `
+                    <div class="buddy-card">
+                        <div class="buddy-card-img" style="background-image: url('${tb.image}');">
+                            <div class="buddy-card-img-overlay"></div>
+                            <div class="buddy-dest-name">${tb.destination}</div>
+                        </div>
+                        <div class="buddy-card-body">
+                            <div class="buddy-trip-title">${tb.title}</div>
+                            <div class="buddy-trip-meta">
+                                <span>📅 ${tb.dates}</span>
+                            </div>
+                            <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+                                <div style="width:24px; height:24px; border-radius:50%; background-image:url('${tb.hostAvatar}'); background-size:cover;"></div>
+                                <span style="font-size:11.5px; color:var(--text-mid);">Host: <strong>${tb.hostName}</strong> (ID Verified)</span>
+                            </div>
+
+                            <div class="buddy-progress-wrap">
+                                <div class="buddy-progress-labels">
+                                    <span>Traveler Cohort</span>
+                                    <strong>${tb.spotsFilled} of ${tb.totalSpots} joined</strong>
+                                </div>
+                                <div class="buddy-progress-bar">
+                                    <div class="buddy-progress-fill" style="width: ${percent}%;"></div>
+                                </div>
+                            </div>
+
+                            <div class="buddy-card-footer">
+                                <div>
+                                    <div class="buddy-cost">${tb.estCost}</div>
+                                    <div style="font-size:10px; color:var(--text-muted);">Est. shared budget</div>
+                                </div>
+                                <button class="btn ${joinBtnClass} btn-join-buddy" onclick="handleJoinTravelBuddy('${tb.id}')">
+                                    ${joinBtnText}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function togglePostLike(postId, btn) {
+            const user = TripCraftAuth.getUser();
+            if (!user) {
+                TripCraftAuth.requireAuth('community.html');
+                return;
+            }
+
+            const post = communityPosts.find(p => p.id === postId);
+            if (!post) return;
+
+            post.isLiked = !post.isLiked;
+            if (post.isLiked) {
+                post.likes += 1;
+                btn.classList.add('liked');
+                showToast(`Liked "${post.title.substring(0, 30)}..."!`, 'success');
+            } else {
+                post.likes = Math.max(0, post.likes - 1);
+                btn.classList.remove('liked');
+                showToast('Removed like', 'info');
+            }
+
+            const countEl = btn.querySelector('.like-count');
+            if (countEl) countEl.textContent = post.likes;
+        }
+
+        function handleCommentClick(postId) {
+            const user = TripCraftAuth.getUser();
+            if (!user) {
+                TripCraftAuth.requireAuth('community.html');
+                return;
+            }
+            const comment = prompt('Write a public comment / tip on this trip story:');
+            if (comment && comment.trim()) {
+                const post = communityPosts.find(p => p.id === postId);
+                if (post) {
+                    post.comments += 1;
+                    renderCommunityFeed();
+                    showToast('Your comment was posted to the community feed!', 'success');
+                }
+            }
+        }
+
+        function sharePostStory(postId) {
+            const post = communityPosts.find(p => p.id === postId);
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(window.location.href);
+                showToast(`Story link for "${post?.title || 'TripCraft Story'}" copied to clipboard!`, 'info');
+            } else {
+                showToast('Story link ready to share!', 'info');
+            }
+        }
+
+        function showStoryDetails(postId) {
+            const post = communityPosts.find(p => p.id === postId);
+            if (!post) return;
+
+            openDetailModal({
+                title: post.title,
+                category: post.category,
+                location: post.location,
+                image: post.image,
+                price: 'Free Guide',
+                description: post.caption,
+                specs: [
+                    { label: 'Author', val: post.userName },
+                    { label: 'Community Rating', val: '★ 4.9 (Verified Explorer)' },
+                    { label: 'Destination', val: post.location }
+                ],
+                highlights: ['Public Route Details', 'Budget Breakdown', 'Local Food Recommendations', 'Safety Tips']
+            });
+        }
+
+        function handleJoinTravelBuddy(buddyId) {
+            const user = TripCraftAuth.getUser();
+            if (!user) {
+                TripCraftAuth.requireAuth('community.html');
+                return;
+            }
+
+            const buddy = travelBuddies.find(b => b.id === buddyId);
+            if (!buddy) return;
+
+            if (buddy.joined) {
+                showToast(`You have already joined ${buddy.title}! Details sent to your email.`, 'info');
+                return;
+            }
+
+            openBookingModal({
+                title: buddy.title,
+                category: 'Travel Buddy Group Reservation',
+                image: buddy.image,
+                price: buddy.estCost,
+                description: `Join host ${buddy.hostName} and fellow verified explorers for this ${buddy.dates} departure to ${buddy.destination}.`,
+                specs: [
+                    { label: 'Trip Dates', val: buddy.dates },
+                    { label: 'Host Contact', val: buddy.hostName + ' (Verified)' },
+                    { label: 'Group Size', val: `${buddy.spotsFilled + 1} of ${buddy.totalSpots} Explorers` }
+                ]
+            });
+
+            // Note: After modal confirmation, update state
+            const origConfirm = window.confirmModalBooking;
+            window.confirmModalBooking = function() {
+                buddy.joined = true;
+                buddy.spotsFilled = Math.min(buddy.totalSpots, buddy.spotsFilled + 1);
+                renderTravelBuddies();
+                if (origConfirm) origConfirm();
+            };
+        }
+
+        function filterCategory(cat, btn) {
+            currentActiveCategory = cat;
+            document.querySelectorAll('.comm-tab-pill').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+            renderCommunityFeed();
+        }
+
+        function handleCommunitySearch() {
+            currentSearchQuery = document.getElementById('commSearchInput')?.value || '';
+            renderCommunityFeed();
+        }
+
+        function resetCommunityFilters() {
+            currentActiveCategory = 'all';
+            currentSearchQuery = '';
+            currentCommunityMode = 'all';
+            document.getElementById('modeAllCommunity')?.classList.add('active');
+            document.getElementById('modeSoloCommunity')?.classList.remove('active');
+            document.getElementById('categoryTabs').style.display = 'flex';
+            const searchInput = document.getElementById('commSearchInput');
+            if (searchInput) searchInput.value = '';
+            document.querySelectorAll('.comm-tab-pill').forEach((b, i) => {
+                if (i === 0) b.classList.add('active');
+                else b.classList.remove('active');
+            });
+            renderCommunityFeed();
+        }
+
+        // Post Modal Logic
+        function openCreatePostModal() {
+            const user = TripCraftAuth.getUser();
+            if (!user) {
+                TripCraftAuth.requireAuth('community.html');
+                return;
+            }
+            const backdrop = document.getElementById('createPostModalBackdrop');
+            if (backdrop) backdrop.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeCreatePostModal() {
+            const backdrop = document.getElementById('createPostModalBackdrop');
+            if (backdrop) backdrop.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function submitNewPost() {
+            const user = TripCraftAuth.getUser() || { name: 'Priya Sunder' };
+            const title = document.getElementById('newPostTitle').value;
+            const location = document.getElementById('newPostLocation').value;
+            const category = document.getElementById('newPostCategory').value;
+            const photoUrl = document.getElementById('newPostPhotoSelect').value;
+            const caption = document.getElementById('newPostCaption').value;
+
+            if (!title || !caption || !location) return;
+
+            const newPostObj = {
+                id: 'post-' + Date.now(),
+                userName: user.name || 'Priya Sunder',
+                userAvatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=200&auto=format&fit=crop',
+                userSub: 'Verified Community Member &middot; Just now',
+                location: location,
+                category: category,
+                title: title,
+                caption: caption,
+                image: photoUrl,
+                likes: 1,
+                comments: 0,
+                isLiked: true,
+                createdAt: 'Just now',
+                type: category === 'Solo Travel' ? 'solo' : 'general'
+            };
+
+            communityPosts.unshift(newPostObj);
+            closeCreatePostModal();
+            renderCommunityFeed();
+            showToast('Your travel story has been published to the community feed!', 'success');
+
+            // Reset form
+            document.getElementById('createPostForm').reset();
+        }
+
+        document.getElementById('createPostModalBackdrop')?.addEventListener('click', e => {
+            if (e.target.id === 'createPostModalBackdrop') closeCreatePostModal();
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check URL search parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const filterParam = urlParams.get('filter');
+            const destParam = urlParams.get('dest');
+
+            if (filterParam === 'solo') {
+                setCommunityMode('solo', document.getElementById('modeSoloCommunity'));
+            }
+            if (destParam) {
+                currentSearchQuery = destParam;
+                const searchInput = document.getElementById('commSearchInput');
+                if (searchInput) searchInput.value = destParam;
+            }
+
+            renderCommunityFeed();
+            renderTravelBuddies();
+            renderSoloBuddies('all');
+        });
+
+        // -------------------------------------------------------------
+        // SOLO TRAVEL BUDDY MATCHING & MEETUP ENGINE
+        // -------------------------------------------------------------
+        const soloBuddiesList = [
+            {
+                id: 'sb-1',
+                name: 'Kavitha Natarajan',
+                avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=200&auto=format&fit=crop',
+                destination: 'Munnar, Kerala',
+                destKey: 'Munnar',
+                dates: 'Oct 04 – Oct 07, 2026',
+                style: 'Trekker & Tea Trails',
+                seeking: 'Seeking 1-2 solo travelers to share 4x4 jeep from Suryanelli for sunrise at Kolukkumalai (splits ₹2,800 fare to ₹900 each!).',
+                verified: true
+            },
+            {
+                id: 'sb-2',
+                name: 'Tarun Varma',
+                avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&auto=format&fit=crop',
+                destination: 'Jaipur, Rajasthan',
+                destKey: 'Jaipur',
+                dates: 'Oct 12 – Oct 15, 2026',
+                style: 'Architecture & Street Food',
+                seeking: 'Planning an early morning old-city photography walk around Hawa Mahal and Nahargarh Fort sunset. Would love to join fellow photo explorers.',
+                verified: true
+            },
+            {
+                id: 'sb-3',
+                name: 'Ananya Sen',
+                avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=200&auto=format&fit=crop',
+                destination: 'Havelock, Andaman',
+                destKey: 'Havelock',
+                dates: 'Nov 02 – Nov 07, 2026',
+                style: 'PADI Scuba & Coastal Kayak',
+                seeking: 'Looking for a dive buddy for Elephant Beach reef discovery dive and sharing evening sunset walks at Radhanagar.',
+                verified: true
+            },
+            {
+                id: 'sb-4',
+                name: 'Rahul Shenoy',
+                avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=200&auto=format&fit=crop',
+                destination: 'South Goa Coves',
+                destKey: 'Goa',
+                dates: 'Oct 18 – Oct 23, 2026',
+                style: 'Workation & Beachside Cafes',
+                seeking: 'Staying at Palolem for a 5-day remote workation. Looking to meet other solo digital nomads for weekend scooter rides and cafe dinners.',
+                verified: true
+            },
+            {
+                id: 'sb-5',
+                name: 'Sonam Dorje',
+                avatar: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?q=80&w=200&auto=format&fit=crop',
+                destination: 'Leh Ladakh',
+                destKey: 'Ladakh',
+                dates: 'Sep 28 – Oct 04, 2026',
+                style: 'Himalayan Passes & Monasteries',
+                seeking: 'Splitting an SUV taxi from Leh to Pangong Tso and Nubra Valley across Khardung La pass. Safe and vetted group.',
+                verified: true
+            },
+            {
+                id: 'sb-6',
+                name: 'Sneha Deshmukh',
+                avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=200&auto=format&fit=crop',
+                destination: 'Munnar, Kerala',
+                destKey: 'Munnar',
+                dates: 'Oct 20 – Oct 24, 2026',
+                style: 'Female Solo & Spice Gardens',
+                seeking: 'First-time solo female traveler visiting Mattupetty dam and Eravikulam. Looking for another female solo traveler for day outings.',
+                verified: true
+            }
+        ];
+
+        let activeTargetBuddy = null;
+
+        function renderSoloBuddies(destFilter) {
+            const container = document.getElementById('soloBuddyGrid');
+            if (!container) return;
+
+            const meetups = JSON.parse(localStorage.getItem('tripcraft_meetups') || '{}');
+            const filtered = destFilter === 'all' ? soloBuddiesList : soloBuddiesList.filter(b => b.destKey === destFilter);
+
+            container.innerHTML = filtered.map(b => {
+                const isProposed = meetups[b.id];
+                return `
+                    <div style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.14); border-radius:var(--r-lg); padding:20px; display:flex; flex-direction:column; justify-content:space-between; backdrop-filter:blur(10px); transition:transform 0.2s, border-color 0.2s;">
+                        <div>
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px;">
+                                <div style="display:flex; align-items:center; gap:12px;">
+                                    <div style="width:46px; height:46px; border-radius:50%; background-size:cover; background-position:center; background-image:url('${b.avatar}'); border:2px solid var(--gold);"></div>
+                                    <div>
+                                        <div style="font-weight:700; font-size:14.5px; color:#fff; display:flex; align-items:center; gap:6px;">
+                                            ${b.name}
+                                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--teal)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                        </div>
+                                        <div style="font-size:11.5px; color:rgba(255,255,255,0.65);">${b.destination}</div>
+                                    </div>
+                                </div>
+                                <span class="chip chip-gold" style="font-size:10.5px; padding:2px 8px;">KYC Verified</span>
+                            </div>
+
+                            <div style="display:inline-flex; align-items:center; gap:6px; background:rgba(14,124,107,0.25); border:1px solid rgba(14,124,107,0.4); border-radius:var(--r-full); padding:3px 10px; font-size:11px; color:#5eead4; margin-bottom:12px; font-weight:600;">
+                                <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                ${b.dates}
+                            </div>
+
+                            <p style="font-size:12.5px; color:rgba(255,255,255,0.85); line-height:1.55; margin-bottom:16px; font-style:italic;">
+                                "${b.seeking}"
+                            </p>
+                        </div>
+
+                        <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid rgba(255,255,255,0.1); padding-top:14px; margin-top:auto;">
+                            <span style="font-size:11.5px; color:var(--gold); font-weight:600;">${b.style}</span>
+                            ${isProposed ? `
+                                <button class="btn btn-ghost" style="padding:6px 14px; font-size:12px; border-color:var(--success); color:#2ecc71;" disabled>
+                                    &#10003; Proposal Sent
+                                </button>
+                            ` : `
+                                <button class="btn btn-teal" style="padding:6px 14px; font-size:12px;" onclick="openMeetupModal('${b.id}')">
+                                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                                    Plan Meetup
+                                </button>
+                            `}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function filterSoloBuddies(dest, btn) {
+            document.querySelectorAll('#soloLoungeSection .comm-tab-pill').forEach(b => {
+                b.style.background = 'rgba(255,255,255,0.08)';
+                b.style.color = '#fff';
+                b.style.borderColor = 'rgba(255,255,255,0.2)';
+            });
+            btn.style.background = 'var(--gold)';
+            btn.style.color = 'var(--navy)';
+            btn.style.borderColor = 'var(--gold)';
+            renderSoloBuddies(dest);
+        }
+
+        function openMeetupModal(buddyId) {
+            const user = TripCraftAuth.getUser();
+            if (!user) {
+                TripCraftAuth.requireAuth('community.html');
+                return;
+            }
+
+            const buddy = soloBuddiesList.find(b => b.id === buddyId);
+            if (!buddy) return;
+
+            activeTargetBuddy = buddy;
+            document.getElementById('meetupModalTitle').textContent = `Propose Meetup with ${buddy.name} (${buddy.destination})`;
+            document.getElementById('meetupSpotInput').value = buddy.destKey === 'Munnar' ? 'Suryanelli Jeep Stand' : `${buddy.destination} Town Center`;
+
+            const nextWeek = new Date(Date.now() + 86400000 * 5).toISOString().split('T')[0];
+            document.getElementById('meetupDateInput').value = nextWeek;
+
+            const backdrop = document.getElementById('meetupModalBackdrop');
+            if (backdrop) backdrop.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMeetupModal() {
+            const backdrop = document.getElementById('meetupModalBackdrop');
+            if (backdrop) backdrop.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function submitMeetupProposal() {
+            if (!activeTargetBuddy) return;
+
+            const type = document.getElementById('meetupTypeSelect').value;
+            const date = document.getElementById('meetupDateInput').value;
+            const time = document.getElementById('meetupTimeInput').value;
+            const spot = document.getElementById('meetupSpotInput').value;
+            const note = document.getElementById('meetupNoteInput').value;
+
+            const meetups = JSON.parse(localStorage.getItem('tripcraft_meetups') || '{}');
+            meetups[activeTargetBuddy.id] = {
+                targetName: activeTargetBuddy.name,
+                destination: activeTargetBuddy.destination,
+                type, date, time, spot, note,
+                status: 'Proposal Transmitted &middot; Awaiting Acceptance'
+            };
+            localStorage.setItem('tripcraft_meetups', JSON.stringify(meetups));
+
+            closeMeetupModal();
+            renderSoloBuddies('all');
+            showToast(`Meetup proposal sent to ${activeTargetBuddy.name} for ${date} at ${spot}!`, 'success');
+        }
+
+        function setCommunityMode(mode, btn) {
+            document.querySelectorAll('.comm-controls-wrapper .comm-tab-pill').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+
+            if (mode === 'solo') {
+                filterCategory('Solo Travel');
+                document.getElementById('soloLoungeSection')?.scrollIntoView({ behavior: 'smooth' });
+                showToast('Switched to Verified Solo Traveler Lounge');
+            } else {
+                filterCategory('all');
+                document.getElementById('communityFeedContainer')?.scrollIntoView({ behavior: 'smooth' });
+                showToast('Viewing All Community Stories');
+            }
+        }
+    </script>
+</body>
+</html>

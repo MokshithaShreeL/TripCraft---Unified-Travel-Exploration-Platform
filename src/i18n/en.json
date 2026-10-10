@@ -1,0 +1,47 @@
+{
+  "nav": {
+    "home": "Home",
+    "destinations": "Destinations",
+    "transport": "Transport",
+    "hotels": "Hotels",
+    "vehicles": "Vehicles",
+    "guides": "Local Guides",
+    "packages": "Packages",
+    "community": "Community",
+    "solo": "Solo Trip",
+    "itinerary": "Itinerary Builder",
+    "budget": "Budget Tracker",
+    "albums": "Photo Album",
+    "login": "Sign In",
+    "myBookings": "My Bookings",
+    "admin": "Admin Portal"
+  },
+  "hero": {
+    "title": "Your next trip, perfectly crafted",
+    "subtitle": "Book flights, hotels, guides & rentals in one place",
+    "searchPlaceholder": "Search destinations, hotels, or packages...",
+    "badge": "AI-Powered Travel Experience"
+  },
+  "booking": {
+    "confirm": "Confirm Booking",
+    "total": "Total Amount",
+    "download": "Download Invoice",
+    "reserve": "Reserve Now",
+    "bookNow": "Book Now",
+    "instantBooking": "Instant Confirmation",
+    "cancellationPolicy": "Free cancellation up to 72 hours before trip"
+  },
+  "common": {
+    "search": "Search",
+    "filters": "Filters",
+    "reset": "Reset",
+    "loading": "Loading...",
+    "viewDetails": "View Details",
+    "perNight": "per night",
+    "perPerson": "per person",
+    "perDay": "per day",
+    "verified": "Verified",
+    "safetyScore": "Safety Score",
+    "reviews": "reviews"
+  }
+}

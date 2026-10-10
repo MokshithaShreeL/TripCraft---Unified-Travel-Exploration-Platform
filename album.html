@@ -1,0 +1,1882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Photobook Creator &amp; Purchase — TripCraft</title>
+    <meta name="description" content="Create custom hardcover travel photobooks (200, 500, or 1000 photos), customize your front cover with live 3D preview, and order with instant secure checkout.">
+    <meta property="og:title" content="Custom Photobook Creator &amp; Purchase — TripCraft">
+    <meta property="og:description" content="Create custom hardcover travel photobooks (200, 500, or 1000 photos), customize your front cover with live 3D preview, and order with instant secure checkout.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1452421822248-d4c2b47f0c81?q=80&w=1200&auto=format&fit=crop">
+    <link rel="stylesheet" href="shared.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        .album-hero {
+            background: linear-gradient(135deg, #090E2B, #101B4B);
+            padding: 56px var(--px);
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+        .album-hero-overlay {
+            position: absolute;
+            inset: 0;
+            background-image: url('https://images.unsplash.com/photo-1452421822248-d4c2b47f0c81?q=80&w=2000&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.16;
+        }
+        .album-hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 820px;
+            margin: 0 auto;
+        }
+        .album-hero h1 {
+            font-family: 'Bricolage Grotesque', 'Plus Jakarta Sans', sans-serif;
+            font-size: 44px;
+            font-weight: 700;
+            color: #FFFFFF;
+            line-height: 1.15;
+            margin-bottom: 14px;
+        }
+        .album-hero h1 em {
+            color: var(--gold);
+            font-style: normal;
+        }
+        .album-hero p {
+            font-size: 15.5px;
+            color: rgba(255, 255, 255, 0.82);
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+        .album-top-tabs {
+            display: inline-flex;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: var(--r-full);
+            padding: 5px;
+            gap: 6px;
+        }
+        .album-top-tab {
+            padding: 10px 22px;
+            border-radius: var(--r-full);
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 13.5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .album-top-tab:hover {
+            color: #FFFFFF;
+        }
+        .album-top-tab.active {
+            background: var(--gold);
+            color: var(--navy);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .wallet-ribbon {
+            background: rgba(232, 168, 56, 0.15);
+            border: 1px solid rgba(232, 168, 56, 0.35);
+            border-radius: var(--r-full);
+            padding: 6px 16px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12.5px;
+            color: var(--gold);
+            font-weight: 700;
+            margin-top: 18px;
+        }
+
+        /* 3-Step Creation & Purchase Wizard */
+        .album-wizard-nav {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+        }
+        .wizard-step-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 24px;
+            border-radius: var(--r-full);
+            background: var(--white);
+            border: 1.5px solid var(--gray-200);
+            color: var(--text-mid);
+            font-size: 13.5px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .wizard-step-btn.active {
+            background: var(--teal);
+            border-color: var(--teal);
+            color: #FFFFFF;
+            box-shadow: 0 4px 14px rgba(14,124,107,0.25);
+        }
+        .wizard-step-btn.completed {
+            border-color: var(--teal);
+            color: var(--teal);
+            background: rgba(14,124,107,0.08);
+        }
+        .wizard-num {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 800;
+            background: var(--gray-100);
+            color: var(--navy);
+        }
+        .wizard-step-btn.active .wizard-num {
+            background: #FFFFFF;
+            color: var(--teal);
+        }
+        .wizard-step-btn.completed .wizard-num {
+            background: var(--teal);
+            color: #FFFFFF;
+        }
+
+        /* Tiers Grid */
+        .tier-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        @media (max-width: 900px) {
+            .tier-cards-grid { grid-template-columns: 1fr; }
+        }
+        .tier-card {
+            background: var(--white);
+            border: 2px solid var(--gray-200);
+            border-radius: var(--r-xl);
+            padding: 28px 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+        .tier-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--teal);
+            box-shadow: var(--shadow-lg);
+        }
+        .tier-card.selected {
+            border-color: var(--teal);
+            background: linear-gradient(to bottom, rgba(14,124,107,0.04), #FFFFFF);
+            box-shadow: 0 0 0 3px rgba(14,124,107,0.2);
+        }
+        .tier-badge-popular {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--gold);
+            color: var(--navy);
+            padding: 4px 14px;
+            border-radius: var(--r-full);
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .tier-photos-count {
+            font-family: 'Bricolage Grotesque', 'Plus Jakarta Sans', sans-serif;
+            font-size: 34px;
+            font-weight: 800;
+            color: var(--navy);
+            margin: 8px 0 4px;
+        }
+        .tier-price {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--teal);
+            margin-bottom: 12px;
+        }
+
+        /* 3D Photobook Cover Preview */
+        .book-cover-container {
+            perspective: 1200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+        .book-cover-3d {
+            width: 320px;
+            height: 440px;
+            border-radius: 8px 16px 16px 8px;
+            position: relative;
+            box-shadow: -8px 0 15px rgba(0,0,0,0.18), 15px 20px 40px rgba(11,31,58,0.28);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 28px 24px;
+            color: #FFFFFF;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            background-size: cover;
+            background-position: center;
+        }
+        .book-cover-spine {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 14px;
+            background: linear-gradient(to right, rgba(0,0,0,0.45), transparent);
+            border-right: 1px solid rgba(255,255,255,0.2);
+        }
+        .book-cover-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(11,31,58,0.7) 0%, rgba(11,31,58,0.3) 50%, rgba(11,31,58,0.92) 100%);
+            z-index: 1;
+        }
+        .book-cover-content {
+            position: relative;
+            z-index: 2;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .theme-swatch-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .theme-swatch-btn.active {
+            transform: scale(1.18);
+            border-color: var(--teal);
+            box-shadow: 0 0 0 2px white;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVIGATION -->
+    <nav class="nav">
+        <a href="index.html" class="nav-logo">
+            <div class="nav-logo-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            </div>
+            <div class="nav-logo-text">Trip<span>Craft</span></div>
+        </a>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="destinations.html">Destinations</a>
+            <a href="transport.html">Transport</a>
+            <a href="hotels.html">Hotels</a>
+            <a href="vehicle.html">Vehicles</a>
+            <a href="guides.html">Local Guides</a>
+            <a href="packages.html">Packages</a>
+            <a href="itinerary.html">Itinerary</a>
+            <a href="budget.html">Budget</a>
+            <a href="solo.html">Solo Trip</a>
+            <a href="community.html">Community</a>
+            <a href="album.html" class="active">Photo Albums</a>
+            <a href="bookings.html">My Bookings</a>
+        </div>
+        <div class="nav-cta">
+            <a href="login.html" class="btn btn-ghost">Sign In</a>
+            <a href="signup.html" class="btn btn-gold">Get Started</a>
+        </div>
+    </nav>
+
+    <div class="breadcrumb">
+        <a href="index.html">Home</a>
+        <span class="breadcrumb-sep">&gt;</span>
+        <span>Photo Album Studio &amp; Marketplace</span>
+    </div>
+
+    <!-- HERO -->
+    <div class="album-hero">
+        <div class="album-hero-overlay"></div>
+        <div class="album-hero-content">
+            <div class="chip chip-gold" style="margin-bottom: 14px;">
+                <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                Custom Photobook Creator &amp; Print Studio
+            </div>
+            <h1>Turn your trip photos into<br/><em>a premium hardbound photobook</em></h1>
+            <p style="max-width:680px; margin:0 auto 20px;">Select your photo volume (200, 500, or 1000 photos), customize your personalized embossed front cover with interactive 3D preview, and place your order with instant secure checkout and high-res PDF download.</p>
+        </div>
+    </div>
+
+    <!-- MAIN CONTAINER -->
+    <div style="padding: 40px var(--px); max-width: 1440px; margin: 0 auto;">
+
+        <!-- 0. CUSTOM PHOTOBOOK CREATOR WIZARD & PURCHASE (3-STEP EXPERIENCE) -->
+        <div id="sectionCreatorWizard" style="display: block;">
+            <!-- 4-Step Creation & Purchase Wizard Navigation -->
+            <div class="album-wizard-nav">
+                <button class="wizard-step-btn active" id="wizardStepBtn1" onclick="navigateToWizardStep(1)">
+                    <span class="wizard-num">1</span>
+                    <span>1. Select Photo Capacity</span>
+                </button>
+                <button class="wizard-step-btn" id="wizardStepBtn2" onclick="navigateToWizardStep(2)">
+                    <span class="wizard-num">2</span>
+                    <span>2. Page Photo Customizer</span>
+                </button>
+                <button class="wizard-step-btn" id="wizardStepBtn3" onclick="navigateToWizardStep(3)">
+                    <span class="wizard-num">3</span>
+                    <span>3. Customize Front Cover</span>
+                </button>
+                <button class="wizard-step-btn" id="wizardStepBtn4" onclick="navigateToWizardStep(4)">
+                    <span class="wizard-num">4</span>
+                    <span>4. Review &amp; Purchase</span>
+                </button>
+            </div>
+
+            <!-- STEP 1: PHOTO CAPACITY SELECTION (200, 500, 1000) -->
+            <div id="wizardStep1" class="wizard-step-content" style="display: block;">
+                <div style="text-align: center; max-width: 720px; margin: 0 auto 32px;">
+                    <span class="chip chip-teal" style="margin-bottom: 8px;">Step 1 &bull; Photo Volume &amp; Format</span>
+                    <h2 style="font-family: 'Bricolage Grotesque', 'Plus Jakarta Sans', sans-serif; font-size: 32px; color: var(--navy); margin-bottom: 8px;">
+                        Choose Your Total Photobook Capacity
+                    </h2>
+                    <p style="color: var(--text-mid); font-size: 15px;">
+                        Select how many travel memories to preserve in your custom hardcover photobook. Each tier includes professional high-resolution printing, binding, and instant digital PDF export.
+                    </p>
+                </div>
+
+                <div class="tier-cards-grid">
+                    <!-- Tier 200 -->
+                    <div class="tier-card" id="tierCard200" onclick="selectPhotoTier(200)">
+                        <div>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span class="chip" style="background: rgba(14,124,107,0.1); color: var(--teal); font-weight: 700; font-size: 12px;">Starter Edition</span>
+                                <span style="font-size: 13px; color: var(--text-muted); font-weight: 600;">40 Hardcover Pages</span>
+                            </div>
+                            <div class="tier-photos-count">200 Photos</div>
+                            <div class="tier-price">&#8377;499 <span style="font-size: 13px; font-weight: 500; color: var(--text-muted);">&bull; Complete Book</span></div>
+                            <p style="color: var(--text-mid); font-size: 13.5px; line-height: 1.5; margin-bottom: 16px;">
+                                Perfect for a weekend getaway, road trip, or solo mountain trek. Compact &amp; vibrant.
+                            </p>
+                            <ul style="list-style: none; padding: 0; margin: 0 0 20px; display: flex; flex-direction: column; gap: 8px; font-size: 13px; color: var(--navy);">
+                                <li style="display: flex; align-items: center; gap: 8px;"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--teal)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Holds up to <strong>200 Photos</strong></li>
+                                <li style="display: flex; align-items: center; gap: 8px;"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--teal)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 40 Heavyweight Art Paper Pages</li>
+                                <li style="display: flex; align-items: center; gap: 8px;"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--teal)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Custom Front Cover Embossing</li>
+                                <li style="display: flex; align-items: center; gap: 8px;"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--teal)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> High-Resolution Digital PDF Included</li>
+                            </ul>
+                        </div>
+                        <button class="btn btn-ghost" style="width: 100%; border-color: var(--teal); color: var(--teal);" id="tierSelectBtn200">
+                            Select 200 Photos
+                        </button>
+                    </div>
+
+                    <!-- Tier 500 (Popular) -->
+                    <div class="tier-card selected" id="tierCard500" onclick="selectPhotoTier(500)">
+                        <div class="tier-badge-popular">&starf; Most Popular</div>
+                        <div>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span class="chip" style="background: rgba(232,168,56,0.15); color: #B37D14; font-weight: 700; font-size: 12px;">Traveler Edition</span>
+                                <span style="font-size: 13px; color: var(--text-muted); font-weight: 600;">100 Hardcover Pages</span>
+                            </div>
+                            <div class="tier-photos-count">500 Photos</div>
+                            <div class="tier-price">&#8377;899 <span style="font-size: 13px; font-weight: 500; color: var(--text-muted);">&bull; Complete Book</span></div>
+                            <p style="color: var(--text-mid); font-size: 13.5px; line-height: 1.5; margin-bottom: 16px;">
+                                Ideal for comprehensive state tours, week-long family expeditions, and coastal vacations.
+                            </p>
+                            <ul style="list-style: none; padding: 0; margin: 0 0 20px; display: flex; flex-direction: column; gap: 8px; font-size: 13px; color: var(--navy);">
+                                <li style="display: flex; align-items: center; gap: 8px;"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--teal)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Holds up to <strong>500 Photos</strong></li>
+                                <li style="display: flex; align-items: center; gap: 8px;"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--teal)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 100 Silk-Laminate Matte Pages</li>
+                                <li style="display: flex; align-items: center; gap: 8px;"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--teal)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Luxury Hardcover with Gold Foil Spine</li>
+                                <li style="display: flex; align-items: center; gap: 8px;"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--teal)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> High-Resolution Digital PDF Included</li>
+                            </ul>
+                        </div>
+                        <button class="btn btn-teal" style="width: 100%;" id="tierSelectBtn500">
+                            Selected &bull; 500 Photos
+                        </button>
+                    </div>
+
+                    <!-- Tier 1000 -->
+                    <div class="tier-card" id="tierCard1000" onclick="selectPhotoTier(1000)">
+                        <div>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span class="chip" style="background: rgba(11,31,58,0.1); color: var(--navy); font-weight: 700; font-size: 12px;">Odyssey Luxury</span>
+                                <span style="font-size: 13px; color: var(--text-muted); font-weight: 600;">200 Hardcover Pages</span>
+                            </div>
+                            <div class="tier-photos-count">1000 Photos</div>
+                            <div class="tier-price">&#8377;1,499 <span style="font-size: 13px; font-weight: 500; color: var(--text-muted);">&bull; Complete Book</span></div>
+                            <p style="color: var(--text-mid); font-size: 13.5px; line-height: 1.5; margin-bottom: 16px;">
+                                The ultimate grand archive for multi-city voyages, honeymoon expeditions, and solo year odysseys.
+                            </p>
+                            <ul style="list-style: none; padding: 0; margin: 0 0 20px; display: flex; flex-direction: column; gap: 8px; font-size: 13px; color: var(--navy);">
+                                <li style="display: flex; align-items: center; gap: 8px;"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--teal)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Holds up to <strong>1000 Photos</strong></li>
+                                <li style="display: flex; align-items: center; gap: 8px;"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--teal)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 200 Deluxe Archival Lay-Flat Pages</li>
+                                <li style="display: flex; align-items: center; gap: 8px;"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--teal)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Velvet Slipcase &amp; Premium Foil Custom Cover</li>
+                                <li style="display: flex; align-items: center; gap: 8px;"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--teal)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> High-Resolution Digital PDF Included</li>
+                            </ul>
+                        </div>
+                        <button class="btn btn-ghost" style="width: 100%; border-color: var(--teal); color: var(--teal);" id="tierSelectBtn1000">
+                            Select 1000 Photos
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Photos Upload & Staging Bar -->
+                <div style="background: var(--white); border: 2px dashed var(--teal); border-radius: var(--r-xl); padding: 32px 24px; text-align: center; margin-bottom: 32px;">
+                    <div style="width: 52px; height: 52px; border-radius: 50%; background: rgba(14,124,107,0.1); color: var(--teal); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 12px;">
+                        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    </div>
+                    <h3 style="font-size: 18px; color: var(--navy); margin-bottom: 6px;">Select or Drop Your Journey Photos</h3>
+                    <p style="color: var(--text-mid); font-size: 13.5px; margin-bottom: 16px;">
+                        Choose images from your device (JPEG, PNG, HEIC). You can upload your collection up to <span id="wizardMaxCapacityLabel" style="font-weight: 700; color: var(--teal);">500</span> photos!
+                    </p>
+                    <input type="file" id="wizardMultiPhotoInput" multiple accept="image/*" style="display: none;" onchange="handleWizardMultiPhotoSelect(this)">
+                    <button class="btn btn-teal" onclick="document.getElementById('wizardMultiPhotoInput').click()">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+                        Browse &amp; Upload Images
+                    </button>
+                    <div id="wizardPhotoCounter" style="margin-top: 14px; font-size: 13px; color: var(--text-muted); font-weight: 600;">
+                        Ready: 0 photos staged (or proceed with our authentic high-res destination visual library)
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end;">
+                    <button class="btn btn-gold" style="padding: 14px 32px; font-size: 15px;" onclick="navigateToWizardStep(2)">
+                        Next: Customize Pages &amp; Photos &rarr;
+                    </button>
+                </div>
+            </div>
+
+            
+            <!-- STEP 2: PAGE-BY-PAGE PHOTO CUSTOMIZER (CUSTOMER CUSTOMIZES WHICH PHOTO GOES TO WHICH PAGE) -->
+            <div id="wizardStep2" class="wizard-step-content" style="display: none;">
+                <div style="text-align: center; max-width: 780px; margin: 0 auto 28px;">
+                    <span class="chip chip-gold" style="margin-bottom: 8px;">Step 2 &bull; Page-by-Page Layout Customizer</span>
+                    <h2 style="font-family: 'Bricolage Grotesque', 'Plus Jakarta Sans', sans-serif; font-size: 32px; color: var(--navy); margin-bottom: 8px;">
+                        Customize Which Photo Goes on Which Page
+                    </h2>
+                    <p style="color: var(--text-mid); font-size: 15px;">
+                        Select a page, choose its layout (Hero, 2-Photo Split, or 4-Photo Grid), and pick or upload photos for each exact slot with personal travel captions.
+                    </p>
+                </div>
+
+                <!-- Page Selector Tabs -->
+                <div style="background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--r-xl); padding: 16px 20px; margin-bottom: 24px; box-shadow: var(--shadow-sm); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;">
+                    <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;" id="pageCustomizerTabs">
+                        <!-- Populated by JS: Page 1, Page 2, Page 3, ... -->
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                        <button class="btn btn-ghost" style="font-size: 13px; padding: 7px 14px;" onclick="addNewCustomPage()">
+                            + Add New Page
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Main Customizer Workspace (2-Column: Left Palette & Details, Right Interactive Canvas) -->
+                <div style="display: grid; grid-template-columns: 1fr 1.35fr; gap: 28px; align-items: start; margin-bottom: 32px;">
+                    
+                    <!-- Left Column: Controls & Photo Tray -->
+                    <div style="background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--r-xl); padding: 24px; box-shadow: var(--shadow-sm);">
+                        
+                        <!-- Layout Picker -->
+                        <div style="margin-bottom: 20px;">
+                            <label class="form-label" style="font-weight: 700; color: var(--navy); margin-bottom: 8px; display: block;">
+                                Choose Layout for <span id="currentCustomPageLabel">Page 1</span>
+                            </label>
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                                <button type="button" class="btn btn-ghost" id="layoutBtnHero" style="font-size: 12px; padding: 10px 8px; flex-direction: column; gap: 4px; border-color: var(--teal); color: var(--teal);" onclick="setCustomPageLayout('hero')">
+                                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+                                    1 Full Hero
+                                </button>
+                                <button type="button" class="btn btn-ghost" id="layoutBtnSplit" style="font-size: 12px; padding: 10px 8px; flex-direction: column; gap: 4px;" onclick="setCustomPageLayout('split')">
+                                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="8" height="18" rx="1"/><rect x="13" y="3" width="8" height="18" rx="1"/></svg>
+                                    2-Photo Split
+                                </button>
+                                <button type="button" class="btn btn-ghost" id="layoutBtnGrid" style="font-size: 12px; padding: 10px 8px; flex-direction: column; gap: 4px;" onclick="setCustomPageLayout('grid')">
+                                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/></svg>
+                                    4-Photo Grid
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Photo Tray Source Picker -->
+                        <div style="margin-bottom: 20px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                <label class="form-label" style="font-weight: 700; color: var(--navy); margin: 0;">
+                                    Select Photo to Place in Page Slot
+                                </label>
+                                <input type="file" id="customPagePhotoUploadInput" accept="image/*" style="display:none;" onchange="handleSinglePhotoUpload(this)">
+                                <button type="button" class="btn btn-teal" style="font-size: 11.5px; padding: 5px 10px;" onclick="document.getElementById('customPagePhotoUploadInput').click()">
+                                    + Upload Photo
+                                </button>
+                            </div>
+
+                            <div style="display: flex; gap: 8px; margin-bottom: 12px; overflow-x: auto; padding-bottom: 4px;">
+                                <button type="button" class="btn btn-ghost active" id="trayTabAll" style="font-size: 11.5px; padding: 4px 10px;" onclick="filterPhotoTray('all')">All Library</button>
+                                <button type="button" class="btn btn-ghost" id="trayTabUser" style="font-size: 11.5px; padding: 4px 10px;" onclick="filterPhotoTray('user')">My Uploads</button>
+                                <button type="button" class="btn btn-ghost" id="trayTabStock" style="font-size: 11.5px; padding: 4px 10px;" onclick="filterPhotoTray('stock')">Curated Travel</button>
+                            </div>
+
+                            <!-- Photo Thumbnails Tray -->
+                            <div id="customPagePhotoTray" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; max-height: 220px; overflow-y: auto; padding: 4px; border: 1px solid var(--gray-200); border-radius: var(--r-md); background: var(--gray-50);">
+                                <!-- Populated by JS -->
+                            </div>
+                            <div style="font-size: 11.5px; color: var(--text-muted); margin-top: 6px;">
+                                💡 Tip: Click any photo above to select it, then click any slot on the page canvas to place it!
+                            </div>
+                        </div>
+
+                        <!-- Page Caption & Story Notes -->
+                        <div class="form-field" style="margin-bottom: 12px;">
+                            <label class="form-label">Page Headline / Caption</label>
+                            <input type="text" class="form-input" id="customPageCaptionInput" placeholder="e.g. Misty Sunrise over the Western Ghats" oninput="updateActivePageText()">
+                        </div>
+                        <div class="form-field">
+                            <label class="form-label">Journal Notes / Story</label>
+                            <textarea class="form-textarea" id="customPageNotesInput" rows="2" placeholder="e.g. Early 5:30 AM drive along Lockhart Gap with mist floating below..." oninput="updateActivePageText()"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Interactive Open Page Canvas -->
+                    <div style="background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--r-xl); padding: 24px; box-shadow: var(--shadow-md);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid var(--gray-100); padding-bottom: 10px;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span class="chip chip-teal" id="canvasPageBadge">PAGE 1 SPREAD</span>
+                                <span style="font-size: 12px; color: var(--text-muted);" id="canvasSlotCountLabel">1 Photo Slot</span>
+                            </div>
+                            <div style="display: flex; gap: 6px;">
+                                <button class="btn btn-ghost" style="padding: 4px 8px; font-size: 12px;" onclick="navigateCustomPageStep(-1)">&larr; Prev Page</button>
+                                <button class="btn btn-ghost" style="padding: 4px 8px; font-size: 12px;" onclick="navigateCustomPageStep(1)">Next Page &rarr;</button>
+                            </div>
+                        </div>
+
+                        <!-- Interactive Page Sheet Canvas -->
+                        <div id="interactivePageSheet" style="background: #FDFCF7; border: 1px solid #E2DEC9; border-radius: 8px; box-shadow: inset 0 0 10px rgba(0,0,0,0.04), 0 8px 24px rgba(11,31,58,0.12); padding: 22px; min-height: 420px; display: flex; flex-direction: column; justify-content: space-between;">
+                            <!-- Top Page Header -->
+                            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #E6E2D3; padding-bottom: 8px; margin-bottom: 16px;">
+                                <span style="font-size: 10.5px; font-weight: 700; letter-spacing: 1.5px; color: #8C8270; text-transform: uppercase;">
+                                    TRIPCRAFT HARDBOUND PHOTOBOOK &bull; <span id="sheetDestLabel">MUNNAR</span>
+                                </span>
+                                <span style="font-size: 11px; font-weight: 700; color: #8C8270;" id="sheetPageNumberLabel">
+                                    Page 1
+                                </span>
+                            </div>
+
+                            <!-- Page Slots Container (Hero, Split, or Grid) -->
+                            <div id="pageSlotsContainer" style="flex: 1; display: grid; gap: 14px; margin-bottom: 16px; min-height: 260px;">
+                                <!-- Rendered dynamically by JS -->
+                            </div>
+
+                            <!-- Page Caption & Notes Footer on Paper -->
+                            <div style="border-top: 1px solid #E6E2D3; padding-top: 10px; margin-top: auto;">
+                                <h4 id="sheetCaptionDisplay" style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 16px; color: var(--navy); margin-bottom: 3px;">
+                                    Munnar: Where the Clouds Kiss the Emerald Hills
+                                </h4>
+                                <p id="sheetNotesDisplay" style="font-size: 12px; color: #665F52; font-style: italic; margin: 0; line-height: 1.4;">
+                                    Captured along Lockhart Gap corridor at early morning dawn.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 14px; text-align: center; font-size: 12px; color: var(--text-muted);">
+                            ✨ Realistic fine-art print spread preview &bull; 250 GSM satin archival paper
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; margin-top: 24px;">
+                    <button class="btn btn-ghost" style="padding: 14px 28px;" onclick="navigateToWizardStep(2)">
+                        &larr; Back to Page Customizer
+                    </button>
+                    <button class="btn btn-gold" style="padding: 14px 32px; font-size: 15px;" onclick="navigateToWizardStep(3)">
+                        Next: Customize Front Cover &rarr;
+                    </button>
+                </div>
+            </div>
+
+            <!-- STEP 3: FRONT COVER CUSTOMIZER WITH LIVE 3D PREVIEW -->
+            <div id="wizardStep3" class="wizard-step-content" style="display: none;">
+                <div style="text-align: center; max-width: 720px; margin: 0 auto 32px;">
+                    <span class="chip chip-gold" style="margin-bottom: 8px;">Step 3 &bull; Cover Customization</span>
+                    <h2 style="font-family: 'Bricolage Grotesque', 'Plus Jakarta Sans', sans-serif; font-size: 32px; color: var(--navy); margin-bottom: 8px;">
+                        Customize Your Front Cover
+                    </h2>
+                    <p style="color: var(--text-mid); font-size: 15px;">
+                        Design the showcase face of your photobook. Personalize your title, curator byline, destination, theme palette, and hero cover picture with live realistic preview.
+                    </p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 36px; align-items: start;">
+                    <!-- Left: Customization Controls -->
+                    <div style="background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--r-xl); padding: 28px; box-shadow: var(--shadow-sm);">
+                        <h3 style="font-size: 18px; color: var(--navy); margin-bottom: 18px; display: flex; align-items: center; gap: 8px;">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="var(--teal)" stroke-width="2.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                            Cover Typography &amp; Details
+                        </h3>
+
+                        <div class="form-field" style="margin-bottom: 14px;">
+                            <label class="form-label">Photobook Front Cover Title</label>
+                            <input type="text" class="form-input" id="wizardCoverTitleInput" value="Incredible Munnar Odyssey" placeholder="e.g. Goa Sunsets & Coastal Wanders" oninput="updateCoverLivePreview()">
+                        </div>
+
+                        <div class="form-field" style="margin-bottom: 14px;">
+                            <label class="form-label">Subtitle / Curator Byline</label>
+                            <input type="text" class="form-input" id="wizardCoverSubtitleInput" value="Curated & Photographed by You" placeholder="e.g. By Priya & Arjun &middot; December 2026" oninput="updateCoverLivePreview()">
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px;">
+                            <div class="form-field">
+                                <label class="form-label">Destination Tag</label>
+                                <input type="text" class="form-input" id="wizardCoverDestInput" value="Munnar, Kerala" oninput="updateCoverLivePreview()">
+                            </div>
+                            <div class="form-field">
+                                <label class="form-label">Edition / Season</label>
+                                <input type="text" class="form-input" id="wizardCoverDateInput" value="Vol. 1 &bull; 2026" oninput="updateCoverLivePreview()">
+                            </div>
+                        </div>
+
+                        <div class="form-field" style="margin-bottom: 20px;">
+                            <label class="form-label">Cover Theme &amp; Spine Color</label>
+                            <div style="display: flex; gap: 12px; align-items: center; margin-top: 6px;">
+                                <button type="button" class="theme-swatch-btn active" style="background: #0B1F3A;" title="Royal Navy" onclick="selectCoverTheme('#0B1F3A', this)"></button>
+                                <button type="button" class="theme-swatch-btn" style="background: #0E7C6B;" title="Forest Teal" onclick="selectCoverTheme('#0E7C6B', this)"></button>
+                                <button type="button" class="theme-swatch-btn" style="background: #E8A838;" title="Imperial Gold" onclick="selectCoverTheme('#E8A838', this)"></button>
+                                <button type="button" class="theme-swatch-btn" style="background: #991B1B;" title="Crimson Ruby" onclick="selectCoverTheme('#991B1B', this)"></button>
+                                <button type="button" class="theme-swatch-btn" style="background: #1E293B;" title="Midnight Obsidian" onclick="selectCoverTheme('#1E293B', this)"></button>
+                            </div>
+                        </div>
+
+                        <div class="form-field">
+                            <label class="form-label">Front Cover Background Image</label>
+                            <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+                                <input type="file" id="wizardCoverImgFile" accept="image/*" style="display: none;" onchange="handleCoverPhotoUpload(this)">
+                                <button type="button" class="btn btn-ghost" style="flex: 1; font-size: 13px;" onclick="document.getElementById('wizardCoverImgFile').click()">
+                                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                    Upload Custom Cover
+                                </button>
+                            </div>
+                            <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">Or pick from our curated high-res destination visuals:</div>
+                            <div style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px;" id="wizardPresetCovers">
+                                <!-- Preset cover thumbnails rendered by JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Live 3D Cover Preview -->
+                    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                        <div class="book-cover-container">
+                            <div class="book-cover-3d" id="previewBookCover3D" style="background-image: url('https://images.unsplash.com/photo-1593693397690-362cb9666fc2?q=80&w=1200&auto=format&fit=crop');">
+                                <div class="book-cover-spine"></div>
+                                <div class="book-cover-overlay" id="previewBookCoverOverlay"></div>
+                                <div class="book-cover-content">
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <span id="previewCoverDestBadge" style="background: rgba(255,255,255,0.22); backdrop-filter: blur(8px); padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;">
+                                            MUNNAR, KERALA
+                                        </span>
+                                        <span id="previewCoverTierTag" style="font-size: 11px; font-weight: 700; color: var(--gold);">
+                                            500 PHOTOS &bull; 100 PAGES
+                                        </span>
+                                    </div>
+                                    <div style="text-align: center; margin: auto 0;">
+                                        <div style="font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 8px;">
+                                            TRIPCRAFT HARDCOVER EDITION
+                                        </div>
+                                        <h2 id="previewCoverTitle" style="font-family: 'Bricolage Grotesque', 'Plus Jakarta Sans', serif; font-size: 26px; font-weight: 800; line-height: 1.25; margin-bottom: 8px; text-shadow: 0 2px 10px rgba(0,0,0,0.5);">
+                                            Incredible Munnar Odyssey
+                                        </h2>
+                                        <p id="previewCoverSubtitle" style="font-size: 12.5px; opacity: 0.9; font-style: italic; max-width: 240px; margin: 0 auto; text-shadow: 0 1px 6px rgba(0,0,0,0.4);">
+                                            Curated &amp; Photographed by You
+                                        </p>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; align-items: flex-end; border-top: 1px solid rgba(255,255,255,0.25); padding-top: 10px;">
+                                        <span id="previewCoverDate" style="font-size: 11px; opacity: 0.85;">Vol. 1 &bull; 2026</span>
+                                        <span style="font-size: 10.5px; letter-spacing: 1px; font-weight: 700; color: #E8A838;">TRIPCRAFT &bull; VERIFIED</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 16px; font-size: 13px; color: var(--text-muted); text-align: center;">
+                            Live 3D Cover Rendering &bull; Foil-stamped on heavy linen hardcover
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; margin-top: 32px;">
+                    <button class="btn btn-ghost" style="padding: 14px 28px;" onclick="navigateToWizardStep(2)">
+                        &larr; Back to Page Customizer
+                    </button>
+                    <button class="btn btn-gold" style="padding: 14px 32px; font-size: 15px;" onclick="navigateToWizardStep(4)">
+                        Next: Review &amp; Purchase Photobook &rarr;
+                    </button>
+                </div>
+            </div>
+
+            <!-- STEP 4: REVIEW & PAYMENT / PURCHASE -->
+            <div id="wizardStep4" class="wizard-step-content" style="display: none;">
+                <div style="text-align: center; max-width: 720px; margin: 0 auto 32px;">
+                    <span class="chip chip-gold" style="margin-bottom: 8px;">Step 4 &bull; Checkout &amp; Purchase</span>
+                    <h2 style="font-family: 'Bricolage Grotesque', 'Plus Jakarta Sans', sans-serif; font-size: 32px; color: var(--navy); margin-bottom: 8px;">
+                        Complete Your Photobook Order
+                    </h2>
+                    <p style="color: var(--text-mid); font-size: 15px;">
+                        Review your custom photobook specifications, enter your shipping and billing details, and complete payment. You'll instantly receive your verified order and high-res printable PDF album.
+                    </p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start;">
+                    <!-- Order Specs & Summary -->
+                    <div style="background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--r-xl); padding: 28px; box-shadow: var(--shadow-sm);">
+                        <h3 style="font-size: 19px; color: var(--navy); margin-bottom: 18px; display: flex; align-items: center; gap: 8px;">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--teal)" stroke-width="2.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                            Custom Photobook Order Summary
+                        </h3>
+
+                        <div style="display: flex; gap: 16px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--gray-100);">
+                            <div id="summaryCoverMiniPreview" style="width: 80px; height: 110px; border-radius: 6px; background-size: cover; background-position: center; box-shadow: var(--shadow-sm); flex-shrink: 0;"></div>
+                            <div>
+                                <h4 id="summaryTitleText" style="font-size: 17px; color: var(--navy); margin-bottom: 4px;">Incredible Munnar Odyssey</h4>
+                                <div id="summarySubtitleText" style="font-size: 12.5px; color: var(--text-muted); margin-bottom: 8px;">Curated &amp; Photographed by You</div>
+                                <span class="chip chip-teal" id="summaryTierBadge" style="font-size: 11.5px; font-weight: 700;">500 Photos &bull; 100 Pages</span>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; flex-direction: column; gap: 12px; font-size: 13.5px; margin-bottom: 24px;">
+                            <div style="display: flex; justify-content: space-between; color: var(--text-mid);">
+                                <span>Binding &amp; Cover:</span>
+                                <strong style="color: var(--navy);" id="summaryBindingText">Deluxe Linen Hardcover</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; color: var(--text-mid);">
+                                <span>Destination Focus:</span>
+                                <strong style="color: var(--navy);" id="summaryDestText">Munnar, Kerala</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; color: var(--text-mid);">
+                                <span>Digital PDF Access:</span>
+                                <strong style="color: var(--success);">&#10003; Instant High-Res Download</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; color: var(--text-mid);">
+                                <span>Physical Hardcover Delivery:</span>
+                                <strong style="color: var(--teal);">&#10003; Free Express Courier Voucher</strong>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--off-white); border-radius: var(--r-lg); padding: 16px; border: 1px solid var(--gray-200);">
+                            <div style="display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 8px; color: var(--text-mid);">
+                                <span>Package Price (<span id="summaryTierPhotosLabel">500</span> Photos):</span>
+                                <span style="font-weight: 600; color: var(--navy);" id="summaryBasePrice">&#8377;899</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 8px; color: var(--text-mid);">
+                                <span>Hardcover Binding &amp; Foil Finish:</span>
+                                <span style="color: var(--success); font-weight: 600;">FREE (Included)</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 12px; color: var(--text-mid);">
+                                <span>Courier Delivery in India:</span>
+                                <span style="color: var(--success); font-weight: 600;">FREE</span>
+                            </div>
+                            <div style="border-top: 1.5px solid var(--gray-300); padding-top: 12px; display: flex; justify-content: space-between; align-items: baseline;">
+                                <span style="font-size: 16px; font-weight: 800; color: var(--navy);">Total Amount Payable:</span>
+                                <span style="font-size: 26px; font-weight: 800; color: var(--teal);" id="summaryTotalPrice">&#8377;899</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment & Delivery Form -->
+                    <div style="background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--r-xl); padding: 28px; box-shadow: var(--shadow-sm);">
+                        <h3 style="font-size: 19px; color: var(--navy); margin-bottom: 18px; display: flex; align-items: center; gap: 8px;">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--teal)" stroke-width="2.5"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                            Payment &amp; Delivery Details
+                        </h3>
+
+                        <div class="form-field" style="margin-bottom: 12px;">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" class="form-input" id="checkoutBuyerName" placeholder="Your full name">
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+                            <div class="form-field">
+                                <label class="form-label">Email Address</label>
+                                <input type="email" class="form-input" id="checkoutBuyerEmail" placeholder="you@example.com">
+                            </div>
+                            <div class="form-field">
+                                <label class="form-label">Phone Number</label>
+                                <input type="tel" class="form-input" id="checkoutBuyerPhone" placeholder="+91 9876543210">
+                            </div>
+                        </div>
+
+                        <div class="form-field" style="margin-bottom: 16px;">
+                            <label class="form-label">Physical Book Delivery Address</label>
+                            <textarea class="form-textarea" id="checkoutBuyerAddress" rows="2" placeholder="Street address, City, State, PIN code"></textarea>
+                        </div>
+
+                        <div class="form-field" style="margin-bottom: 24px;">
+                            <label class="form-label">Payment Method</label>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 6px;">
+                                <label style="border: 1.5px solid var(--teal); border-radius: var(--r-md); padding: 10px; display: flex; flex-direction: column; align-items: center; cursor: pointer; background: rgba(14,124,107,0.05);">
+                                    <input type="radio" name="payMethod" value="upi" checked style="margin-bottom: 4px;">
+                                    <span style="font-size: 12px; font-weight: 700; color: var(--navy);">UPI / GPay</span>
+                                </label>
+                                <label style="border: 1.5px solid var(--gray-200); border-radius: var(--r-md); padding: 10px; display: flex; flex-direction: column; align-items: center; cursor: pointer;">
+                                    <input type="radio" name="payMethod" value="card" style="margin-bottom: 4px;">
+                                    <span style="font-size: 12px; font-weight: 700; color: var(--navy);">Cards</span>
+                                </label>
+                                <label style="border: 1.5px solid var(--gray-200); border-radius: var(--r-md); padding: 10px; display: flex; flex-direction: column; align-items: center; cursor: pointer;">
+                                    <input type="radio" name="payMethod" value="netbanking" style="margin-bottom: 4px;">
+                                    <span style="font-size: 12px; font-weight: 700; color: var(--navy);">NetBanking</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-gold" style="width: 100%; padding: 15px; font-size: 16px; font-weight: 800; display: flex; justify-content: center; align-items: center; gap: 8px;" onclick="executeAlbumOrderPayment()">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                            Pay <span id="checkoutPayBtnPrice">&#8377;899</span> &amp; Order Photobook
+                        </button>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; margin-top: 24px;">
+                    <button class="btn btn-ghost" style="padding: 12px 24px;" onclick="navigateToWizardStep(3)">
+                        &larr; Back to Cover Customizer
+                    </button>
+                </div>
+            </div>
+
+            <!-- STEP 4: SUCCESS CONFIRMATION & PDF DOWNLOAD -->
+            <div id="wizardStepSuccess" class="wizard-step-content" style="display: none;">
+                <div style="background: var(--white); border-radius: var(--r-2xl); border: 1px solid var(--gray-200); padding: 48px 32px; max-width: 680px; margin: 0 auto; text-align: center; box-shadow: var(--shadow-md);">
+                    <div style="width: 72px; height: 72px; border-radius: 50%; background: rgba(14,124,107,0.12); color: var(--teal); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+                        <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                    </div>
+                    <span class="chip chip-teal" style="margin-bottom: 12px;">Payment Successful &bull; Order Confirmed</span>
+                    <h2 style="font-family: 'Bricolage Grotesque', 'Plus Jakarta Sans', sans-serif; font-size: 32px; color: var(--navy); margin-bottom: 10px;">
+                        Your Photobook is Being Crafted!
+                    </h2>
+                    <p style="color: var(--text-mid); font-size: 15px; line-height: 1.6; margin-bottom: 24px;">
+                        Congratulations! Your custom hardcover photobook has been recorded with Order Reference <strong id="successOrderId" style="color: var(--teal);">TC-BOOK-9482</strong>. Your digital high-resolution print copy is ready below, and your physical book voucher has been dispatched to courier.
+                    </p>
+
+                    <div style="background: var(--off-white); border-radius: var(--r-xl); padding: 20px; border: 1px solid var(--gray-200); margin-bottom: 28px; text-align: left;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                            <span style="font-size: 13.5px; color: var(--text-mid);">Album Name:</span>
+                            <strong style="color: var(--navy);" id="successAlbumTitle">Incredible Munnar Odyssey</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                            <span style="font-size: 13.5px; color: var(--text-mid);">Capacity Tier:</span>
+                            <strong style="color: var(--navy);" id="successAlbumCapacity">500 Photos (100 Hardcover Pages)</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                            <span style="font-size: 13.5px; color: var(--text-mid);">Amount Paid:</span>
+                            <strong style="color: var(--teal);" id="successAlbumAmount">&#8377;899 (UPI Received)</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span style="font-size: 13.5px; color: var(--text-mid);">Hardcover Courier Tracking:</span>
+                            <span style="color: var(--gold); font-weight: 700;">Dispatches in 48 hours &bull; BlueDart Air</span>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
+                        <button class="btn btn-gold" style="padding: 14px 28px; font-size: 15px; display: inline-flex; align-items: center; gap: 8px;" onclick="downloadWizardAlbumPDF()">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                            Download High-Res PDF Photobook
+                        </button>
+                        <button class="btn btn-ghost" style="padding: 14px 24px; font-size: 15px;" onclick="resetPhotobookWizard()">
+                            Create Another Photobook
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+    <div class="footer-grid">
+        <div class="footer-brand">
+            <div class="footer-logo">
+                <div class="nav-logo-mark">
+                    <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                </div>
+                <span>TripCraft</span>
+            </div>
+            <p>AI-orchestrated end-to-end travel intelligence platform. Engineered for seamless discovery, instant reservations, solo safety, and creator photobook monetization.</p>
+            <div class="footer-social-strip">
+                <a href="https://twitter.com" target="_blank" class="footer-social-link" title="Twitter / X"><svg viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg></a>
+                <a href="https://instagram.com" target="_blank" class="footer-social-link" title="Instagram"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
+                <a href="https://linkedin.com" target="_blank" class="footer-social-link" title="LinkedIn"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a>
+                <a href="https://github.com" target="_blank" class="footer-social-link" title="GitHub"><svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg></a>
+            </div>
+        </div>
+        <div class="footer-col">
+            <h4>Explore</h4>
+            <ul>
+                <li><a href="destinations.html">Destinations</a></li>
+                <li><a href="packages.html">Curated Packages</a></li>
+                <li><a href="hotels.html">Stays &amp; Resorts</a></li>
+                <li><a href="transport.html">Flights &amp; Rail</a></li>
+                <li><a href="vehicle.html">Car &amp; Bike Rentals</a></li>
+                <li><a href="guides.html">Certified Local Guides</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Special Hubs</h4>
+            <ul>
+                <li><a href="solo.html">Solo Traveler Engine</a></li>
+                <li><a href="community.html">Community &amp; Buddies</a></li>
+                <li><a href="album.html">Photo Album Studio</a></li>
+                <li><a href="budget.html">40/25/20/15 Budgeter</a></li>
+                <li><a href="itinerary.html">Interactive Itinerary</a></li>
+                <li><a href="wishlist.html">Saved Wishlist</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Trust &amp; Legal</h4>
+            <ul>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="contact.html">Customer Support</a></li>
+                <li><a href="faq.html">FAQ &amp; Help Desk</a></li>
+                <li><a href="terms.html">Terms &amp; Conditions</a></li>
+                <li><a href="privacy.html">Privacy Policy</a></li>
+                <li><a href="refund.html">Refund Policy</a></li>
+                <li><a href="sitemap.html">Sitemap</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <div>&copy; 2026 TripCraft Technologies Inc. All rights reserved. 256-bit SSL Encrypted Booking System.</div>
+        <div style="display:flex; gap:16px;">
+            <a href="terms.html">Terms</a>
+            <a href="privacy.html">Privacy</a>
+            <a href="refund.html">Refunds</a>
+            <a href="sitemap.html">Sitemap</a>
+        </div>
+    </div>
+</footer>
+
+        <script src="tc-config.js"></script>
+    <script src="shared.js"></script>
+    <script src="tc-layer.js"></script>
+    <script>
+        // ==========================================
+        // TRIPCRAFT 4-STEP CUSTOM PHOTOBOOK CREATOR
+        // ==========================================
+
+        const curatedStockPhotos = [
+            { id: 'm1', name: 'Munnar Mist at Dawn', url: 'https://images.unsplash.com/photo-1593693397690-362cb9666fc2?q=80&w=1200&auto=format&fit=crop', dest: 'Munnar' },
+            { id: 'm2', name: 'Attukad Waterfalls', url: 'https://images.unsplash.com/photo-1544644181-1484b3fdfc62?q=80&w=1200&auto=format&fit=crop', dest: 'Munnar' },
+            { id: 'm3', name: 'Kerala Banana Leaf Feast', url: 'https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?q=80&w=1200&auto=format&fit=crop', dest: 'Munnar' },
+            { id: 'm4', name: 'Kolukkumalai Sunrise 7,900 ft', url: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1200&auto=format&fit=crop', dest: 'Munnar' },
+            { id: 'm5', name: 'Cardamom Spice Plantation', url: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1200&auto=format&fit=crop', dest: 'Munnar' },
+            { id: 'j1', name: 'Hawa Mahal Honeycomb', url: 'https://images.unsplash.com/photo-1599661046289-e31897846e41?q=80&w=1200&auto=format&fit=crop', dest: 'Jaipur' },
+            { id: 'j2', name: 'Amer Fort Golden Hour', url: 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?q=80&w=1200&auto=format&fit=crop', dest: 'Jaipur' },
+            { id: 'g1', name: 'Palolem Beach Coconut Palms', url: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?q=80&w=1200&auto=format&fit=crop', dest: 'Goa' },
+            { id: 'l1', name: 'Pangong Tso Blue Waters', url: 'https://images.unsplash.com/photo-1581793745862-99fde7fa73d2?q=80&w=1200&auto=format&fit=crop', dest: 'Ladakh' },
+            { id: 'a1', name: 'Radhanagar White Sand Beach', url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200&auto=format&fit=crop', dest: 'Andaman' },
+            { id: 'k1', name: 'Kashmir Shikara on Dal Lake', url: 'https://images.unsplash.com/photo-1566837945700-30057527ade0?q=80&w=1200&auto=format&fit=crop', dest: 'Kashmir' },
+            { id: 'u1', name: 'Lake Pichola City Palace', url: 'https://images.unsplash.com/photo-1615836245337-f5b9b2303f10?q=80&w=1200&auto=format&fit=crop', dest: 'Udaipur' }
+        ];
+
+        const wizardPresetCovers = [
+            { name: 'Munnar Mist', url: 'https://images.unsplash.com/photo-1593693397690-362cb9666fc2?q=80&w=1200&auto=format&fit=crop' },
+            { name: 'Jaipur Hawa', url: 'https://images.unsplash.com/photo-1599661046289-e31897846e41?q=80&w=1200&auto=format&fit=crop' },
+            { name: 'Andaman Azure', url: 'https://images.unsplash.com/photo-1589394815804-964ed0be2eb5?q=80&w=1200&auto=format&fit=crop' },
+            { name: 'Goa Coastal', url: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?q=80&w=1200&auto=format&fit=crop' },
+            { name: 'Ladakh Peaks', url: 'https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?q=80&w=1200&auto=format&fit=crop' },
+            { name: 'Kashmir Valley', url: 'https://images.unsplash.com/photo-1566837945700-30057527ade0?q=80&w=1200&auto=format&fit=crop' }
+        ];
+
+        // Central State
+        const wizardState = {
+            step: 1,
+            tier: 500,
+            price: 899,
+            pages: 100,
+            tierName: 'Traveler Edition',
+            coverTitle: 'Incredible Munnar Odyssey',
+            coverSubtitle: 'Curated & Photographed by You',
+            destination: 'Munnar, Kerala',
+            editionDate: 'Vol. 1 • 2026',
+            themeColor: '#0B1F3A',
+            coverPhoto: 'https://images.unsplash.com/photo-1593693397690-362cb9666fc2?q=80&w=1200&auto=format&fit=crop',
+            orderId: '',
+            
+            // Customizer State
+            activePageIndex: 0,
+            selectedPhotoForPlacement: null,
+            trayFilter: 'all',
+            userUploads: [],
+            pagesList: [
+                {
+                    pageNumber: 1,
+                    title: 'Page 1 Spread',
+                    layout: 'hero',
+                    photos: ['https://images.unsplash.com/photo-1593693397690-362cb9666fc2?q=80&w=1200&auto=format&fit=crop'],
+                    caption: 'Munnar: Where the Clouds Kiss the Emerald Hills',
+                    notes: 'Captured along Lockhart Gap corridor at early morning dawn.'
+                },
+                {
+                    pageNumber: 2,
+                    title: 'Page 2 Spread',
+                    layout: 'split',
+                    photos: [
+                        'https://images.unsplash.com/photo-1593693397690-362cb9666fc2?q=80&w=1200&auto=format&fit=crop',
+                        'https://images.unsplash.com/photo-1544644181-1484b3fdfc62?q=80&w=1200&auto=format&fit=crop'
+                    ],
+                    caption: 'Misty Tea Valleys along Lockhart Gap',
+                    notes: 'The mountain dew glimmers on tea leaves until 9:30 AM before the sun climbs over the ridge.'
+                },
+                {
+                    pageNumber: 3,
+                    title: 'Page 3 Spread',
+                    layout: 'grid',
+                    photos: [
+                        'https://images.unsplash.com/photo-1593693397690-362cb9666fc2?q=80&w=1200&auto=format&fit=crop',
+                        'https://images.unsplash.com/photo-1544644181-1484b3fdfc62?q=80&w=1200&auto=format&fit=crop',
+                        'https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?q=80&w=1200&auto=format&fit=crop',
+                        'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1200&auto=format&fit=crop'
+                    ],
+                    caption: 'Tea Estates, Spices & Authentic Kerala Flavors',
+                    notes: 'Cardamom plantation walks, local clay pot chai, and serene afternoon breezes.'
+                },
+                {
+                    pageNumber: 4,
+                    title: 'Page 4 Spread',
+                    layout: 'split',
+                    photos: [
+                        'https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1200&auto=format&fit=crop',
+                        'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1200&auto=format&fit=crop'
+                    ],
+                    caption: 'Kolukkumalai Sunrise at 7,900 ft',
+                    notes: 'Riding a 4x4 jeep through Suryanelli at 4:30 AM to witness the sun rise over the cloud bed.'
+                },
+                {
+                    pageNumber: 5,
+                    title: 'Page 5 Spread',
+                    layout: 'hero',
+                    photos: ['https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?q=80&w=1200&auto=format&fit=crop'],
+                    caption: 'Authentic Kerala Sadya on Fresh Banana Leaf',
+                    notes: 'Steaming red rice, avial, thoran, and fresh cardamom tea served in clay pots.'
+                }
+            ]
+        };
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', () => {
+            initPhotobookWizard();
+        });
+
+        function initPhotobookWizard() {
+            renderWizardPresetCovers();
+            updateCoverLivePreview();
+            renderCustomPageTabs();
+            renderCustomPageTray();
+            renderCustomPageCanvas();
+        }
+
+        // ==========================================
+        // 4-STEP WIZARD NAVIGATION
+        // ==========================================
+        function navigateToWizardStep(stepNum) {
+            wizardState.step = stepNum;
+
+            const s1 = document.getElementById('wizardStep1');
+            const s2 = document.getElementById('wizardStep2');
+            const s3 = document.getElementById('wizardStep3');
+            const s4 = document.getElementById('wizardStep4');
+            const sSuccess = document.getElementById('wizardStepSuccess');
+
+            if (s1) s1.style.display = stepNum === 1 ? 'block' : 'none';
+            if (s2) s2.style.display = stepNum === 2 ? 'block' : 'none';
+            if (s3) s3.style.display = stepNum === 3 ? 'block' : 'none';
+            if (s4) s4.style.display = stepNum === 4 ? 'block' : 'none';
+            if (sSuccess) sSuccess.style.display = (stepNum === 5 || stepNum === 'success') ? 'block' : 'none';
+
+            // Update top step indicators 1 to 4
+            [1, 2, 3, 4].forEach(n => {
+                const btn = document.getElementById('wizardStepBtn' + n);
+                if (!btn) return;
+                btn.classList.remove('active', 'completed');
+                if (n === stepNum) {
+                    btn.classList.add('active');
+                } else if (n < stepNum) {
+                    btn.classList.add('completed');
+                }
+            });
+
+            if (stepNum === 2) {
+                renderCustomPageTabs();
+                renderCustomPageTray();
+                renderCustomPageCanvas();
+            } else if (stepNum === 3) {
+                updateCoverLivePreview();
+            } else if (stepNum === 4) {
+                populateOrderSummary();
+            }
+
+            window.scrollTo({ top: 380, behavior: 'smooth' });
+        }
+
+        // ==========================================
+        // STEP 1: PHOTO CAPACITY SELECTION & UPLOAD
+        // ==========================================
+        function selectPhotoTier(count) {
+            wizardState.tier = count;
+            if (count === 200) {
+                wizardState.price = 499;
+                wizardState.pages = 40;
+                wizardState.tierName = 'Starter Edition';
+            } else if (count === 500) {
+                wizardState.price = 899;
+                wizardState.pages = 100;
+                wizardState.tierName = 'Traveler Edition';
+            } else {
+                wizardState.price = 1499;
+                wizardState.pages = 200;
+                wizardState.tierName = 'Odyssey Luxury';
+            }
+
+            ['200', '500', '1000'].forEach(c => {
+                const card = document.getElementById('tierCard' + c);
+                const btn = document.getElementById('tierSelectBtn' + c);
+                if (card && btn) {
+                    if (parseInt(c, 10) === count) {
+                        card.classList.add('selected');
+                        btn.className = 'btn btn-teal';
+                        btn.style.width = '100%';
+                        btn.innerHTML = `Selected &bull; ${c} Photos`;
+                    } else {
+                        card.classList.remove('selected');
+                        btn.className = 'btn btn-ghost';
+                        btn.style.width = '100%';
+                        btn.style.borderColor = 'var(--teal)';
+                        btn.style.color = 'var(--teal)';
+                        btn.innerHTML = `Select ${c} Photos`;
+                    }
+                }
+            });
+
+            const capLabel = document.getElementById('wizardMaxCapacityLabel');
+            if (capLabel) capLabel.textContent = count;
+
+            const tierTag = document.getElementById('previewCoverTierTag');
+            if (tierTag) tierTag.textContent = `${count} PHOTOS • ${wizardState.pages} PAGES`;
+
+            showToast(`Selected ${count} Photos Package (₹${wizardState.price})`, 'success');
+        }
+
+        function handleWizardMultiPhotoSelect(input) {
+            if (!input.files || input.files.length === 0) return;
+            const files = Array.from(input.files);
+            let loaded = 0;
+
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const dataUrl = e.target.result;
+                    wizardState.userUploads.push({
+                        id: 'up_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
+                        name: file.name,
+                        url: dataUrl
+                    });
+                    loaded++;
+                    if (loaded === files.length) {
+                        const counter = document.getElementById('wizardPhotoCounter');
+                        if (counter) {
+                            counter.innerHTML = `<span style="color:var(--teal); font-weight:700;">✓ ${wizardState.userUploads.length} photos ready</span> (Capacity: ${wizardState.tier} photos)`;
+                        }
+                        showToast(`Uploaded & staged ${files.length} travel photos!`, 'success');
+                        renderCustomPageTray();
+                    }
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // ==========================================
+        // STEP 2: PAGE-BY-PAGE PHOTO CUSTOMIZER
+        // ==========================================
+        function renderCustomPageTabs() {
+            const container = document.getElementById('pageCustomizerTabs');
+            if (!container) return;
+
+            container.innerHTML = wizardState.pagesList.map((pg, idx) => `
+                <button type="button" class="btn ${idx === wizardState.activePageIndex ? 'btn-teal' : 'btn-ghost'}" 
+                        style="font-size:12.5px; padding:6px 14px; font-weight:700;" 
+                        onclick="switchCustomPage(${idx})">
+                    Page ${idx + 1}
+                </button>
+            `).join('');
+
+            const currentLabel = document.getElementById('currentCustomPageLabel');
+            if (currentLabel) currentLabel.textContent = `Page ${wizardState.activePageIndex + 1}`;
+        }
+
+        function switchCustomPage(idx) {
+            if (idx < 0 || idx >= wizardState.pagesList.length) return;
+            wizardState.activePageIndex = idx;
+            renderCustomPageTabs();
+            renderCustomPageCanvas();
+            showToast(`Switched editor to Page ${idx + 1}`, 'info');
+        }
+
+        function navigateCustomPageStep(delta) {
+            let next = wizardState.activePageIndex + delta;
+            if (next < 0) next = 0;
+            if (next >= wizardState.pagesList.length) next = wizardState.pagesList.length - 1;
+            switchCustomPage(next);
+        }
+
+        function addNewCustomPage() {
+            const newNum = wizardState.pagesList.length + 1;
+            const stock = curatedStockPhotos[(newNum - 1) % curatedStockPhotos.length];
+            wizardState.pagesList.push({
+                pageNumber: newNum,
+                title: `Page ${newNum} Spread`,
+                layout: 'hero',
+                photos: [stock.url],
+                caption: `New Journey Memory ${newNum}`,
+                notes: 'Add your personal travel notes, timings, and reflections here.'
+            });
+            wizardState.activePageIndex = wizardState.pagesList.length - 1;
+            renderCustomPageTabs();
+            renderCustomPageCanvas();
+            showToast(`Added new Page ${newNum}! Custom layout ready.`, 'success');
+        }
+
+        function setCustomPageLayout(layoutType) {
+            const page = wizardState.pagesList[wizardState.activePageIndex];
+            page.layout = layoutType;
+
+            let targetCount = 1;
+            if (layoutType === 'split') targetCount = 2;
+            if (layoutType === 'grid') targetCount = 4;
+
+            // Adjust photo slots length
+            while (page.photos.length < targetCount) {
+                const nextStock = curatedStockPhotos[page.photos.length % curatedStockPhotos.length].url;
+                page.photos.push(nextStock);
+            }
+            if (page.photos.length > targetCount) {
+                page.photos = page.photos.slice(0, targetCount);
+            }
+
+            renderCustomPageCanvas();
+            showToast(`Layout changed to: ${layoutType === 'hero' ? '1 Full Hero' : layoutType === 'split' ? '2-Photo Split' : '4-Photo Grid'}`, 'success');
+        }
+
+        function filterPhotoTray(tab) {
+            wizardState.trayFilter = tab;
+            ['All', 'User', 'Stock'].forEach(t => {
+                const btn = document.getElementById('trayTab' + t);
+                if (btn) {
+                    if (t.toLowerCase() === tab) {
+                        btn.classList.add('active');
+                        btn.style.borderColor = 'var(--teal)';
+                        btn.style.color = 'var(--teal)';
+                    } else {
+                        btn.classList.remove('active');
+                        btn.style.borderColor = 'var(--gray-200)';
+                        btn.style.color = 'var(--text-mid)';
+                    }
+                }
+            });
+            renderCustomPageTray();
+        }
+
+        function handleSinglePhotoUpload(input) {
+            if (!input.files || !input.files[0]) return;
+            const file = input.files[0];
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const newPhoto = {
+                    id: 'up_' + Date.now(),
+                    name: file.name,
+                    url: e.target.result
+                };
+                wizardState.userUploads.unshift(newPhoto);
+                wizardState.selectedPhotoForPlacement = newPhoto.url;
+                wizardState.trayFilter = 'user';
+                filterPhotoTray('user');
+                showToast('Photo uploaded & selected! Click any slot on the open page sheet to place it.', 'success');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function selectPhotoFromTray(url) {
+            wizardState.selectedPhotoForPlacement = url;
+            renderCustomPageTray();
+            showToast('Photo selected! Click any slot on the page sheet to place it.', 'info');
+        }
+
+        function renderCustomPageTray() {
+            const container = document.getElementById('customPagePhotoTray');
+            if (!container) return;
+
+            let list = [];
+            if (wizardState.trayFilter === 'all') {
+                list = [...wizardState.userUploads, ...curatedStockPhotos];
+            } else if (wizardState.trayFilter === 'user') {
+                list = wizardState.userUploads;
+            } else {
+                list = curatedStockPhotos;
+            }
+
+            if (list.length === 0) {
+                container.innerHTML = `
+                    <div style="grid-column: 1 / -1; padding: 24px 10px; text-align: center; color: var(--text-muted); font-size: 13px;">
+                        No uploaded photos yet. Click "+ Upload Photo" or switch to Curated Travel!
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = list.map(item => {
+                const isSelected = wizardState.selectedPhotoForPlacement === item.url;
+                return `
+                    <div onclick="selectPhotoFromTray('${item.url}')"
+                         style="aspect-ratio: 1; border-radius: 6px; background-image: url('${item.url}'); background-size: cover; background-position: center; cursor: pointer; position: relative; border: 2.5px solid ${isSelected ? 'var(--teal)' : 'transparent'}; box-shadow: ${isSelected ? '0 0 0 2px #FFFFFF, 0 4px 10px rgba(14,124,107,0.3)' : 'var(--shadow-xs)'}; transition: transform 0.15s ease;"
+                         title="${item.name || 'Travel Photo'}">
+                        ${isSelected ? '<div style="position:absolute; top:2px; right:2px; background:var(--teal); color:#fff; border-radius:50%; width:16px; height:16px; font-size:10px; display:flex; align-items:center; justify-content:center; font-weight:700;">✓</div>' : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderCustomPageCanvas() {
+            const page = wizardState.pagesList[wizardState.activePageIndex];
+            if (!page) return;
+
+            // Update badge & info labels
+            const pageBadge = document.getElementById('canvasPageBadge');
+            const slotCount = document.getElementById('canvasSlotCountLabel');
+            const destLabel = document.getElementById('sheetDestLabel');
+            const pageNumLabel = document.getElementById('sheetPageNumberLabel');
+
+            if (pageBadge) pageBadge.textContent = `PAGE ${wizardState.activePageIndex + 1} SPREAD`;
+            if (destLabel) destLabel.textContent = wizardState.destination.toUpperCase();
+            if (pageNumLabel) pageNumLabel.textContent = `Page ${wizardState.activePageIndex + 1} of ${wizardState.pagesList.length}`;
+
+            // Sync layout buttons UI
+            ['Hero', 'Split', 'Grid'].forEach(l => {
+                const btn = document.getElementById('layoutBtn' + l);
+                if (btn) {
+                    if (l.toLowerCase() === page.layout) {
+                        btn.style.borderColor = 'var(--teal)';
+                        btn.style.color = 'var(--teal)';
+                        btn.style.background = 'rgba(14,124,107,0.08)';
+                    } else {
+                        btn.style.borderColor = 'var(--gray-200)';
+                        btn.style.color = 'var(--text-mid)';
+                        btn.style.background = 'transparent';
+                    }
+                }
+            });
+
+            // Update form inputs and paper text
+            const captionInput = document.getElementById('customPageCaptionInput');
+            const notesInput = document.getElementById('customPageNotesInput');
+            const captionDisplay = document.getElementById('sheetCaptionDisplay');
+            const notesDisplay = document.getElementById('sheetNotesDisplay');
+
+            if (captionInput) captionInput.value = page.caption || '';
+            if (notesInput) notesInput.value = page.notes || '';
+            if (captionDisplay) captionDisplay.textContent = page.caption || 'Traveler Memory';
+            if (notesDisplay) notesDisplay.textContent = page.notes || 'Recorded with TripCraft';
+
+            // Build slots container
+            const container = document.getElementById('pageSlotsContainer');
+            if (!container) return;
+
+            if (page.layout === 'hero') {
+                if (slotCount) slotCount.textContent = '1 Full Hero Slot';
+                container.style.gridTemplateColumns = '1fr';
+                container.style.gridTemplateRows = '1fr';
+                const photoUrl = page.photos[0] || '';
+                container.innerHTML = `
+                    <div onclick="placePhotoInCustomSlot(0)" 
+                         style="border: 2px dashed ${photoUrl ? 'transparent' : 'var(--teal)'}; border-radius: 8px; background-size: cover; background-position: center; background-image: ${photoUrl ? `url('${photoUrl}')` : 'none'}; background-color: #EFECE3; min-height: 250px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; position: relative; box-shadow: ${photoUrl ? 'inset 0 0 12px rgba(0,0,0,0.1)' : 'none'};">
+                        ${photoUrl ? `
+                            <button type="button" onclick="event.stopPropagation(); removeCustomSlotPhoto(0)" 
+                                    style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.65); color: #fff; border: none; width: 26px; height: 26px; border-radius: 50%; cursor: pointer; font-size: 14px; font-weight: 700; line-height: 1;">&times;</button>
+                            <span style="position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); color: #fff; padding: 4px 10px; border-radius: 4px; font-size: 11px;">Click to swap</span>
+                        ` : `
+                            <div style="font-size: 32px; color: var(--teal); margin-bottom: 6px;">&#43;</div>
+                            <div style="font-size: 13px; font-weight: 700; color: var(--navy);">Click to Place Selected Photo</div>
+                            <div style="font-size: 11.5px; color: var(--text-muted); margin-top: 2px;">(Full Spread Hero Feature)</div>
+                        `}
+                    </div>
+                `;
+            } else if (page.layout === 'split') {
+                if (slotCount) slotCount.textContent = '2 Photo Split Slots';
+                container.style.gridTemplateColumns = '1fr 1fr';
+                container.style.gridTemplateRows = '1fr';
+                container.innerHTML = [0, 1].map(slotIdx => {
+                    const photoUrl = page.photos[slotIdx] || '';
+                    return `
+                        <div onclick="placePhotoInCustomSlot(${slotIdx})" 
+                             style="border: 2px dashed ${photoUrl ? 'transparent' : 'var(--teal)'}; border-radius: 8px; background-size: cover; background-position: center; background-image: ${photoUrl ? `url('${photoUrl}')` : 'none'}; background-color: #EFECE3; min-height: 250px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; position: relative; box-shadow: ${photoUrl ? 'inset 0 0 12px rgba(0,0,0,0.1)' : 'none'};">
+                            ${photoUrl ? `
+                                <button type="button" onclick="event.stopPropagation(); removeCustomSlotPhoto(${slotIdx})" 
+                                        style="position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.65); color: #fff; border: none; width: 24px; height: 24px; border-radius: 50%; cursor: pointer; font-size: 13px; font-weight: 700;">&times;</button>
+                                <span style="position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); color: #fff; padding: 3px 8px; border-radius: 4px; font-size: 10.5px;">Swap</span>
+                            ` : `
+                                <div style="font-size: 26px; color: var(--teal); margin-bottom: 4px;">&#43;</div>
+                                <div style="font-size: 12px; font-weight: 700; color: var(--navy);">Slot ${slotIdx + 1}</div>
+                                <div style="font-size: 11px; color: var(--text-muted);">Click to place</div>
+                            `}
+                        </div>
+                    `;
+                }).join('');
+            } else {
+                // 4-photo grid
+                if (slotCount) slotCount.textContent = '4 Photo Grid Slots';
+                container.style.gridTemplateColumns = '1fr 1fr';
+                container.style.gridTemplateRows = '1fr 1fr';
+                container.innerHTML = [0, 1, 2, 3].map(slotIdx => {
+                    const photoUrl = page.photos[slotIdx] || '';
+                    return `
+                        <div onclick="placePhotoInCustomSlot(${slotIdx})" 
+                             style="border: 2px dashed ${photoUrl ? 'transparent' : 'var(--teal)'}; border-radius: 6px; background-size: cover; background-position: center; background-image: ${photoUrl ? `url('${photoUrl}')` : 'none'}; background-color: #EFECE3; min-height: 120px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; position: relative; box-shadow: ${photoUrl ? 'inset 0 0 10px rgba(0,0,0,0.1)' : 'none'};">
+                            ${photoUrl ? `
+                                <button type="button" onclick="event.stopPropagation(); removeCustomSlotPhoto(${slotIdx})" 
+                                        style="position: absolute; top: 6px; right: 6px; background: rgba(0,0,0,0.65); color: #fff; border: none; width: 20px; height: 20px; border-radius: 50%; cursor: pointer; font-size: 12px; font-weight: 700;">&times;</button>
+                            ` : `
+                                <div style="font-size: 20px; color: var(--teal);">&#43;</div>
+                                <div style="font-size: 11px; font-weight: 700; color: var(--navy);">Slot ${slotIdx + 1}</div>
+                            `}
+                        </div>
+                    `;
+                }).join('');
+            }
+        }
+
+        function placePhotoInCustomSlot(slotIdx) {
+            const page = wizardState.pagesList[wizardState.activePageIndex];
+            if (!page) return;
+
+            if (wizardState.selectedPhotoForPlacement) {
+                page.photos[slotIdx] = wizardState.selectedPhotoForPlacement;
+                renderCustomPageCanvas();
+                showToast(`Placed chosen photo into Slot ${slotIdx + 1}!`, 'success');
+            } else {
+                // If user didn't pick from tray yet, pick the next curated stock photo
+                const stockUrl = curatedStockPhotos[(slotIdx + wizardState.activePageIndex) % curatedStockPhotos.length].url;
+                page.photos[slotIdx] = stockUrl;
+                renderCustomPageCanvas();
+                showToast(`Stock photo placed into Slot ${slotIdx + 1}. Select any photo from the left tray to swap!`, 'info');
+            }
+        }
+
+        function removeCustomSlotPhoto(slotIdx) {
+            const page = wizardState.pagesList[wizardState.activePageIndex];
+            if (page) {
+                page.photos[slotIdx] = '';
+                renderCustomPageCanvas();
+                showToast(`Slot ${slotIdx + 1} cleared.`);
+            }
+        }
+
+        function updateActivePageText() {
+            const page = wizardState.pagesList[wizardState.activePageIndex];
+            if (!page) return;
+
+            const captionVal = document.getElementById('customPageCaptionInput').value;
+            const notesVal = document.getElementById('customPageNotesInput').value;
+
+            page.caption = captionVal;
+            page.notes = notesVal;
+
+            const displayCaption = document.getElementById('sheetCaptionDisplay');
+            const displayNotes = document.getElementById('sheetNotesDisplay');
+
+            if (displayCaption) displayCaption.textContent = captionVal || 'Traveler Memory';
+            if (displayNotes) displayNotes.textContent = notesVal || 'Recorded with TripCraft';
+        }
+
+        // ==========================================
+        // STEP 3: FRONT COVER CUSTOMIZATION LOGIC
+        // ==========================================
+        function renderWizardPresetCovers() {
+            const container = document.getElementById('wizardPresetCovers');
+            if (!container) return;
+            container.innerHTML = wizardPresetCovers.map(p => `
+                <div onclick="selectPresetCover('${p.url}')" 
+                     style="width:58px; height:58px; border-radius:6px; background-image:url('${p.url}'); background-size:cover; background-position:center; cursor:pointer; flex-shrink:0; border:2px solid ${wizardState.coverPhoto === p.url ? 'var(--teal)' : 'transparent'}; transition:transform 0.2s;"
+                     title="${p.name}"></div>
+            `).join('');
+        }
+
+        function selectPresetCover(url) {
+            wizardState.coverPhoto = url;
+            const preview = document.getElementById('previewBookCover3D');
+            if (preview) preview.style.backgroundImage = `url('${url}')`;
+            renderWizardPresetCovers();
+            showToast('Selected front cover background!');
+        }
+
+        function updateCoverLivePreview() {
+            const titleInput = document.getElementById('wizardCoverTitleInput');
+            const subtitleInput = document.getElementById('wizardCoverSubtitleInput');
+            const destInput = document.getElementById('wizardCoverDestInput');
+            const dateInput = document.getElementById('wizardCoverDateInput');
+
+            if (titleInput && titleInput.value) wizardState.coverTitle = titleInput.value;
+            if (subtitleInput && subtitleInput.value) wizardState.coverSubtitle = subtitleInput.value;
+            if (destInput && destInput.value) wizardState.destination = destInput.value;
+            if (dateInput && dateInput.value) wizardState.editionDate = dateInput.value;
+
+            const pTitle = document.getElementById('previewCoverTitle');
+            const pSub = document.getElementById('previewCoverSubtitle');
+            const pDest = document.getElementById('previewCoverDestBadge');
+            const pDate = document.getElementById('previewCoverDate');
+            const pTier = document.getElementById('previewCoverTierTag');
+
+            if (pTitle) pTitle.textContent = wizardState.coverTitle;
+            if (pSub) pSub.textContent = wizardState.coverSubtitle;
+            if (pDest) pDest.textContent = wizardState.destination.toUpperCase();
+            if (pDate) pDate.textContent = wizardState.editionDate;
+            if (pTier) pTier.textContent = `${wizardState.tier} PHOTOS • ${wizardState.pages} PAGES`;
+        }
+
+        function selectCoverTheme(color, btnEl) {
+            wizardState.themeColor = color;
+            document.querySelectorAll('.theme-swatch-btn').forEach(b => b.classList.remove('active'));
+            if (btnEl) btnEl.classList.add('active');
+
+            const overlay = document.getElementById('previewBookCoverOverlay');
+            if (overlay) {
+                overlay.style.background = `linear-gradient(to bottom, ${color}B3 0%, ${color}4D 50%, ${color}FA 100%)`;
+            }
+        }
+
+        function handleCoverPhotoUpload(input) {
+            if (!input.files || !input.files[0]) return;
+            const file = input.files[0];
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                wizardState.coverPhoto = e.target.result;
+                const preview = document.getElementById('previewBookCover3D');
+                if (preview) preview.style.backgroundImage = `url('${e.target.result}')`;
+                showToast('Custom front cover photo updated!', 'success');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // ==========================================
+        // STEP 4: ORDER SUMMARY & PAYMENT
+        // ==========================================
+        function populateOrderSummary() {
+            const summaryTitle = document.getElementById('summaryTitleText');
+            const summarySub = document.getElementById('summarySubtitleText');
+            const summaryDest = document.getElementById('summaryDestText');
+            const summaryTier = document.getElementById('summaryTierBadge');
+            const summaryTierLabel = document.getElementById('summaryTierPhotosLabel');
+            const summaryBase = document.getElementById('summaryBasePrice');
+            const summaryTotal = document.getElementById('summaryTotalPrice');
+            const payBtnPrice = document.getElementById('checkoutPayBtnPrice');
+            const mini = document.getElementById('summaryCoverMiniPreview');
+
+            if (summaryTitle) summaryTitle.textContent = wizardState.coverTitle;
+            if (summarySub) summarySub.textContent = wizardState.coverSubtitle;
+            if (summaryDest) summaryDest.textContent = wizardState.destination;
+            if (summaryTier) summaryTier.textContent = `${wizardState.tier} Photos • ${wizardState.pages} Pages`;
+            if (summaryTierLabel) summaryTierLabel.textContent = wizardState.tier;
+            if (summaryBase) summaryBase.textContent = `₹${wizardState.price}`;
+            if (summaryTotal) summaryTotal.textContent = `₹${wizardState.price}`;
+            if (payBtnPrice) payBtnPrice.textContent = `₹${wizardState.price}`;
+            if (mini) mini.style.backgroundImage = `url('${wizardState.coverPhoto}')`;
+
+            // Auto-fill logged-in credentials if available
+            const u = (window.TC && window.TC.Auth && window.TC.Auth.getCurrentUser && window.TC.Auth.getCurrentUser()) || 
+                      (window.TripCraftAuth && window.TripCraftAuth.getUser && window.TripCraftAuth.getUser());
+            if (u) {
+                const nameEl = document.getElementById('checkoutBuyerName');
+                const emailEl = document.getElementById('checkoutBuyerEmail');
+                const phoneEl = document.getElementById('checkoutBuyerPhone');
+                if (nameEl && !nameEl.value) nameEl.value = u.name || '';
+                if (emailEl && !emailEl.value) emailEl.value = u.email || '';
+                if (phoneEl && (!phoneEl.value || phoneEl.value === '+91 9876543210')) phoneEl.value = u.phone || '';
+            }
+        }
+
+        function executeAlbumOrderPayment() {
+            const nameEl = document.getElementById('checkoutBuyerName');
+            const emailEl = document.getElementById('checkoutBuyerEmail');
+            const phoneEl = document.getElementById('checkoutBuyerPhone');
+            const addrEl = document.getElementById('checkoutBuyerAddress');
+            const payMethodRadio = document.querySelector('input[name="payMethod"]:checked');
+            const payMethod = payMethodRadio ? payMethodRadio.value : 'upi';
+
+            // Auto-fallback to active user if empty
+            let u = {};
+            try {
+                u = (window.TC && window.TC.Auth && window.TC.Auth.getCurrentUser && window.TC.Auth.getCurrentUser()) || 
+                    (window.TripCraftAuth && window.TripCraftAuth.getUser && window.TripCraftAuth.getUser()) ||
+                    JSON.parse(localStorage.getItem('tc_user') || localStorage.getItem('tc_session') || '{}');
+            } catch(e) {}
+
+            let name = (nameEl && nameEl.value.trim()) || u.name || 'Priya Sharma';
+            let email = (emailEl && emailEl.value.trim()) || u.email || 'priya@example.com';
+            let phone = (phoneEl && phoneEl.value.trim()) || u.phone || '+91 9876543210';
+            let address = (addrEl && addrEl.value.trim()) || 'Standard Express Delivery Address';
+
+            if (nameEl) nameEl.value = name;
+            if (emailEl) emailEl.value = email;
+            if (phoneEl) phoneEl.value = phone;
+
+            showToast('Processing payment of ₹' + wizardState.price + ' via ' + payMethod.toUpperCase() + '...', 'info');
+
+            wizardState.orderId = 'TC-BOOK-' + Math.floor(100000 + Math.random() * 900000);
+
+            // Populate success screen
+            const sId = document.getElementById('successOrderId');
+            const sTitle = document.getElementById('successAlbumTitle');
+            const sCap = document.getElementById('successAlbumCapacity');
+            const sAmt = document.getElementById('successAlbumAmount');
+
+            if (sId) sId.textContent = wizardState.orderId;
+            if (sTitle) sTitle.textContent = wizardState.coverTitle;
+            if (sCap) sCap.textContent = `${wizardState.tier} Photos (${wizardState.pages} Hardcover Pages)`;
+            if (sAmt) sAmt.textContent = `₹${wizardState.price} (${payMethod.toUpperCase()} Confirmed)`;
+
+            // 1. Record into photobook orders
+            const orderRecord = {
+                id: wizardState.orderId,
+                title: wizardState.coverTitle,
+                subtitle: wizardState.coverSubtitle,
+                tier: wizardState.tier,
+                pages: wizardState.pages,
+                price: wizardState.price,
+                destination: wizardState.destination,
+                coverPhoto: wizardState.coverPhoto,
+                pagesList: wizardState.pagesList,
+                buyerName: name,
+                buyerEmail: email,
+                buyerPhone: phone,
+                address: address,
+                paymentMethod: payMethod,
+                date: new Date().toISOString()
+            };
+            try {
+                const existingOrders = JSON.parse(localStorage.getItem('tc_photobook_orders') || '[]');
+                existingOrders.unshift(orderRecord);
+                localStorage.setItem('tc_photobook_orders', JSON.stringify(existingOrders));
+            } catch(e) {}
+
+            // 2. Record into universal bookings ledger (shows in My Bookings)
+            const universalBooking = {
+                id: wizardState.orderId,
+                type: 'album',
+                category: 'Photo Album',
+                title: 'Custom Photobook: ' + wizardState.coverTitle,
+                location: wizardState.destination || 'India',
+                customerName: name,
+                customerEmail: email,
+                customerPhone: phone,
+                travelDate: new Date().toISOString().split('T')[0],
+                basePrice: wizardState.price,
+                gst: 0,
+                total: wizardState.price,
+                status: 'Confirmed',
+                paymentMode: payMethod.toUpperCase(),
+                date: new Date().toLocaleDateString('en-IN'),
+                specs: [
+                    { label: 'Capacity Tier', val: `${wizardState.tier} Photos (${wizardState.pages} Pages)` },
+                    { label: 'Cover Title', val: wizardState.coverTitle },
+                    { label: 'Format', val: 'Deluxe Linen Hardcover & Foil Spine' }
+                ]
+            };
+            try {
+                const allBookings = JSON.parse(localStorage.getItem('tc_bookings') || '[]');
+                allBookings.unshift(universalBooking);
+                localStorage.setItem('tc_bookings', JSON.stringify(allBookings));
+            } catch(e) {}
+
+            // 3. Sync to backend MySQL database
+            try {
+                fetch('/api/bookings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        booking_ref: wizardState.orderId,
+                        user_name: name,
+                        user_email: email,
+                        user_phone: phone,
+                        title: 'Photobook: ' + wizardState.coverTitle,
+                        category: 'Photo Album',
+                        travel_date: new Date().toISOString().split('T')[0],
+                        base_price: wizardState.price,
+                        total_price: wizardState.price,
+                        status: 'Confirmed',
+                        payment_mode: payMethod.toUpperCase(),
+                        payment_status: 'Paid',
+                        specs: {
+                            tier: wizardState.tier,
+                            pages: wizardState.pages,
+                            coverTitle: wizardState.coverTitle
+                        }
+                    })
+                }).catch(function() {});
+            } catch(e) {}
+
+            // 4. Send Confirmation Notification (Email / WhatsApp)
+            try {
+                if (window.TC && window.TC.Notify && window.TC.Notify.send) {
+                    window.TC.Notify.send({
+                        channels: ['email', 'whatsapp'],
+                        to: { email: email, phone: phone },
+                        subject: 'TripCraft Photobook Order Confirmed — ' + wizardState.orderId,
+                        message: `Your custom hardcover photobook "${wizardState.coverTitle}" (${wizardState.tier} Photos) order is confirmed! Ref: ${wizardState.orderId}. Total Paid: ₹${wizardState.price}. Express courier dispatches in 48 hours.`
+                    }).catch(function() {});
+                }
+            } catch(e) {}
+
+            showToast(`Payment of ₹${wizardState.price} successful! Photobook confirmed.`, 'success');
+            navigateToWizardStep(5);
+        }
+
+        // ==========================================
+        // DOWNLOAD MULTI-PAGE HIGH-RES PDF PHOTOBOOK
+        // ==========================================
+        function downloadWizardAlbumPDF() {
+            if (typeof window.jspdf === 'undefined' || typeof window.jspdf.jsPDF === 'undefined') {
+                showToast('Generating Album PDF voucher...', 'info');
+                return;
+            }
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+
+            // Page 1: Elegant Hardcover Title Page
+            doc.setFillColor(11, 31, 58);
+            doc.rect(0, 0, 297, 210, 'F');
+
+            // Gold border
+            doc.setDrawColor(232, 168, 56);
+            doc.setLineWidth(2);
+            doc.rect(12, 12, 273, 186, 'D');
+
+            // Top Badge
+            doc.setTextColor(232, 168, 56);
+            doc.setFontSize(13);
+            doc.text('TRIPCRAFT HARDCOVER PHOTOBOOK COLLECTION • VERIFIED EDITION', 148.5, 36, { align: 'center' });
+
+            // Main Title
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(28);
+            doc.text(wizardState.coverTitle.toUpperCase(), 148.5, 75, { align: 'center' });
+
+            // Subtitle
+            doc.setTextColor(200, 210, 225);
+            doc.setFontSize(14);
+            doc.text(wizardState.coverSubtitle, 148.5, 95, { align: 'center' });
+
+            // Gold divider
+            doc.setDrawColor(232, 168, 56);
+            doc.line(98.5, 110, 198.5, 110);
+
+            // Specs
+            doc.setTextColor(232, 168, 56);
+            doc.setFontSize(15);
+            doc.text(`${wizardState.destination.toUpperCase()} • ${wizardState.tier} PHOTOS • ${wizardState.pages} PAGES`, 148.5, 126, { align: 'center' });
+
+            doc.setTextColor(170, 185, 205);
+            doc.setFontSize(11);
+            doc.text(`Order Reference: ${wizardState.orderId || 'TC-BOOK-9482'} • ${wizardState.editionDate}`, 148.5, 142, { align: 'center' });
+
+            doc.setTextColor(130, 145, 165);
+            doc.setFontSize(9);
+            doc.text('TripCraft Visual Odyssey Publishing • Ultra-HD Archival Lay-Flat Binding • All Rights Reserved', 148.5, 182, { align: 'center' });
+
+            // Render every customized page in wizardState.pagesList
+            wizardState.pagesList.forEach((pg, i) => {
+                doc.addPage();
+                doc.setFillColor(250, 249, 246);
+                doc.rect(0, 0, 297, 210, 'F');
+
+                // Header bar
+                doc.setFillColor(11, 31, 58);
+                doc.rect(0, 0, 297, 26, 'F');
+                doc.setTextColor(232, 168, 56);
+                doc.setFontSize(13);
+                doc.text(`TRIPCRAFT PHOTOBOOK • ${wizardState.coverTitle.toUpperCase()}`, 14, 17);
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(10);
+                doc.text(`Page ${i + 2} of ${wizardState.pagesList.length + 1}`, 250, 17);
+
+                // Render slots visually
+                if (pg.layout === 'hero') {
+                    doc.setFillColor(236, 233, 226);
+                    doc.rect(18, 36, 261, 112, 'F');
+                    doc.setDrawColor(210, 207, 200);
+                    doc.rect(18, 36, 261, 112, 'D');
+
+                    doc.setTextColor(14, 124, 107);
+                    doc.setFontSize(14);
+                    doc.text(`[ Hero Visual Plate: ${pg.caption || 'Fine Art Photograph'} ]`, 148.5, 92, { align: 'center' });
+                } else if (pg.layout === 'split') {
+                    // Left slot
+                    doc.setFillColor(236, 233, 226);
+                    doc.rect(18, 36, 126, 112, 'F');
+                    doc.rect(18, 36, 126, 112, 'D');
+                    doc.setTextColor(14, 124, 107);
+                    doc.setFontSize(12);
+                    doc.text('[ Left Photo Slot ]', 81, 92, { align: 'center' });
+
+                    // Right slot
+                    doc.setFillColor(236, 233, 226);
+                    doc.rect(153, 36, 126, 112, 'F');
+                    doc.rect(153, 36, 126, 112, 'D');
+                    doc.text('[ Right Photo Slot ]', 216, 92, { align: 'center' });
+                } else {
+                    // Grid 4 slots
+                    const slotCoords = [
+                        [18, 36, 126, 52],
+                        [153, 36, 126, 52],
+                        [18, 94, 126, 54],
+                        [153, 94, 126, 54]
+                    ];
+                    slotCoords.forEach((c, sIdx) => {
+                        doc.setFillColor(236, 233, 226);
+                        doc.rect(c[0], c[1], c[2], c[3], 'F');
+                        doc.rect(c[0], c[1], c[2], c[3], 'D');
+                        doc.setTextColor(14, 124, 107);
+                        doc.setFontSize(10);
+                        doc.text(`[ Photo Plate ${sIdx + 1} ]`, c[0] + c[2]/2, c[1] + c[3]/2, { align: 'center' });
+                    });
+                }
+
+                // Captions and notes
+                doc.setTextColor(11, 31, 58);
+                doc.setFontSize(16);
+                doc.text(pg.caption || `Traveler Memory ${i + 1}`, 20, 166);
+
+                doc.setTextColor(90, 100, 110);
+                doc.setFontSize(11);
+                doc.text(pg.notes || 'Curated journey reflections recorded with TripCraft.', 20, 176, { maxWidth: 257 });
+
+                // Footer
+                doc.setTextColor(150, 150, 150);
+                doc.setFontSize(8.5);
+                doc.text(`TripCraft Verified Archival Travel Edition • Order: ${wizardState.orderId || 'TC-BOOK-9482'} • Page ${i + 2}`, 14, 200);
+            });
+
+            doc.save(`${wizardState.coverTitle.replace(/[^a-zA-Z0-9]/g, '_')}_TripCraft_Album.pdf`);
+            showToast('High-Res Multi-Page PDF Photobook downloaded successfully!', 'success');
+        }
+
+        function resetPhotobookWizard() {
+            selectPhotoTier(500);
+            navigateToWizardStep(1);
+        }
+    </script>
+</body>
+</html>

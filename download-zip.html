@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download Complete Production Package — TripCraft</title>
+    <meta name="description" content="Download the complete, self-contained TripCraft web application archive with full source code, assets, and documentation.">
+    <meta property="og:title" content="Download Complete Production Package — TripCraft">
+    <meta property="og:description" content="Download the complete, self-contained TripCraft web application archive with full source code, assets, and documentation.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1488646953014-85cb44e25828?q=80&w=1200&auto=format&fit=crop">
+    <link rel="stylesheet" href="shared.css">
+    <style>
+        body {
+            background: #090E2B;
+            color: #FAFAF8;
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+        .dl-container {
+            background: linear-gradient(135deg, #0B1F3A, #132C50);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 28px;
+            max-width: 800px;
+            width: 100%;
+            padding: 44px;
+            box-shadow: 0 24px 70px rgba(0, 0, 0, 0.55);
+            text-align: center;
+        }
+        .dl-header-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(232, 168, 56, 0.15);
+            border: 1px solid rgba(232, 168, 56, 0.35);
+            padding: 6px 16px;
+            border-radius: var(--r-full);
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            margin-bottom: 20px;
+        }
+        .dl-icon {
+            width: 70px;
+            height: 70px;
+            background: rgba(14, 124, 107, 0.18);
+            border: 1.5px solid rgba(14, 124, 107, 0.4);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+        .dl-icon svg {
+            width: 36px;
+            height: 36px;
+            stroke: var(--gold);
+            fill: none;
+            stroke-width: 2.2;
+        }
+        h1 {
+            font-family: 'Bricolage Grotesque', 'Plus Jakarta Sans', sans-serif;
+            font-size: 36px;
+            margin-bottom: 8px;
+            color: #FFFFFF;
+        }
+        h1 span {
+            color: var(--gold);
+        }
+        p {
+            font-size: 14.5px;
+            color: rgba(250, 250, 248, 0.75);
+            line-height: 1.6;
+            margin-bottom: 28px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .file-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            background: rgba(7, 22, 38, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 18px 20px;
+            text-align: left;
+            margin-bottom: 28px;
+        }
+        .file-pill {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 12.5px;
+            color: rgba(250, 250, 248, 0.9);
+        }
+        .file-pill svg {
+            width: 13px;
+            height: 13px;
+            stroke: var(--teal-light);
+            fill: none;
+            stroke-width: 2.2;
+            flex-shrink: 0;
+            margin-right: 6px;
+        }
+        .btn-download-big {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            background: var(--gold);
+            color: var(--navy);
+            font-weight: 700;
+            font-size: 16px;
+            padding: 16px 36px;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.2s;
+            box-shadow: 0 4px 20px rgba(232, 168, 56, 0.35);
+        }
+        .btn-download-big:hover {
+            background: var(--gold-light);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(232, 168, 56, 0.45);
+        }
+        .btn-open-home {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: transparent;
+            color: #FFFFFF;
+            border: 1.5px solid rgba(255, 255, 255, 0.25);
+            font-weight: 600;
+            font-size: 14px;
+            padding: 12px 24px;
+            border-radius: 10px;
+            text-decoration: none;
+            margin-top: 14px;
+            transition: all 0.2s;
+        }
+        .btn-open-home:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--teal-light);
+        }
+        .status-msg {
+            margin-top: 16px;
+            font-size: 13px;
+            color: var(--teal-light);
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dl-container">
+        <div class="dl-header-badge">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Complete 30-File Production Suite (Includes Photo Album Studio &amp; Solo Trips)
+        </div>
+        
+        <div class="dl-icon">
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+        </div>
+
+        <h1>Trip<span>Craft</span> Complete Web App</h1>
+        <p>All pages are fully built with clean inline SVGs, real curated Unsplash photography, responsive layouts, active navigation, interactive Photo Album Studio, and an integrated reservation modal.</p>
+
+        <div class="file-grid" id="fileGrid">
+            <!-- Rendered via JS -->
+        </div>
+
+        <a href="tripcraft.zip" download="tripcraft.zip" class="btn-download-big" id="btnDownload" style="text-decoration:none;">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+            Download tripcraft.zip
+        </a>
+
+        <a href="index.html" class="btn-open-home">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            Open Live TripCraft Homepage (index.html) &rarr;
+        </a>
+
+        <div class="status-msg" id="statusMsg">Ready to download &middot; Complete 30-file production archive ready</div>
+    </div>
+
+    <script>
+        const fileList = [
+            'about.html',
+            'admin.html',
+            'album.html',
+            'bookings.html',
+            'budget.html',
+            'community.html',
+            'contact.html',
+            'dest-detail.html',
+            'destinations.html',
+            'download-zip.html',
+            'faq.html',
+            'footer.html',
+            'guides.html',
+            'hotels.html',
+            'index.html',
+            'itinerary.html',
+            'login.html',
+            'nav.html',
+            'packages.html',
+            'privacy.html',
+            'refund.html',
+            'shared.css',
+            'shared.js',
+            'sitemap.html',
+            'solo.html',
+            'terms.html',
+            'transport.html',
+            'vehicle.html',
+            'wishlist.html'
+        ];
+
+        const grid = document.getElementById('fileGrid');
+        fileList.forEach(fn => {
+            const pill = document.createElement('div');
+            pill.className = 'file-pill';
+            pill.innerHTML = `
+                <div style="display:flex;align-items:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                    <svg viewBox="0 0 24 24"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                    <span>${fn}</span>
+                </div>
+                <span style="color:var(--success);font-size:11px;font-weight:700;">✓</span>
+            `;
+            grid.appendChild(pill);
+        });
+
+        // CRC-32 Lookup Table
+        const crcTable = new Uint32Array(256);
+        for (let i = 0; i < 256; i++) {
+            let c = i;
+            for (let k = 0; k < 8; k++) {
+                c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+            }
+            crcTable[i] = c;
+        }
+
+        function getCRC32(bytes) {
+            let crc = 0xFFFFFFFF;
+            for (let i = 0; i < bytes.length; i++) {
+                crc = (crc >>> 8) ^ crcTable[(crc ^ bytes[i]) & 0xFF];
+            }
+            return (crc ^ 0xFFFFFFFF) >>> 0;
+        }
+
+        // Fetch local files from folder
+        async function fetchAllFiles() {
+            const results = [];
+            for (const fn of fileList) {
+                try {
+                    const res = await fetch(fn);
+                    if (res.ok) {
+                        const content = await res.text();
+                        results.push({ name: fn, content });
+                    }
+                } catch (e) {
+                    console.log('Fetching', fn);
+                }
+            }
+            return results;
+        }
+
+        function createZipBlob(files) {
+            const encoder = new TextEncoder();
+            const entries = files.map(f => {
+                const nameBytes = encoder.encode(f.name);
+                const dataBytes = encoder.encode(f.content);
+                const crc = getCRC32(dataBytes);
+                return {
+                    name: f.name,
+                    nameBytes,
+                    dataBytes,
+                    crc,
+                    size: dataBytes.length
+                };
+            });
+
+            const localParts = [];
+            let offset = 0;
+
+            entries.forEach(f => {
+                f.offset = offset;
+                const headerLen = 30 + f.nameBytes.length;
+                const buf = new Uint8Array(headerLen + f.size);
+                const dv = new DataView(buf.buffer);
+                dv.setUint32(0, 0x04034b50, true); // Local header signature
+                dv.setUint16(4, 0x000a, true); // Version
+                dv.setUint16(6, 0x0000, true); // Flag
+                dv.setUint16(8, 0x0000, true); // Store method
+                dv.setUint16(10, 0x0000, true); // Time
+                dv.setUint16(12, 0x0000, true); // Date
+                dv.setUint32(14, f.crc, true); // CRC32
+                dv.setUint32(18, f.size, true); // Compressed size
+                dv.setUint32(22, f.size, true); // Uncompressed size
+                dv.setUint16(26, f.nameBytes.length, true); // Filename length
+                dv.setUint16(28, 0, true); // Extra length
+                buf.set(f.nameBytes, 30);
+                buf.set(f.dataBytes, headerLen);
+                localParts.push(buf);
+                offset += buf.length;
+            });
+
+            const centralParts = [];
+            let cdSize = 0;
+
+            entries.forEach(f => {
+                const cdLen = 46 + f.nameBytes.length;
+                const buf = new Uint8Array(cdLen);
+                const dv = new DataView(buf.buffer);
+                dv.setUint32(0, 0x02014b50, true); // Central header signature
+                dv.setUint16(4, 0x0014, true); // Version made by
+                dv.setUint16(6, 0x000a, true); // Version needed
+                dv.setUint16(8, 0x0000, true); // Flag
+                dv.setUint16(10, 0x0000, true); // Method
+                dv.setUint16(12, 0x0000, true); // Time
+                dv.setUint16(14, 0x0000, true); // Date
+                dv.setUint32(16, f.crc, true); // CRC32
+                dv.setUint32(20, f.size, true); // Compressed size
+                dv.setUint32(24, f.size, true); // Uncompressed size
+                dv.setUint16(28, f.nameBytes.length, true); // Name length
+                dv.setUint16(30, 0, true); // Extra length
+                dv.setUint16(32, 0, true); // Comment length
+                dv.setUint16(34, 0, true); // Disk
+                dv.setUint16(36, 0, true); // Internal attr
+                dv.setUint32(38, 0, true); // External attr
+                dv.setUint32(42, f.offset, true); // Local header offset
+                buf.set(f.nameBytes, 46);
+                centralParts.push(buf);
+                cdSize += buf.length;
+            });
+
+            const eocd = new Uint8Array(22);
+            const eocdView = new DataView(eocd.buffer);
+            eocdView.setUint32(0, 0x06054b50, true); // EOCD signature
+            eocdView.setUint16(4, 0, true);
+            eocdView.setUint16(6, 0, true);
+            eocdView.setUint16(8, entries.length, true);
+            eocdView.setUint16(10, entries.length, true);
+            eocdView.setUint32(12, cdSize, true);
+            eocdView.setUint32(16, offset, true);
+            eocdView.setUint16(20, 0, true);
+
+            return new Blob([...localParts, ...centralParts, eocd], { type: 'application/zip' });
+        }
+
+        async function generateAndSaveZip() {
+            const btn = document.getElementById('btnDownload');
+            const status = document.getElementById('statusMsg');
+            btn.disabled = true;
+            btn.textContent = 'Generating tripcraft.zip...';
+
+            try {
+                const files = await fetchAllFiles();
+                if (files.length === 0) {
+                    status.textContent = 'Note: Open via local web server (e.g. Live Server) or copy directly from your tripcraft folder.';
+                    btn.disabled = false;
+                    btn.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg> Download tripcraft.zip';
+                    return;
+                }
+                const blob = createZipBlob(files);
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'tripcraft.zip';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                status.textContent = '✓ tripcraft.zip was generated and downloaded successfully!';
+            } catch (err) {
+                console.error(err);
+                status.textContent = 'Error: ' + err.message;
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg> Download tripcraft.zip';
+            }
+        }
+    </script>
+</body>
+</html>

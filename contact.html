@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Support & 24/7 Helpline — TripCraft</title>
+    <meta name="description" content="Get 24/7 customer support for your TripCraft bookings, itinerary adjustments, refunds, and emergency on-trip assistance. Toll-free helpline: 1800 202 6000.">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="TripCraft Customer Support & Emergency Concierge">
+    <meta property="og:description" content="Reach our 24/7 travel desk for verified booking changes, instant refund queries, or emergency on-trip assistance.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1488646953014-85cb44e25828?q=80&w=1200&auto=format&fit=crop">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="shared.css">
+    <style>
+        .contact-hero {
+            background: linear-gradient(135deg, #090E2B, #0D2C26);
+            padding: 50px var(--px);
+            position: relative;
+            overflow: hidden;
+        }
+        .contact-hero-overlay {
+            position: absolute;
+            inset: 0;
+            background-image: url('https://images.unsplash.com/photo-1521737604893-d14cc237f11d?q=80&w=1920&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.12;
+        }
+        .contact-hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 680px;
+        }
+        .contact-hero h1 {
+            font-family: 'Bricolage Grotesque', 'Plus Jakarta Sans', sans-serif;
+            font-size: 38px;
+            font-weight: 700;
+            color: #FFFFFF;
+            line-height: 1.15;
+            margin-bottom: 10px;
+        }
+        .contact-hero p {
+            font-size: 14.5px;
+            color: rgba(255, 255, 255, 0.78);
+            line-height: 1.6;
+        }
+
+        .contact-container {
+            max-width: 1200px;
+            margin: 40px auto 70px auto;
+            padding: 0 var(--px);
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.4fr;
+            gap: 36px;
+            align-items: start;
+        }
+        @media (max-width: 900px) {
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Support Cards */
+        .support-info-col {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .support-card {
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--r-lg);
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+        }
+        .support-card.emergency-card {
+            background: linear-gradient(145deg, #0A1C2A, #0D2C26);
+            color: #FFFFFF;
+            border: 1px solid rgba(13, 148, 136, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+        .emergency-card::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(217, 119, 6, 0.25) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        .support-badge-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            padding: 4px 10px;
+            border-radius: var(--r-full);
+            background: rgba(13, 148, 136, 0.25);
+            color: #5EEAD4;
+            margin-bottom: 12px;
+        }
+        .support-badge-pill.urgent {
+            background: rgba(220, 38, 38, 0.25);
+            color: #FCA5A5;
+        }
+
+        .support-card h3 {
+            font-family: 'Bricolage Grotesque', 'Plus Jakarta Sans', sans-serif;
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+        .support-card p {
+            font-size: 13.5px;
+            line-height: 1.6;
+            color: var(--text-muted);
+        }
+        .emergency-card p {
+            color: rgba(255, 255, 255, 0.78);
+        }
+
+        .contact-channel-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-top: 20px;
+        }
+        .contact-channel-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 14px;
+            border-radius: var(--r-md);
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            text-decoration: none;
+            color: #FFFFFF;
+            transition: all 0.2s ease;
+        }
+        .contact-channel-item:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: var(--teal);
+            transform: translateY(-1px);
+        }
+        .contact-channel-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--teal);
+            color: #FFFFFF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .contact-channel-details {
+            flex: 1;
+        }
+        .contact-channel-label {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.65);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+        .contact-channel-value {
+            font-size: 14px;
+            font-weight: 700;
+            color: #FFFFFF;
+        }
+
+        .hours-notice {
+            background: #F8FAFC;
+            border-left: 3px solid var(--teal);
+            padding: 14px 16px;
+            border-radius: 0 var(--r-md) var(--r-md) 0;
+            margin-top: 14px;
+            font-size: 12.5px;
+            color: var(--text-mid);
+            line-height: 1.5;
+        }
+
+        /* Form Card */
+        .contact-form-card {
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--r-lg);
+            padding: 32px;
+            box-shadow: var(--shadow-sm);
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        @media (max-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            font-size: 12.5px;
+            font-weight: 700;
+            color: var(--navy);
+            display: flex;
+            justify-content: space-between;
+        }
+        .form-group label span.opt {
+            font-weight: 400;
+            color: var(--text-muted);
+            font-size: 11px;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1.5px solid var(--gray-200);
+            border-radius: var(--r-md);
+            font-family: inherit;
+            font-size: 13.5px;
+            color: var(--text);
+            background: #FBFDFD;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--teal);
+            box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.12);
+            background: #FFFFFF;
+        }
+
+        /* Success ticket banner */
+        .ticket-success-panel {
+            display: none;
+            background: linear-gradient(135deg, #F0FDF4, #DCFCE7);
+            border: 1.5px solid #86EFAC;
+            border-radius: var(--r-lg);
+            padding: 28px;
+            text-align: center;
+            animation: fadeIn 0.3s ease;
+        }
+        .ticket-ref-box {
+            background: #FFFFFF;
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: var(--r-md);
+            border: 1px dashed var(--teal);
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--navy);
+            letter-spacing: 1px;
+            margin: 16px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAV BAR -->
+    <nav class="nav" id="mainNav">
+        <div class="nav-left">
+            <a href="index.html" class="nav-logo">
+                <div class="nav-logo-mark">
+                    <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                </div>
+                <span>TripCraft</span>
+            </a>
+            <div class="nav-links">
+                <a href="destinations.html" class="nav-link">Destinations</a>
+                <a href="itinerary.html" class="nav-link">Itinerary</a>
+                <a href="transport.html" class="nav-link">Transport</a>
+                <a href="hotels.html" class="nav-link">Hotels</a>
+                <a href="vehicle.html" class="nav-link">Vehicles</a>
+                <a href="guides.html" class="nav-link">Guides</a>
+                <a href="packages.html" class="nav-link">Packages</a>
+                <a href="budget.html" class="nav-link">Budget</a>
+                <a href="solo.html" class="nav-link">Solo Trip</a>
+                <a href="community.html" class="nav-link">Community</a>
+                <a href="album.html" class="nav-link">Album Studio</a>
+            </div>
+        </div>
+
+        <div class="nav-right">
+            <!-- Currency Toggle -->
+            <div class="nav-currency-picker">
+                <button type="button" class="currency-toggle-btn active" data-curr="INR" onclick="TripCraftCurrency.setCurrency('INR')">&#8377; INR</button>
+                <button type="button" class="currency-toggle-btn" data-curr="USD" onclick="TripCraftCurrency.setCurrency('USD')">$ USD</button>
+                <button type="button" class="currency-toggle-btn" data-curr="EUR" onclick="TripCraftCurrency.setCurrency('EUR')">&euro; EUR</button>
+            </div>
+
+            <!-- Notifications Icon -->
+            <div class="nav-action-wrapper" id="navNotifWrapper" style="position:relative;">
+                <button class="nav-action-icon-btn" onclick="TripCraftNotifications.togglePanel()" title="Trip Notifications">
+                    <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                    <span class="nav-badge" id="navNotifBadge" style="display:none;">0</span>
+                </button>
+                <div class="tc-notif-panel" id="tcNotifPanel">
+                    <div class="tc-notif-header">
+                        <h4>Traveler Notifications</h4>
+                        <button class="tc-notif-clear-btn" onclick="TripCraftNotifications.clearAll()">Clear All</button>
+                    </div>
+                    <div class="tc-notif-list" id="tcNotifList"></div>
+                </div>
+            </div>
+
+            <!-- Wishlist Heart -->
+            <a href="wishlist.html" class="nav-action-icon-btn" title="Saved Wishlist">
+                <svg viewBox="0 0 24 24" id="navWishlistHeart"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                <span class="nav-badge" id="navWishlistBadge" style="display:none;">0</span>
+            </a>
+
+            <!-- User Menu -->
+            <div class="nav-user-dropdown-wrapper" style="position:relative;">
+                <button class="nav-user-btn" onclick="toggleUserMenu()">
+                    <div class="nav-user-avatar" id="navAvatar">PS</div>
+                    <span id="navUserName">Priya</span>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="nav-user-dropdown" id="navUserMenu">
+                    <div class="nav-user-info">
+                        <div class="nav-user-name" id="menuUserName">Priya Sunder</div>
+                        <div class="nav-user-email" id="menuUserEmail">priya.traveler@example.com</div>
+                        <div style="margin-top:6px;"><span class="chip chip-gold" id="menuUserTier">Silver Traveler</span></div>
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <a href="bookings.html" class="dropdown-item">My Bookings</a>
+                    <a href="wishlist.html" class="dropdown-item">My Saved Wishlist</a>
+                    <a href="faq.html" class="dropdown-item">Help Center / FAQ</a>
+                    <a href="contact.html" class="dropdown-item" style="color:var(--teal); font-weight:700;">Customer Support</a>
+                    <div class="dropdown-divider"></div>
+                    <a href="login.html" class="dropdown-item text-danger" onclick="logoutUser()">Sign Out</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <header class="contact-hero">
+        <div class="contact-hero-overlay"></div>
+        <div class="contact-hero-content">
+            <div class="support-badge-pill">TripCraft Traveler Concierge</div>
+            <h1>How Can We Help You Today?</h1>
+            <p>Whether you need to modify an upcoming stay, check refund status, coordinate airport cabs, or request emergency assistance while on the road, our travel support specialists are on standby.</p>
+        </div>
+    </header>
+
+    <!-- MAIN CONTACT CONTENT -->
+    <main class="contact-container">
+        <div class="contact-grid">
+            
+            <!-- LEFT COLUMN: HELPLINE & CHANNELS -->
+            <div class="support-info-col">
+                
+                <!-- Emergency Helpline Card -->
+                <div class="support-card emergency-card">
+                    <div class="support-badge-pill urgent">24/7 On-Trip Emergency</div>
+                    <h3>TripCraft Active Traveler Desk</h3>
+                    <p>Facing travel disruptions, hotel check-in delays, or medical emergencies during your trip? Contact our prioritized emergency escalation line.</p>
+
+                    <div class="contact-channel-list">
+                        <a href="tel:18002026000" class="contact-channel-item">
+                            <div class="contact-channel-icon">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                            </div>
+                            <div class="contact-channel-details">
+                                <div class="contact-channel-label">Toll-Free Indian Helpline</div>
+                                <div class="contact-channel-value">+91 1800 202 6000</div>
+                            </div>
+                        </a>
+
+                        <a href="https://wa.me/919840123456?text=Hello%20TripCraft%20Support%2C%20I%20need%20assistance%20with%20my%20booking" target="_blank" class="contact-channel-item">
+                            <div class="contact-channel-icon" style="background:#25D366;">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                            </div>
+                            <div class="contact-channel-details">
+                                <div class="contact-channel-label">WhatsApp Quick Assist</div>
+                                <div class="contact-channel-value">+91 98401 23456</div>
+                            </div>
+                        </a>
+
+                        <a href="mailto:support@tripcraft.com" class="contact-channel-item">
+                            <div class="contact-channel-icon" style="background:var(--gold);">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                            </div>
+                            <div class="contact-channel-details">
+                                <div class="contact-channel-label">Official Support Desk</div>
+                                <div class="contact-channel-value">support@tripcraft.com</div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="hours-notice" style="background:rgba(255,255,255,0.08); border-left-color:#5EEAD4; color:rgba(255,255,255,0.85);">
+                        <strong>Operating Hours:</strong> Mon &ndash; Sat 9:00 AM &ndash; 8:00 PM IST.<br/>
+                        <em>Average response time &lt; 2 hours. Priority 24/7 routing for guests with active trips.</em>
+                    </div>
+                </div>
+
+                <!-- Live Chatbot Quick Trigger -->
+                <div class="support-card">
+                    <div class="support-badge-pill">Instant Resolution</div>
+                    <h3>Need an Answer in Seconds?</h3>
+                    <p>Our TripCraft AI concierge is equipped with complete knowledge of cancellation cutoffs, refunds, Munnar transit options, and 40/25/20/15 budget splits.</p>
+                    <button class="btn btn-teal" style="width:100%; margin-top:16px; justify-content:center;" onclick="if(window.TripCraftChatbot) TripCraftChatbot.toggle()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                        Launch Interactive AI Assistant
+                    </button>
+                </div>
+
+                <!-- Office Hubs -->
+                <div class="support-card">
+                    <h3>TripCraft Experience Hubs</h3>
+                    <div style="font-size:13px; color:var(--text-mid); line-height:1.6; margin-top:10px;">
+                        <p style="margin-bottom:8px;"><strong>Bengaluru HQ:</strong> Level 4, Brigade Tech Gardens, Brookefield, Bengaluru, KA 560037</p>
+                        <p style="margin-bottom:8px;"><strong>Chennai Hub:</strong> Guindy Industrial Estate, Anna Salai, Chennai, TN 600032</p>
+                        <p><strong>Kochi Desk:</strong> Infopark Phase II, Kakkanad, Kochi, KL 682042</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- RIGHT COLUMN: INTERACTIVE SUPPORT TICKET FORM -->
+            <div class="contact-form-card">
+                <h2 style="font-family:'Bricolage Grotesque', 'Plus Jakarta Sans', sans-serif; font-size:24px; color:var(--navy); margin-bottom:6px;">Submit a Support Request</h2>
+                <p style="font-size:13.5px; color:var(--text-muted); margin-bottom:24px;">Fill out the details below. Our senior concierge agents will respond with updates directly to your registered email address.</p>
+
+                <!-- FORM CONTAINER -->
+                <form id="tcContactForm" onsubmit="handleSupportSubmit(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="supName">Full Name *</label>
+                            <input type="text" id="supName" required placeholder="e.g. Priya Sunder" value="Priya Sunder">
+                        </div>
+                        <div class="form-group">
+                            <label for="supEmail">Email Address *</label>
+                            <input type="email" id="supEmail" required placeholder="e.g. priya@example.com" value="priya.traveler@example.com">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="supCategory">Inquiry Category *</label>
+                            <select id="supCategory" required>
+                                <option value="booking">Booking Modification / Cancellation</option>
+                                <option value="refund">Payment &amp; Refund Status</option>
+                                <option value="itinerary">Custom Itinerary &amp; Guide Assistance</option>
+                                <option value="vehicle">Vehicle Rental / Driver Dispatch</option>
+                                <option value="album">Photo Album Studio &amp; Monetization</option>
+                                <option value="general">General Feedback or Inquiries</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="supBookingId">Booking Reference <span class="opt">(Optional)</span></label>
+                            <input type="text" id="supBookingId" placeholder="e.g. #TC-BK-2026-89421">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="supSubject">Subject *</label>
+                        <input type="text" id="supSubject" required placeholder="e.g. Request to adjust check-in date for Munnar Resort">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="supMessage">Detailed Description *</label>
+                        <textarea id="supMessage" rows="5" required placeholder="Please provide specific details including your preferred changes, passenger names, or questions..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-teal" style="width:100%; justify-content:center; padding:13px; font-size:14px; font-weight:700;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                        Submit Support Ticket
+                    </button>
+                </form>
+
+                <!-- SUCCESS TICKET CONFIRMATION -->
+                <div class="ticket-success-panel" id="ticketSuccessPanel">
+                    <div style="width:54px; height:54px; border-radius:50%; background:#22C55E; color:#FFFFFF; display:flex; align-items:center; justify-content:center; margin:0 auto 14px auto;">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                    </div>
+                    <h3 style="font-family:'Bricolage Grotesque', 'Plus Jakarta Sans', sans-serif; font-size:22px; color:var(--navy); margin-bottom:4px;">Support Ticket Registered!</h3>
+                    <p style="font-size:13.5px; color:var(--text-mid);">Our concierge team has received your inquiry and is reviewing your booking records.</p>
+                    
+                    <div class="ticket-ref-box" id="ticketRefCode">TC-TCK-2026-8942</div>
+                    
+                    <p style="font-size:12.5px; color:var(--text-muted); margin-bottom:18px;">
+                        A confirmation receipt and live tracking link have been dispatched to <strong id="ticketEmailConfirm">priya@example.com</strong>.
+                    </p>
+
+                    <div style="display:flex; justify-content:center; gap:12px;">
+                        <button class="btn btn-outline" onclick="resetSupportForm()">Submit Another Request</button>
+                        <a href="bookings.html" class="btn btn-teal">View My Bookings</a>
+                    </div>
+                </div>
+
+                <!-- PREVIOUS SUBMITTED TICKETS LIST -->
+                <div style="margin-top:36px; padding-top:24px; border-top:1px solid var(--gray-200);">
+                    <h4 style="font-size:14px; font-weight:700; color:var(--navy); margin-bottom:12px; display:flex; align-items:center; gap:8px;">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                        Your Registered Support Tickets
+                    </h4>
+                    <div id="recentTicketsList" style="font-size:12.5px; color:var(--text-muted);">
+                        No previous tickets submitted in this session.
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+    <div class="footer-grid">
+        <div class="footer-brand">
+            <div class="footer-logo">
+                <div class="nav-logo-mark">
+                    <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                </div>
+                <span>TripCraft</span>
+            </div>
+            <p>AI-orchestrated end-to-end travel intelligence platform. Engineered for seamless discovery, instant reservations, solo safety, and creator photobook monetization.</p>
+            <div class="footer-social-strip">
+                <a href="https://twitter.com" target="_blank" class="footer-social-link" title="Twitter / X"><svg viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg></a>
+                <a href="https://instagram.com" target="_blank" class="footer-social-link" title="Instagram"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
+                <a href="https://linkedin.com" target="_blank" class="footer-social-link" title="LinkedIn"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a>
+                <a href="https://github.com" target="_blank" class="footer-social-link" title="GitHub"><svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg></a>
+            </div>
+        </div>
+        <div class="footer-col">
+            <h4>Explore</h4>
+            <ul>
+                <li><a href="destinations.html">Destinations</a></li>
+                <li><a href="packages.html">Curated Packages</a></li>
+                <li><a href="hotels.html">Stays &amp; Resorts</a></li>
+                <li><a href="transport.html">Flights &amp; Rail</a></li>
+                <li><a href="vehicle.html">Car &amp; Bike Rentals</a></li>
+                <li><a href="guides.html">Certified Local Guides</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Special Hubs</h4>
+            <ul>
+                <li><a href="solo.html">Solo Traveler Engine</a></li>
+                <li><a href="community.html">Community &amp; Buddies</a></li>
+                <li><a href="album.html">Photo Album Studio</a></li>
+                <li><a href="budget.html">40/25/20/15 Budgeter</a></li>
+                <li><a href="itinerary.html">Interactive Itinerary</a></li>
+                <li><a href="wishlist.html">Saved Wishlist</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Trust &amp; Legal</h4>
+            <ul>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="contact.html">Customer Support</a></li>
+                <li><a href="faq.html">FAQ &amp; Help Desk</a></li>
+                <li><a href="terms.html">Terms &amp; Conditions</a></li>
+                <li><a href="privacy.html">Privacy Policy</a></li>
+                <li><a href="refund.html">Refund Policy</a></li>
+                <li><a href="sitemap.html">Sitemap</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <div>&copy; 2026 TripCraft Technologies Inc. All rights reserved. 256-bit SSL Encrypted Booking System.</div>
+        <div style="display:flex; gap:16px;">
+            <a href="terms.html">Terms</a>
+            <a href="privacy.html">Privacy</a>
+            <a href="refund.html">Refunds</a>
+            <a href="sitemap.html">Sitemap</a>
+        </div>
+    </div>
+</footer>
+
+    <!-- SHARED JS CORE -->
+    <script src="tc-config.js"></script>
+    <script src="shared.js"></script>
+    <script src="tc-layer.js"></script>
+    <script>
+        function renderSubmittedTickets() {
+            const list = document.getElementById('recentTicketsList');
+            if (!list) return;
+            try {
+                const tickets = JSON.parse(localStorage.getItem('tripcraft_support_tickets') || '[]');
+                if (tickets.length === 0) {
+                    list.innerHTML = '<span style="color:var(--text-muted); font-size:12.5px;">No active support tickets found for your profile.</span>';
+                    return;
+                }
+                list.innerHTML = tickets.slice(0, 3).map(t => `
+                    <div style="background:#F8FAFC; border:1px solid var(--gray-200); border-radius:var(--r-md); padding:10px 12px; margin-bottom:8px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                            <strong style="color:var(--navy);">${t.id}</strong>
+                            <span class="chip chip-teal" style="font-size:10px;">${t.status}</span>
+                        </div>
+                        <div style="font-weight:600; color:var(--text);">${t.subject}</div>
+                        <div style="font-size:11px; color:var(--text-muted); margin-top:3px;">Category: ${t.category} &middot; Submitted ${t.time}</div>
+                    </div>
+                `).join('');
+            } catch(e) {
+                console.error(e);
+            }
+        }
+
+        function handleSupportSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('supName').value.trim();
+            const email = document.getElementById('supEmail').value.trim();
+            const category = document.getElementById('supCategory').value;
+            const bookingId = document.getElementById('supBookingId').value.trim();
+            const subject = document.getElementById('supSubject').value.trim();
+            const message = document.getElementById('supMessage').value.trim();
+
+            const ticketId = 'TC-TCK-2026-' + Math.floor(1000 + Math.random() * 9000);
+
+            // Save to localStorage
+            try {
+                const tickets = JSON.parse(localStorage.getItem('tripcraft_support_tickets') || '[]');
+                tickets.unshift({
+                    id: ticketId,
+                    name,
+                    email,
+                    category,
+                    bookingId,
+                    subject,
+                    message,
+                    status: 'In Review',
+                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                });
+                localStorage.setItem('tripcraft_support_tickets', JSON.stringify(tickets));
+            } catch(err) {}
+
+            // Send notification to user
+            if (window.TripCraftNotifications) {
+                TripCraftNotifications.push({
+                    title: `Support Ticket ${ticketId} Created`,
+                    message: `Your inquiry regarding "${subject}" has been assigned to our senior concierge desk.`,
+                    type: 'support'
+                });
+            }
+
+            // Display success
+            document.getElementById('tcContactForm').style.display = 'none';
+            const panel = document.getElementById('ticketSuccessPanel');
+            panel.style.display = 'block';
+            document.getElementById('ticketRefCode').innerText = ticketId;
+            document.getElementById('ticketEmailConfirm').innerText = email;
+
+            renderSubmittedTickets();
+        }
+
+        function resetSupportForm() {
+            document.getElementById('tcContactForm').reset();
+            document.getElementById('tcContactForm').style.display = 'block';
+            document.getElementById('ticketSuccessPanel').style.display = 'none';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderSubmittedTickets();
+        });
+    </script>
+</body>
+</html>

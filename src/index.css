@@ -1,0 +1,253 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Default Light Theme */
+    --bg-primary: #f8fafc;
+    --bg-secondary: #ffffff;
+    --bg-card: #ffffff;
+    --bg-elevated: #f1f5f9;
+    --bg-input: #ffffff;
+    --text-primary: #0f172a;
+    --text-secondary: #334155;
+    --text-muted: #64748b;
+    --border-color: #cbd5e1;
+    --border-subtle: #e2e8f0;
+    --card-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.08);
+
+    /* Default Accent: Emerald Teal */
+    --accent-color: #0d9488;
+    --accent-hover: #0f766e;
+    --accent-light: #ccfbf1;
+    --accent-glow: rgba(13, 148, 136, 0.18);
+  }
+
+  [data-theme="dark"] {
+    --bg-primary: #040c17;
+    --bg-secondary: #071526;
+    --bg-card: #0b1f3a;
+    --bg-elevated: #142c4f;
+    --bg-input: #040d1a;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --border-color: #1e3a5f;
+    --border-subtle: #142842;
+    --card-shadow: 0 8px 30px -4px rgba(0, 0, 0, 0.5);
+  }
+
+  /* 6 Distinct Global Accent Palettes */
+  [data-accent="teal"] {
+    --accent-color: #0d9488;
+    --accent-hover: #0f766e;
+    --accent-light: #ccfbf1;
+    --accent-glow: rgba(13, 148, 136, 0.25);
+  }
+  [data-accent="blue"] {
+    --accent-color: #2563eb;
+    --accent-hover: #1d4ed8;
+    --accent-light: #dbeafe;
+    --accent-glow: rgba(37, 99, 235, 0.25);
+  }
+  [data-accent="purple"] {
+    --accent-color: #9333ea;
+    --accent-hover: #7e22ce;
+    --accent-light: #f3e8ff;
+    --accent-glow: rgba(147, 51, 234, 0.25);
+  }
+  [data-accent="orange"] {
+    --accent-color: #ea580c;
+    --accent-hover: #c2410c;
+    --accent-light: #ffedd5;
+    --accent-glow: rgba(234, 88, 12, 0.25);
+  }
+  [data-accent="rose"] {
+    --accent-color: #e11d48;
+    --accent-hover: #be123c;
+    --accent-light: #ffe4e6;
+    --accent-glow: rgba(225, 29, 72, 0.25);
+  }
+  [data-accent="green"] {
+    --accent-color: #16a34a;
+    --accent-hover: #15803d;
+    --accent-light: #dcfce7;
+    --accent-glow: rgba(22, 163, 74, 0.25);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+}
+
+/* ==============================================================
+   GLOBAL THEME PROPAGATION RULES
+   Guarantees that when [data-theme="light"] is set on root,
+   every card, page background, border, and text element transforms.
+   ============================================================== */
+
+[data-theme="light"] {
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+/* Light Theme Overrides for hardcoded dark classes */
+[data-theme="light"] .bg-slate-950,
+[data-theme="light"] .bg-navy-950 {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .bg-slate-900,
+[data-theme="light"] .bg-navy-900 {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .bg-slate-900\/90,
+[data-theme="light"] .bg-navy-950\/90,
+[data-theme="light"] .bg-slate-900\/80,
+[data-theme="light"] .bg-slate-900\/50,
+[data-theme="light"] .bg-slate-900\/60,
+[data-theme="light"] .bg-navy-900\/60 {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .bg-slate-800,
+[data-theme="light"] .bg-navy-800 {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .bg-slate-800\/80,
+[data-theme="light"] .bg-slate-800\/60,
+[data-theme="light"] .bg-slate-800\/40 {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .border-slate-800,
+[data-theme="light"] .border-slate-700,
+[data-theme="light"] .border-slate-800\/80,
+[data-theme="light"] .border-slate-700\/60,
+[data-theme="light"] .border-slate-800\/60 {
+  border-color: #cbd5e1 !important;
+}
+
+[data-theme="light"] .text-white {
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .text-slate-100,
+[data-theme="light"] .text-slate-200 {
+  color: #1e293b !important;
+}
+
+[data-theme="light"] .text-slate-300,
+[data-theme="light"] .text-slate-400 {
+  color: #475569 !important;
+}
+
+[data-theme="light"] input,
+[data-theme="light"] select,
+[data-theme="light"] textarea {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+
+[data-theme="light"] input::placeholder,
+[data-theme="light"] textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+/* ==============================================================
+   GLOBAL ACCENT COLOR OVERRIDES
+   Guarantees that when [data-accent="..."] changes, ALL buttons,
+   active links, badges, rings, and focus outlines change color.
+   ============================================================== */
+
+/* Buttons & Solid Fills */
+.bg-teal-600,
+.bg-teal-500,
+button.bg-teal-600,
+.btn-primary {
+  background-color: var(--accent-color) !important;
+  color: #ffffff !important;
+}
+
+.hover\:bg-teal-500:hover,
+.hover\:bg-teal-600:hover,
+button.bg-teal-600:hover {
+  background-color: var(--accent-hover) !important;
+}
+
+/* Text Colors */
+.text-teal-400,
+.text-teal-300,
+.text-teal-500,
+.group:hover .group-hover\:text-teal-400 {
+  color: var(--accent-color) !important;
+}
+
+/* Borders */
+.border-teal-500,
+.border-teal-500\/40,
+.border-teal-500\/30,
+.border-teal-500\/50,
+.hover\:border-teal-500\/50:hover,
+.focus\:border-teal-500:focus {
+  border-color: var(--accent-color) !important;
+}
+
+/* Glow / Subtle backgrounds */
+.bg-teal-500\/10,
+.bg-teal-500\/20,
+.bg-teal-950,
+.bg-teal-950\/80,
+.bg-teal-950\/60,
+.bg-teal-950\/40,
+.bg-teal-950\/20,
+.bg-teal-600\/20 {
+  background-color: var(--accent-glow) !important;
+  color: var(--accent-color) !important;
+}
+
+/* Rings & Form Controls */
+.ring-teal-500,
+.focus\:ring-teal-500:focus {
+  --tw-ring-color: var(--accent-color) !important;
+}
+
+.accent-teal-500,
+input[type="range"],
+input[type="checkbox"]:checked {
+  accent-color: var(--accent-color) !important;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}

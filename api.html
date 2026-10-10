@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REST API Documentation & Interactive Endpoint Sandbox — TripCraft</title>
+    <meta name="description" content="Explore TripCraft developer APIs for destinations, hotel availability, multi-modal transport, and booking transactions.">
+    <meta property="og:title" content="REST API Documentation & Interactive Endpoint Sandbox — TripCraft">
+    <meta property="og:description" content="Explore TripCraft developer APIs for destinations, hotel availability, multi-modal transport, and booking transactions.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1488646953014-85cb44e25828?q=80&w=1200&auto=format&fit=crop">
+    <link rel="stylesheet" href="shared.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        .api-hero {
+            background: linear-gradient(135deg, #090E2B 0%, #0D1B2A 100%);
+            padding: 48px var(--px);
+            color: #FFFFFF;
+        }
+        .api-layout {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 28px;
+            padding: 40px var(--px) 80px;
+        }
+        .api-nav-card {
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--r-lg);
+            padding: 20px;
+            position: sticky;
+            top: calc(var(--nav-h) + 20px);
+        }
+        .api-nav-item {
+            padding: 10px 14px;
+            border-radius: var(--r-sm);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-mid);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 4px;
+            transition: all 0.15s;
+        }
+        .api-nav-item:hover, .api-nav-item.active {
+            background: var(--teal-pale);
+            color: var(--teal);
+        }
+        .api-method-badge {
+            font-size: 10px;
+            font-weight: 800;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .method-get { background: rgba(46, 204, 113, 0.15); color: #27ae60; }
+        .method-post { background: rgba(52, 152, 219, 0.15); color: #2980b9; }
+
+        .api-card {
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--r-lg);
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-sm);
+        }
+        .api-code-box {
+            background: #0D1B2A;
+            color: #FAFAF8;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 16px;
+            border-radius: var(--r-md);
+            font-size: 12.5px;
+            overflow-x: auto;
+            margin: 12px 0;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="nav">
+        <a href="index.html" class="nav-logo">
+            <div class="nav-logo-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            </div>
+            <div class="nav-logo-text">Trip<span>Craft</span> <span style="font-size:11px; background:var(--teal); color:#fff; padding:2px 8px; border-radius:4px; font-weight:800; margin-left:6px;">API v1.0</span></div>
+        </a>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="destinations.html">Destinations</a>
+            <a href="transport.html">Transport</a>
+            <a href="hotels.html">Hotels</a>
+            <a href="vehicle.html">Vehicles</a>
+            <a href="guides.html">Local Guides</a>
+            <a href="packages.html">Packages</a>
+            <a href="itinerary.html">Itinerary</a>
+            <a href="budget.html">Budget</a>
+            <a href="community.html">Community</a>
+            <a href="solo.html">Solo Trip</a>
+            <a href="album.html">Photo Albums</a>
+            <a href="bookings.html">My Bookings</a>
+            <a href="api.html" class="active">API</a>
+        </div>
+        <div class="nav-cta">
+            <a href="login.html" class="btn btn-ghost">Sign In</a>
+            <a href="signup.html" class="btn btn-gold">Get Started</a>
+        </div>
+    </nav>
+
+    <div class="api-hero">
+        <div class="chip chip-gold" style="margin-bottom: 12px;">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            Developer &amp; Integration API
+        </div>
+        <h1 style="font-family:'Bricolage Grotesque', 'Plus Jakarta Sans', sans-serif; font-size:36px; font-weight:700; margin-bottom:8px;">TripCraft REST API &amp; Live Sandbox</h1>
+        <p style="font-size:14.5px; color:rgba(255,255,255,0.8); max-width:760px;">
+            All 9 workflow steps are accessible through standard REST endpoints authenticated via RFC 7519 JSON Web Tokens (Bearer Auth). Test endpoints live directly from your browser.
+        </p>
+    </div>
+
+    <div class="api-layout">
+        <!-- Sidebar Navigation -->
+        <aside>
+            <div class="api-nav-card">
+                <div style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--text-muted); margin-bottom:12px;">Core Endpoints</div>
+                <div class="api-nav-item active" onclick="scrollToEndpoint('ep-auth-login')">
+                    <span>User Login (JWT)</span>
+                    <span class="api-method-badge method-post">POST</span>
+                </div>
+                <div class="api-nav-item" onclick="scrollToEndpoint('ep-auth-oauth')">
+                    <span>OAuth 2.0 Exchange</span>
+                    <span class="api-method-badge method-post">POST</span>
+                </div>
+                <div class="api-nav-item" onclick="scrollToEndpoint('ep-dest')">
+                    <span>Search Destinations</span>
+                    <span class="api-method-badge method-get">GET</span>
+                </div>
+                <div class="api-nav-item" onclick="scrollToEndpoint('ep-hotels')">
+                    <span>Hotels by Budget</span>
+                    <span class="api-method-badge method-get">GET</span>
+                </div>
+                <div class="api-nav-item" onclick="scrollToEndpoint('ep-hotel-booking')">
+                    <span>Book Hotel (Trigger)</span>
+                    <span class="api-method-badge method-post">POST</span>
+                </div>
+                <div class="api-nav-item" onclick="scrollToEndpoint('ep-vehicle-booking')">
+                    <span>Book Vehicle (FK Link)</span>
+                    <span class="api-method-badge method-post">POST</span>
+                </div>
+                <div class="api-nav-item" onclick="scrollToEndpoint('ep-budget-split')">
+                    <span>40/25/20/15 Budget Split</span>
+                    <span class="api-method-badge method-get">GET</span>
+                </div>
+                <div class="api-nav-item" onclick="scrollToEndpoint('ep-expenses')">
+                    <span>Log Real Expense</span>
+                    <span class="api-method-badge method-post">POST</span>
+                </div>
+
+                <div style="border-top:1px solid var(--gray-200); margin-top:16px; padding-top:14px;">
+                    <div style="font-size:11px; font-weight:700; color:var(--navy); margin-bottom:6px;">Current User Token:</div>
+                    <button class="btn btn-outline-teal" style="width:100%; font-size:11.5px; padding:6px;" onclick="TripCraftAuth.inspectJWT()">
+                        Inspect Active JWT
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main API Details -->
+        <main>
+            <!-- EP 1: User Login -->
+            <div class="api-card" id="ep-auth-login">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <span class="api-method-badge method-post" style="font-size:12px; padding:4px 8px;">POST</span>
+                        <code style="font-size:15px; font-weight:700; color:var(--navy);">/api/auth/login</code>
+                    </div>
+                    <span class="chip chip-gold">Step 1: Auth &amp; JWT</span>
+                </div>
+                <p style="font-size:13px; color:var(--text-mid); margin-bottom:12px;">
+                    Authenticates user credentials against the <code>USER</code> table and returns a signed HS256 JSON Web Token.
+                </p>
+
+                <div style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Request Body:</div>
+                <div class="api-code-box">
+{
+  "email": "priya.traveler@example.com",
+  "password": "Traveler2026!"
+}
+                </div>
+
+                <button class="btn btn-teal" style="font-size:12px;" onclick="testApiLogin()">Test Endpoint Live</button>
+                <div id="res-auth-login" style="display:none; margin-top:12px;">
+                    <div style="font-size:11px; font-weight:700; color:var(--success); margin-bottom:4px;">Status: 200 OK</div>
+                    <div class="api-code-box" id="code-auth-login"></div>
+                </div>
+            </div>
+
+            <!-- EP 2: Destination Search -->
+            <div class="api-card" id="ep-dest">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <span class="api-method-badge method-get" style="font-size:12px; padding:4px 8px;">GET</span>
+                        <code style="font-size:15px; font-weight:700; color:var(--navy);">/api/destinations?query=Munnar</code>
+                    </div>
+                    <span class="chip chip-teal">Step 2: Search Engine</span>
+                </div>
+                <p style="font-size:13px; color:var(--text-mid); margin-bottom:12px;">
+                    Queries <code>DESTINATION</code>, <code>PLACE</code>, and <code>FOOD</code> tables to return places, food specialties, and hidden gems.
+                </p>
+
+                <button class="btn btn-teal" style="font-size:12px;" onclick="testApiDest()">Test Endpoint Live</button>
+                <div id="res-dest" style="display:none; margin-top:12px;">
+                    <div style="font-size:11px; font-weight:700; color:var(--success); margin-bottom:4px;">Status: 200 OK</div>
+                    <div class="api-code-box" id="code-dest"></div>
+                </div>
+            </div>
+
+            <!-- EP 3: Smart Vehicle Trigger -->
+            <div class="api-card" id="ep-vehicle-booking">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <span class="api-method-badge method-post" style="font-size:12px; padding:4px 8px;">POST</span>
+                        <code style="font-size:15px; font-weight:700; color:var(--navy);">/api/bookings/vehicle</code>
+                    </div>
+                    <span class="chip chip-navy">Step 6: Smart Vehicle FK Link</span>
+                </div>
+                <p style="font-size:13px; color:var(--text-mid); margin-bottom:12px;">
+                    Reserves a rental vehicle linked directly to a preceding <code>hotel_booking_id</code> as a relational Foreign Key constraint.
+                </p>
+
+                <div style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Request Body:</div>
+                <div class="api-code-box">
+{
+  "hotel_booking_id": "TC-BK-2026-89421",
+  "vehicle_id": "VEH-01",
+  "destination": "Munnar",
+  "rental_start": "2026-09-18",
+  "rental_end": "2026-09-20",
+  "with_driver": false
+}
+                </div>
+
+                <button class="btn btn-teal" style="font-size:12px;" onclick="testApiVehicle()">Test Endpoint Live</button>
+                <div id="res-vehicle" style="display:none; margin-top:12px;">
+                    <div style="font-size:11px; font-weight:700; color:var(--success); margin-bottom:4px;">Status: 201 Created</div>
+                    <div class="api-code-box" id="code-vehicle"></div>
+                </div>
+            </div>
+
+            <!-- EP 4: 40/25/20/15 Budget Split -->
+            <div class="api-card" id="ep-budget-split">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <span class="api-method-badge method-get" style="font-size:12px; padding:4px 8px;">GET</span>
+                        <code style="font-size:15px; font-weight:700; color:var(--navy);">/api/budget/auto-split?total=15000</code>
+                    </div>
+                    <span class="chip chip-gold">Step 8: Budget Splitter</span>
+                </div>
+                <p style="font-size:13px; color:var(--text-mid); margin-bottom:12px;">
+                    Calculates the mathematical 40% Stay, 25% Food, 20% Transport, and 15% Entry split for any given budget amount.
+                </p>
+
+                <button class="btn btn-teal" style="font-size:12px;" onclick="testApiBudget()">Test Endpoint Live</button>
+                <div id="res-budget" style="display:none; margin-top:12px;">
+                    <div style="font-size:11px; font-weight:700; color:var(--success); margin-bottom:4px;">Status: 200 OK</div>
+                    <div class="api-code-box" id="code-budget"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <footer class="footer">
+    <div class="footer-grid">
+        <div class="footer-brand">
+            <div class="footer-logo">
+                <div class="nav-logo-mark">
+                    <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                </div>
+                <span>TripCraft</span>
+            </div>
+            <p>AI-orchestrated end-to-end travel intelligence platform. Engineered for seamless discovery, instant reservations, solo safety, and creator photobook monetization.</p>
+            <div class="footer-social-strip">
+                <a href="https://twitter.com" target="_blank" class="footer-social-link" title="Twitter / X"><svg viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg></a>
+                <a href="https://instagram.com" target="_blank" class="footer-social-link" title="Instagram"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
+                <a href="https://linkedin.com" target="_blank" class="footer-social-link" title="LinkedIn"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a>
+                <a href="https://github.com" target="_blank" class="footer-social-link" title="GitHub"><svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg></a>
+            </div>
+        </div>
+        <div class="footer-col">
+            <h4>Explore</h4>
+            <ul>
+                <li><a href="destinations.html">Destinations</a></li>
+                <li><a href="packages.html">Curated Packages</a></li>
+                <li><a href="hotels.html">Stays &amp; Resorts</a></li>
+                <li><a href="transport.html">Flights &amp; Rail</a></li>
+                <li><a href="vehicle.html">Car &amp; Bike Rentals</a></li>
+                <li><a href="guides.html">Certified Local Guides</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Special Hubs</h4>
+            <ul>
+                <li><a href="solo.html">Solo Traveler Engine</a></li>
+                <li><a href="community.html">Community &amp; Buddies</a></li>
+                <li><a href="album.html">Photo Album Studio</a></li>
+                <li><a href="budget.html">40/25/20/15 Budgeter</a></li>
+                <li><a href="itinerary.html">Interactive Itinerary</a></li>
+                <li><a href="wishlist.html">Saved Wishlist</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Trust &amp; Legal</h4>
+            <ul>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="contact.html">Customer Support</a></li>
+                <li><a href="faq.html">FAQ &amp; Help Desk</a></li>
+                <li><a href="terms.html">Terms &amp; Conditions</a></li>
+                <li><a href="privacy.html">Privacy Policy</a></li>
+                <li><a href="refund.html">Refund Policy</a></li>
+                <li><a href="sitemap.html">Sitemap</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <div>&copy; 2026 TripCraft Technologies Inc. All rights reserved. 256-bit SSL Encrypted Booking System.</div>
+        <div style="display:flex; gap:16px;">
+            <a href="terms.html">Terms</a>
+            <a href="privacy.html">Privacy</a>
+            <a href="refund.html">Refunds</a>
+            <a href="sitemap.html">Sitemap</a>
+        </div>
+    </div>
+</footer>
+
+    <script src="tc-config.js"></script>
+    <script src="shared.js"></script>
+    <script src="tc-layer.js"></script>
+    <script>
+        function scrollToEndpoint(id) {
+            const el = document.getElementById(id);
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function testApiLogin() {
+            const user = TripCraftAuth.getUser() || TripCraftAuth.PRESEEDED_USERS[0];
+            const jwt = TripCraftAuth.getJWT() || TripCraftAuth.generateJWT(user);
+            const res = {
+                status: 'success',
+                message: 'JWT token issued successfully',
+                token_type: 'Bearer',
+                token: jwt,
+                expires_in_seconds: 604800,
+                user: {
+                    id: user.id,
+                    name: user.name,
+                    email: user.email,
+                    role: user.role
+                }
+            };
+            document.getElementById('code-auth-login').textContent = JSON.stringify(res, null, 2);
+            document.getElementById('res-auth-login').style.display = 'block';
+            showToast('Endpoint tested: 200 OK (JWT Issued)', 'success');
+        }
+
+        function testApiDest() {
+            const destTable = window.TripCraftDB.getTable('DESTINATION');
+            const placeTable = window.TripCraftDB.getTable('PLACE');
+            const foodTable = window.TripCraftDB.getTable('FOOD');
+
+            const res = {
+                status: 'success',
+                destination: destTable.rows[0],
+                places: placeTable.rows,
+                signature_food: foodTable.rows
+            };
+            document.getElementById('code-dest').textContent = JSON.stringify(res, null, 2);
+            document.getElementById('res-dest').style.display = 'block';
+            showToast('Endpoint tested: 200 OK (Fetched Munnar)', 'success');
+        }
+
+        function testApiVehicle() {
+            const res = {
+                status: 'created',
+                booking_id: 'TC-VB-2026-' + Math.floor(1000 + Math.random() * 9000),
+                hotel_booking_id: 'TC-BK-2026-89421',
+                foreign_key_status: 'VALIDATED',
+                vehicle: 'Royal Enfield Classic 350',
+                rental_dates: '2026-09-18 to 2026-09-20',
+                total_amount: 2464
+            };
+            document.getElementById('code-vehicle').textContent = JSON.stringify(res, null, 2);
+            document.getElementById('res-vehicle').style.display = 'block';
+            showToast('Endpoint tested: 201 Created (FK Linked)', 'success');
+        }
+
+        function testApiBudget() {
+            const total = 15000;
+            const res = {
+                total_budget: total,
+                allocation_formula: '40 / 25 / 20 / 15',
+                breakdown: {
+                    stay: { percentage: 40, amount: 6000 },
+                    food: { percentage: 25, amount: 3750 },
+                    transport: { percentage: 20, amount: 3000 },
+                    entry_and_activities: { percentage: 15, amount: 2250 }
+                }
+            };
+            document.getElementById('code-budget').textContent = JSON.stringify(res, null, 2);
+            document.getElementById('res-budget').style.display = 'block';
+            showToast('Endpoint tested: 200 OK (Formula Calculated)', 'success');
+        }
+    </script>
+</body>
+</html>

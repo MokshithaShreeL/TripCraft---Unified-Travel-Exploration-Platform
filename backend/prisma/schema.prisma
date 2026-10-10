@@ -1,0 +1,477 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id               String            @id @default(uuid())
+  name             String
+  email            String            @unique
+  password         String
+  role             String            @default("user") // "user" | "admin"
+  phone            String?
+  language         String            @default("en")   // "en" | "ta" | "hi"
+  currency         String            @default("INR")
+  avatar           String?           @db.Text
+  bio              String?           @db.Text
+  travel_style     String?           @default("Adventure")
+  allow_discovery  Boolean           @default(false)
+  is_active        Boolean           @default(true)
+  created_at       DateTime          @default(now())
+  updated_at       DateTime          @updatedAt
+
+  oauth_accounts   OAuthAccount[]
+  bookings         Booking[]
+  itineraries      Itinerary[]
+  community_posts  CommunityPost[]
+  comments         CommunityComment[]
+  likes            CommunityLike[]
+  photo_albums     PhotoAlbum[]
+  wishlists        Wishlist[]
+  recently_accessed RecentlyAccessed[]
+  notifications    Notification[]
+  solo_profile     SoloProfile?
+  sent_requests    SoloConnectionRequest[] @relation("SentRequests")
+  received_requests SoloConnectionRequest[] @relation("ReceivedRequests")
+
+  @@map("users")
+}
+
+model OAuthAccount {
+  id             String   @id @default(uuid())
+  user_id        String
+  provider       String   // "google"
+  provider_id    String
+  created_at     DateTime @default(now())
+
+  user           User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([provider, provider_id])
+  @@map("oauth_accounts")
+}
+
+model Destination {
+  id               String              @id
+  name             String
+  state            String
+  category         String
+  image            String              @db.Text
+  tagline          String?
+  description      String?             @db.Text
+  best_time        String?
+  budget_estimate  Int?
+  safety_score     Int                 @default(90)
+  weather_temp     String?             @default("24°C")
+  weather_condition String?            @default("Clear")
+  is_featured      Boolean             @default(false)
+  created_at       DateTime            @default(now())
+
+  places           DestinationPlace[]
+  hidden_spots     HiddenSpot[]
+  hotels           Hotel[]
+  packages         TravelPackage[]
+  guides           LocalGuide[]
+  itineraries      Itinerary[]
+
+  @@map("destinations")
+}
+
+model DestinationPlace {
+  id               String       @id @default(uuid())
+  destination_id   String
+  name             String
+  description      String       @db.Text
+  image            String       @db.Text
+  category         String       // "Attraction" | "Viewpoint" | "Heritage"
+  entry_fee        Int          @default(0)
+  timings          String?
+
+  destination      Destination  @relation(fields: [destination_id], references: [id], onDelete: Cascade)
+
+  @@map("destination_places")
+}
+
+model HiddenSpot {
+  id               String       @id @default(uuid())
+  destination_id   String
+  name             String
+  description      String       @db.Text
+  image            String       @db.Text
+  difficulty       String?      @default("Moderate")
+  best_hour        String?      @default("Sunrise")
+
+  destination      Destination  @relation(fields: [destination_id], references: [id], onDelete: Cascade)
+
+  @@map("hidden_spots")
+}
+
+model Hotel {
+  id               String        @id
+  destination_id   String
+  name             String
+  hotel_type       String        // "Luxury Resort" | "Heritage" | "Boutique" | "Budget"
+  rating           Decimal       @db.Decimal(3, 2)
+  reviews_count    Int           @default(0)
+  price_per_night  Int
+  address          String?       @db.Text
+  image            String        @db.Text
+  amenities        String?       @db.Text // JSON string
+  distance_center  String?       @default("2.5 km from center")
+  has_wifi         Boolean       @default(true)
+  has_pool         Boolean       @default(false)
+  has_ac           Boolean       @default(true)
+  has_breakfast    Boolean       @default(true)
+  created_at       DateTime      @default(now())
+
+  destination      Destination   @relation(fields: [destination_id], references: [id], onDelete: Cascade)
+  rooms            HotelRoom[]
+  reviews          HotelReview[]
+
+  @@map("hotels")
+}
+
+model HotelRoom {
+  id               String   @id @default(uuid())
+  hotel_id         String
+  name             String
+  capacity_adults  Int      @default(2)
+  capacity_children Int     @default(1)
+  price_per_night  Int
+  amenities        String?  @db.Text
+  image            String?  @db.Text
+
+  hotel            Hotel    @relation(fields: [hotel_id], references: [id], onDelete: Cascade)
+
+  @@map("hotel_rooms")
+}
+
+model HotelReview {
+  id               String   @id @default(uuid())
+  hotel_id         String
+  user_name        String
+  rating           Int
+  comment          String   @db.Text
+  created_at       DateTime @default(now())
+
+  hotel            Hotel    @relation(fields: [hotel_id], references: [id], onDelete: Cascade)
+
+  @@map("hotel_reviews")
+}
+
+model Flight {
+  id               String   @id
+  airline          String
+  flight_no        String
+  from_city        String
+  to_city          String
+  dep_time         String
+  arr_time         String
+  duration         String
+  stops            Int      @default(0)
+  cabin_class      String   @default("Economy")
+  price            Int
+  seats_available  Int      @default(24)
+  refundable       Boolean  @default(true)
+  baggage          String   @default("15 kg check-in + 7 kg cabin")
+
+  @@map("flights")
+}
+
+model Train {
+  id               String   @id
+  train_no         String
+  name             String
+  from_station     String
+  to_station       String
+  dep_time         String
+  arr_time         String
+  duration         String
+  classes          String   // "1A, 2A, 3A, SL"
+  base_price       Int
+  available_seats  Int      @default(45)
+
+  @@map("trains")
+}
+
+model Bus {
+  id               String   @id
+  operator         String
+  bus_type         String   // "Volvo Multi-Axle A/C Sleeper"
+  from_city        String
+  to_city          String
+  dep_time         String
+  arr_time         String
+  duration         String
+  fare             Int
+  seats_available  Int      @default(30)
+
+  @@map("buses")
+}
+
+model Cab {
+  id               String   @id
+  cab_type         String   // "Sedan" | "Prime SUV" | "Executive EV" | "Tempo Traveller"
+  capacity         Int      @default(4)
+  luggage          Int      @default(2)
+  price_per_km     Int      @default(15)
+  min_distance     Int      @default(250)
+  rating           Decimal  @default(4.9) @db.Decimal(3, 2)
+  features         String?  // JSON string
+
+  @@map("cabs")
+}
+
+model LocalGuide {
+  id               String   @id
+  destination_id   String
+  name             String
+  experience_years Int      @default(5)
+  languages        String   // "English, Tamil, Hindi"
+  daily_rate       Int
+  rating           Decimal  @default(4.9) @db.Decimal(3, 2)
+  reviews_count    Int      @default(48)
+  specialization   String   // "Culture" | "Photography" | "Food" | "Trekking"
+  avatar           String   @db.Text
+  bio              String?  @db.Text
+  verified         Boolean  @default(true)
+
+  destination      Destination @relation(fields: [destination_id], references: [id], onDelete: Cascade)
+
+  @@map("local_guides")
+}
+
+model TravelPackage {
+  id               String   @id
+  destination_id   String
+  title            String
+  duration_days    Int
+  duration_nights  Int
+  price            Int
+  discount_price   Int?
+  rating           Decimal  @default(4.8) @db.Decimal(3, 2)
+  reviews_count    Int      @default(80)
+  image            String   @db.Text
+  highlights       String?  @db.Text // JSON
+  inclusions       String?  @db.Text // JSON
+  exclusions       String?  @db.Text // JSON
+  day_plan         String?  @db.Text // JSON
+
+  destination      Destination @relation(fields: [destination_id], references: [id], onDelete: Cascade)
+
+  @@map("travel_packages")
+}
+
+model Itinerary {
+  id               String   @id @default(uuid())
+  user_id          String?
+  destination_id   String?
+  title            String
+  days_count       Int      @default(3)
+  total_budget     Int?
+  day_plan         String   @db.Text // JSON day-wise activities
+  share_token      String?  @unique
+  created_at       DateTime @default(now())
+
+  user             User?        @relation(fields: [user_id], references: [id], onDelete: SetNull)
+  destination      Destination? @relation(fields: [destination_id], references: [id], onDelete: SetNull)
+
+  @@map("itineraries")
+}
+
+model Booking {
+  id               String   @id
+  user_id          String?
+  item_type        String   // "package" | "hotel" | "flight" | "train" | "bus" | "cab" | "guide" | "album"
+  item_id          String?
+  item_title       String
+  destination      String?
+  travel_date      String
+  adults           Int      @default(1)
+  children         Int      @default(0)
+  rooms            Int      @default(1)
+  amount           Int
+  gst_amount       Int      @default(0)
+  status           String   @default("Confirmed") // "Confirmed" | "Completed" | "Cancelled"
+  contact_name     String
+  contact_email    String
+  contact_phone    String?
+  share_token      String?  @unique
+  created_at       DateTime @default(now())
+
+  user             User?    @relation(fields: [user_id], references: [id], onDelete: SetNull)
+  payment          Payment?
+  invoice          Invoice?
+
+  @@map("bookings")
+}
+
+model Payment {
+  id               String   @id @default(uuid())
+  booking_id       String   @unique
+  payment_method   String   @default("Credit Card / NetBanking")
+  transaction_ref  String   @unique
+  amount           Int
+  status           String   @default("Success") // "Success" | "Refunded"
+  created_at       DateTime @default(now())
+
+  booking          Booking  @relation(fields: [booking_id], references: [id], onDelete: Cascade)
+
+  @@map("payments")
+}
+
+model Invoice {
+  id               String   @id @default(uuid())
+  booking_id       String   @unique
+  invoice_number   String   @unique
+  subtotal         Int
+  gst              Int
+  grand_total      Int
+  pdf_url          String?
+  issued_at        DateTime @default(now())
+
+  booking          Booking  @relation(fields: [booking_id], references: [id], onDelete: Cascade)
+
+  @@map("invoices")
+}
+
+model CommunityPost {
+  id               String   @id @default(uuid())
+  user_id          String
+  destination      String
+  title            String
+  content          String   @db.Text
+  category         String   @default("Review") // "Review" | "Tip" | "Food" | "Warning" | "Question"
+  images           String?  @db.Text // JSON
+  likes_count      Int      @default(0)
+  comments_count   Int      @default(0)
+  created_at       DateTime @default(now())
+
+  user             User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  likes            CommunityLike[]
+  comments         CommunityComment[]
+
+  @@map("community_posts")
+}
+
+model CommunityLike {
+  id               String   @id @default(uuid())
+  post_id          String
+  user_id          String
+  created_at       DateTime @default(now())
+
+  post             CommunityPost @relation(fields: [post_id], references: [id], onDelete: Cascade)
+  user             User          @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([post_id, user_id])
+  @@map("community_likes")
+}
+
+model CommunityComment {
+  id               String   @id @default(uuid())
+  post_id          String
+  user_id          String
+  comment          String   @db.Text
+  created_at       DateTime @default(now())
+
+  post             CommunityPost @relation(fields: [post_id], references: [id], onDelete: Cascade)
+  user             User          @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("community_comments")
+}
+
+model SoloProfile {
+  id               String   @id @default(uuid())
+  user_id          String   @unique
+  destination      String
+  travel_month     String
+  travel_style     String
+  interests        String   // "Photography, Trekking"
+  allow_discovery  Boolean  @default(true)
+  created_at       DateTime @default(now())
+
+  user             User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("solo_profiles")
+}
+
+model SoloConnectionRequest {
+  id               String   @id @default(uuid())
+  sender_id        String
+  receiver_id      String
+  destination      String
+  status           String   @default("Pending") // "Pending" | "Accepted" | "Rejected"
+  created_at       DateTime @default(now())
+
+  sender           User     @relation("SentRequests", fields: [sender_id], references: [id], onDelete: Cascade)
+  receiver         User     @relation("ReceivedRequests", fields: [receiver_id], references: [id], onDelete: Cascade)
+
+  @@map("solo_connection_requests")
+}
+
+model PhotoAlbum {
+  id               String   @id @default(uuid())
+  user_id          String
+  title            String
+  destination      String
+  capacity_tier    Int      @default(250) // 250, 500, 1000, 1500, 2000
+  photos_count     Int      @default(0)
+  photos_data      String?  @db.LongText // JSON array of user photo objects
+  theme            String   @default("Nordic Modern")
+  is_purchased     Boolean  @default(false)
+  price            Int      @default(499)
+  share_token      String?  @unique
+  created_at       DateTime @default(now())
+
+  user             User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("photo_albums")
+}
+
+model Wishlist {
+  id               String   @id @default(uuid())
+  user_id          String
+  item_type        String   // "destination" | "hotel" | "package" | "guide"
+  item_id          String
+  title            String
+  image            String?  @db.Text
+  price            Int?
+  created_at       DateTime @default(now())
+
+  user             User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, item_type, item_id])
+  @@map("wishlists")
+}
+
+model RecentlyAccessed {
+  id               String   @id @default(uuid())
+  user_id          String
+  item_type        String
+  item_id          String
+  title            String
+  image            String?  @db.Text
+  route_path       String
+  accessed_at      DateTime @default(now())
+
+  user             User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("recently_accessed")
+}
+
+model Notification {
+  id               String   @id @default(uuid())
+  user_id          String
+  title            String
+  message          String   @db.Text
+  type             String   @default("system") // "booking" | "payment" | "community" | "solo"
+  is_read          Boolean  @default(false)
+  created_at       DateTime @default(now())
+
+  user             User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}

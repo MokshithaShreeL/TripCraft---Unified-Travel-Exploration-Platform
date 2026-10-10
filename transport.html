@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Modal Transport — Flights, Trains, Buses & Cabs — TripCraft</title>
+    <meta name="description" content="Compare and book Vande Bharat express trains, domestic flights, sleeper buses, and outstation chauffeur cabs with adult and child discounted pricing.">
+    <meta property="og:title" content="Multi-Modal Transport — Flights, Trains, Buses & Cabs — TripCraft">
+    <meta property="og:description" content="Compare and book Vande Bharat express trains, domestic flights, sleeper buses, and outstation chauffeur cabs with adult and child discounted pricing.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=1200&auto=format&fit=crop">
+    <link rel="stylesheet" href="shared.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        .trans-hero {
+            background: linear-gradient(135deg, #090E2B, #101B4B);
+            padding: 56px var(--px);
+            position: relative;
+            overflow: hidden;
+        }
+        .trans-hero-overlay {
+            position: absolute;
+            inset: 0;
+            background-image: url('https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.15;
+        }
+        .trans-hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 780px;
+        }
+        .trans-hero h1 {
+            font-family: 'Bricolage Grotesque', 'Plus Jakarta Sans', sans-serif;
+            font-size: 42px;
+            font-weight: 700;
+            color: #FFFFFF;
+            line-height: 1.15;
+            margin-bottom: 12px;
+        }
+        .trans-hero h1 em {
+            color: var(--gold);
+            font-style: normal;
+        }
+        .trans-mode-tabs {
+            display: flex;
+            gap: 10px;
+            margin-top: 24px;
+        }
+        .trans-mode-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: var(--r-sm);
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 13.5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .trans-mode-btn.active {
+            background: var(--gold);
+            color: var(--navy);
+            border-color: var(--gold);
+        }
+        .trans-mode-btn svg {
+            width: 16px;
+            height: 16px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+        }
+        .btn-stepper {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            border: 1.5px solid var(--teal);
+            background: var(--surface, #ffffff);
+            color: var(--teal) !important;
+            font-size: 16px;
+            font-weight: 800;
+            line-height: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            padding: 0;
+            transition: all 0.2s ease;
+        }
+        .btn-stepper:hover {
+            background: var(--teal);
+            color: #ffffff !important;
+        }
+        .ticket-card {
+            background: var(--white);
+            border: 1px solid var(--gray-100);
+            border-radius: var(--r-lg);
+            padding: 20px 24px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow-sm);
+            display: grid;
+            grid-template-columns: 1.2fr 2fr 1fr;
+            align-items: center;
+            gap: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .ticket-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        .route-visual {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            text-align: center;
+        }
+        .route-stop-time {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--navy);
+        }
+        .route-stop-city {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        .route-line-wrap {
+            flex: 1;
+            padding: 0 16px;
+            text-align: center;
+        }
+        .route-duration {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+        .route-line {
+            height: 2px;
+            background: var(--gray-200);
+            position: relative;
+        }
+        .route-line::before,
+        .route-line::after {
+            content: '';
+            position: absolute;
+            top: -3px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--teal);
+        }
+        .route-line::before { left: 0; }
+        .route-line::after { right: 0; }
+    </style>
+</head>
+<body>
+
+    <nav class="nav">
+        <a href="index.html" class="nav-logo">
+            <div class="nav-logo-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            </div>
+            <div class="nav-logo-text">Trip<span>Craft</span></div>
+        </a>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="destinations.html">Destinations</a>
+            <a href="transport.html" class="active">Transport</a>
+            <a href="hotels.html">Hotels</a>
+            <a href="vehicle.html">Vehicles</a>
+            <a href="guides.html">Local Guides</a>
+            <a href="packages.html">Packages</a>
+            <a href="itinerary.html">Itinerary</a>
+            <a href="budget.html">Budget</a>
+            <a href="solo.html">Solo Trip</a>
+            <a href="community.html">Community</a>
+            <a href="album.html">Photo Albums</a>
+            <a href="bookings.html">My Bookings</a>
+        </div>
+        <div class="nav-cta">
+            <a href="login.html" class="btn btn-ghost">Sign In</a>
+            <a href="signup.html" class="btn btn-gold">Get Started</a>
+        </div>
+    </nav>
+
+    <div class="breadcrumb">
+        <a href="index.html">Home</a>
+        <span class="breadcrumb-sep">&gt;</span>
+        <span>Transport &amp; Tickets</span>
+    </div>
+
+    <!-- TRANSPORT HERO & MULTI-MODAL SEARCH -->
+    <div class="trans-hero">
+        <div class="trans-hero-overlay"></div>
+        <div class="trans-hero-content">
+            <div class="chip chip-gold" style="margin-bottom: 14px;">
+                <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8"/></svg>
+                Unified Multi-Modal Booking Engine
+            </div>
+            <h1>Seamless connectivity by<br/><em>air, rail, road &amp; cab</em></h1>
+            <p>Compare schedules, baggage allowances, seat tiers, and fare breakdowns across verified airlines, express trains, Volvo sleeper coaches, and doorstep cabs.</p>
+
+            <!-- MODE SWITCHER TABS -->
+            <div class="trans-mode-tabs" id="transportModeTabs">
+                <button class="trans-mode-btn active" id="tabFlights" onclick="setTransMode('Flights')">
+                    <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8"/></svg>
+                    Flights
+                </button>
+                <button class="trans-mode-btn" id="tabTrains" onclick="setTransMode('Trains')">
+                    <svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="16" rx="2"/><path d="M4 11h16M12 3v8M8 19l-2 3M16 19l2 3"/><circle cx="8" cy="15" r="1"/><circle cx="16" cy="15" r="1"/></svg>
+                    Trains
+                </button>
+                <button class="trans-mode-btn" id="tabBuses" onclick="setTransMode('Buses')">
+                    <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 10h18M7 18v2M17 18v2"/><circle cx="7" cy="14" r="1"/><circle cx="17" cy="14" r="1"/></svg>
+                    Buses
+                </button>
+                <button class="trans-mode-btn" id="tabCabs" onclick="setTransMode('Outstation Cabs')">
+                    <svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                    Outstation Cabs
+                </button>
+            </div>
+        </div>
+
+        <!-- ROUTE SEARCH & MEMBERS COUNTER BAR -->
+        <div class="trans-search-bar-card">
+            <!-- From City -->
+            <div style="position:relative;">
+                <label style="font-size:11px; font-weight:800; text-transform:uppercase; display:block; margin-bottom:5px;">From (Departure)</label>
+                <div class="trans-input-wrap" style="display:flex; align-items:center; border-radius:var(--r-sm); padding:8px 12px; gap:8px;">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="var(--teal)" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
+                    <input type="text" id="routeFromInput" value="Chennai (MAA)" placeholder="Departure city..." style="width:100%; border:none; background:transparent; font-size:13.5px; font-weight:700; outline:none;" autocomplete="off" oninput="showCitySuggestions('from')" />
+                </div>
+                <div id="fromSuggestions" class="search-results-overlay" style="top:calc(100% + 4px);"></div>
+            </div>
+
+            <!-- To City -->
+            <div style="position:relative;">
+                <label style="font-size:11px; font-weight:800; text-transform:uppercase; display:block; margin-bottom:5px;">To (Destination)</label>
+                <div class="trans-input-wrap" style="display:flex; align-items:center; border-radius:var(--r-sm); padding:8px 12px; gap:8px;">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="var(--gold)" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    <input type="text" id="routeToInput" value="Cochin / Munnar (COK)" placeholder="Destination city..." style="width:100%; border:none; background:transparent; font-size:13.5px; font-weight:700; outline:none;" autocomplete="off" oninput="showCitySuggestions('to')" />
+                </div>
+                <div id="toSuggestions" class="search-results-overlay" style="top:calc(100% + 4px);"></div>
+            </div>
+
+            <!-- Date -->
+            <div>
+                <label style="font-size:11px; font-weight:800; text-transform:uppercase; display:block; margin-bottom:5px;">Travel Date</label>
+                <div class="trans-input-wrap" style="display:flex; align-items:center; border-radius:var(--r-sm); padding:2px 8px;">
+                    <input type="date" id="routeDateInput" class="form-input" style="border:none; background:transparent; padding:7px 4px; font-size:13px; font-weight:600; width:100%;" />
+                </div>
+            </div>
+
+            <!-- Separate Adults & Children Counters -->
+            <div>
+                <label style="font-size:11px; font-weight:800; text-transform:uppercase; display:block; margin-bottom:5px;">
+                    Members (Adults &amp; Children)
+                </label>
+                <div class="trans-counter-wrap" style="display:flex; align-items:center; gap:12px; border-radius:var(--r-sm); padding:6px 12px;">
+                    <!-- Adults -->
+                    <div style="display:flex; align-items:center; gap:6px;">
+                        <span class="trans-counter-text" style="font-size:11.5px; font-weight:700;">Adult:</span>
+                        <button type="button" class="btn-stepper" onclick="changeMemberCount('adults', -1)" aria-label="Decrease Adults">&minus;</button>
+                        <span id="transAdultsDisplay" class="trans-counter-num" style="font-weight:800; font-size:14px; min-width:16px; text-align:center;">1</span>
+                        <button type="button" class="btn-stepper" onclick="changeMemberCount('adults', 1)" aria-label="Increase Adults">&#43;</button>
+                    </div>
+
+                    <div style="width:1px; height:20px; background:var(--gray-300);"></div>
+
+                    <!-- Children -->
+                    <div style="display:flex; align-items:center; gap:6px;">
+                        <span class="trans-counter-text" style="font-size:11.5px; font-weight:700;">Child:</span>
+                        <button type="button" class="btn-stepper" onclick="changeMemberCount('children', -1)" aria-label="Decrease Children">&minus;</button>
+                        <span id="transChildrenDisplay" class="trans-counter-num" style="font-weight:800; font-size:14px; min-width:16px; text-align:center;">0</span>
+                        <button type="button" class="btn-stepper" onclick="changeMemberCount('children', 1)" aria-label="Increase Children">&#43;</button>
+                    </div>
+                </div>
+                <div style="font-size:10.5px; color:var(--teal); margin-top:3px; font-weight:600;">
+                    Child (2-11 yrs): 40% discount automatically applied
+                </div>
+            </div>
+
+            <!-- Search Button -->
+            <div>
+                <button type="button" class="btn btn-teal" style="padding:10px 22px; font-size:13.5px; justify-content:center; width:100%;" onclick="executeRouteSearch()">
+                    Search Routes
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="layout-2col">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-title">Filter Transport</div>
+
+            <div class="filter-group">
+                <div class="filter-label">Stops</div>
+                <label class="filter-opt"><input type="checkbox" checked> Non-Stop / Direct</label>
+                <label class="filter-opt"><input type="checkbox" checked> 1 Stop</label>
+                <label class="filter-opt"><input type="checkbox"> 2+ Stops</label>
+            </div>
+
+            <div class="filter-group">
+                <div class="filter-label">Departure Time</div>
+                <label class="filter-opt"><input type="checkbox" checked> Early Morning (04:00 - 08:00)</label>
+                <label class="filter-opt"><input type="checkbox" checked> Morning (08:00 - 12:00)</label>
+                <label class="filter-opt"><input type="checkbox" checked> Afternoon (12:00 - 18:00)</label>
+                <label class="filter-opt"><input type="checkbox"> Evening / Night (18:00 - 24:00)</label>
+            </div>
+
+            <div class="filter-group">
+                <div class="filter-label">Class</div>
+                <label class="filter-opt"><input type="radio" name="cls" checked> Economy / Sleeper</label>
+                <label class="filter-opt"><input type="radio" name="cls"> Premium / AC 2-Tier</label>
+                <label class="filter-opt"><input type="radio" name="cls"> Business / First</label>
+            </div>
+        </aside>
+
+        <!-- Main Ticket Listings -->
+        <main class="results-bg">
+            <div class="results-header">
+                <div class="results-count" id="resultsCountLabel">
+                    Showing verified routes for <strong id="routeModeLabel">Flights</strong> (<span id="routePairLabel">Chennai &rarr; Cochin / Munnar</span>)
+                </div>
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <span style="font-size:12px; color:var(--text-muted);">Sort:</span>
+                    <select class="sort-select" id="transSortSelect" onchange="renderTransportListings()">
+                        <option value="cheap">Cheapest First</option>
+                        <option value="fast">Fastest Duration</option>
+                        <option value="early">Earliest Departure</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Return Journey Discount Banner -->
+            <div style="background:linear-gradient(135deg, #101B4B, #090E2B); color:#fff; border-radius:var(--r-md); padding:16px 20px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center; box-shadow:var(--shadow-sm);">
+                <div style="display:flex; align-items:center; gap:14px;">
+                    <div style="width:40px; height:40px; border-radius:50%; background:rgba(230,180,80,0.2); display:flex; align-items:center; justify-content:center; color:var(--gold); font-size:20px;">
+                        &#8644;
+                    </div>
+                    <div>
+                        <div style="font-weight:700; font-size:14.5px; color:#fff;">Add Return Journey &middot; Instant 10% Roundtrip Discount</div>
+                        <div style="font-size:12px; color:rgba(255,255,255,0.75);">Synchronize return travel with verified seat locks and roundtrip protection.</div>
+                    </div>
+                </div>
+                <label style="display:flex; align-items:center; gap:10px; cursor:pointer; background:rgba(255,255,255,0.1); padding:8px 14px; border-radius:var(--r-full); border:1px solid rgba(255,255,255,0.2);">
+                    <input type="checkbox" id="returnJourneyToggle" onchange="toggleReturnDiscount(this.checked)" style="width:16px; height:16px; accent-color:var(--gold); cursor:pointer;">
+                    <span style="font-size:12.5px; font-weight:700; color:var(--gold);">Enable Roundtrip</span>
+                </label>
+            </div>
+
+            <!-- Dynamic Tickets Container -->
+            <div id="transportListingCards">
+                <!-- Rendered dynamically by JavaScript -->
+            </div>
+        </main>
+    </div>
+
+    <footer class="footer">
+    <div class="footer-grid">
+        <div class="footer-brand">
+            <div class="footer-logo">
+                <div class="nav-logo-mark">
+                    <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                </div>
+                <span>TripCraft</span>
+            </div>
+            <p>AI-orchestrated end-to-end travel intelligence platform. Engineered for seamless discovery, instant reservations, solo safety, and creator photobook monetization.</p>
+            <div class="footer-social-strip">
+                <a href="https://twitter.com" target="_blank" class="footer-social-link" title="Twitter / X"><svg viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg></a>
+                <a href="https://instagram.com" target="_blank" class="footer-social-link" title="Instagram"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
+                <a href="https://linkedin.com" target="_blank" class="footer-social-link" title="LinkedIn"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a>
+                <a href="https://github.com" target="_blank" class="footer-social-link" title="GitHub"><svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg></a>
+            </div>
+        </div>
+        <div class="footer-col">
+            <h4>Explore</h4>
+            <ul>
+                <li><a href="destinations.html">Destinations</a></li>
+                <li><a href="packages.html">Curated Packages</a></li>
+                <li><a href="hotels.html">Stays &amp; Resorts</a></li>
+                <li><a href="transport.html">Flights &amp; Rail</a></li>
+                <li><a href="vehicle.html">Car &amp; Bike Rentals</a></li>
+                <li><a href="guides.html">Certified Local Guides</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Special Hubs</h4>
+            <ul>
+                <li><a href="solo.html">Solo Traveler Engine</a></li>
+                <li><a href="community.html">Community &amp; Buddies</a></li>
+                <li><a href="album.html">Photo Album Studio</a></li>
+                <li><a href="budget.html">40/25/20/15 Budgeter</a></li>
+                <li><a href="itinerary.html">Interactive Itinerary</a></li>
+                <li><a href="wishlist.html">Saved Wishlist</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Trust &amp; Legal</h4>
+            <ul>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="contact.html">Customer Support</a></li>
+                <li><a href="faq.html">FAQ &amp; Help Desk</a></li>
+                <li><a href="terms.html">Terms &amp; Conditions</a></li>
+                <li><a href="privacy.html">Privacy Policy</a></li>
+                <li><a href="refund.html">Refund Policy</a></li>
+                <li><a href="sitemap.html">Sitemap</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <div>&copy; 2026 TripCraft Technologies Inc. All rights reserved. 256-bit SSL Encrypted Booking System.</div>
+        <div style="display:flex; gap:16px;">
+            <a href="terms.html">Terms</a>
+            <a href="privacy.html">Privacy</a>
+            <a href="refund.html">Refunds</a>
+            <a href="sitemap.html">Sitemap</a>
+        </div>
+    </div>
+</footer>
+
+    <script src="tc-config.js"></script>
+    <script src="shared.js"></script>
+    <script src="tc-layer.js"></script>
+    <script>
+        // State
+        let currentMode = 'Flights';
+        let currentAdults = 1;
+        let currentChildren = 0;
+        let isRoundtrip = false;
+
+        const popularCities = [
+            'Chennai (MAA / Central)',
+            'Cochin / Munnar (COK)',
+            'Bangalore (BLR / Majestic)',
+            'Delhi (DEL / NDLS)',
+            'Mumbai (BOM / CSMT)',
+            'Jaipur (JAI)',
+            'Goa (GOI / Madgaon)',
+            'Coimbatore (CJB)',
+            'Madurai (IXM)',
+            'Hyderabad (HYD)'
+        ];
+
+        // Multi-Modal Routes Database
+        const transportRoutesDB = {
+            'Flights': [
+                {
+                    id: 'FL-01',
+                    operator: 'IndiGo Airlines',
+                    code: '6E-412',
+                    aircraft: 'Airbus A320neo',
+                    depTime: '06:15',
+                    depCity: 'MAA (Chennai)',
+                    arrTime: '07:30',
+                    arrCity: 'COK (Cochin)',
+                    duration: '1h 15m',
+                    stops: 'Non-stop',
+                    adultPrice: 3850,
+                    baggage: '15 kg Check-in + 7 kg Cabin',
+                    typeTag: 'Direct Flight',
+                    color: 'chip-teal',
+                    description: 'Direct non-stop flight from Chennai International (MAA) to Cochin International (COK).'
+                },
+                {
+                    id: 'FL-02',
+                    operator: 'Air India Express',
+                    code: 'IX-482',
+                    aircraft: 'Boeing 737-800',
+                    depTime: '10:45',
+                    depCity: 'MAA (Chennai)',
+                    arrTime: '12:05',
+                    arrCity: 'COK (Cochin)',
+                    duration: '1h 20m',
+                    stops: 'Non-stop',
+                    adultPrice: 4200,
+                    baggage: '20 kg Check-in + 7 kg Cabin',
+                    typeTag: 'Complimentary Snack',
+                    color: 'chip-gold',
+                    description: 'Morning flight with hot refreshment and generous baggage allowance.'
+                },
+                {
+                    id: 'FL-03',
+                    operator: 'Akasa Air',
+                    code: 'QP-1304',
+                    aircraft: 'Boeing 737 MAX',
+                    depTime: '14:20',
+                    depCity: 'BLR (Bangalore)',
+                    arrTime: '15:25',
+                    arrCity: 'COK (Cochin)',
+                    duration: '1h 05m',
+                    stops: 'Non-stop',
+                    adultPrice: 3200,
+                    baggage: '15 kg Check-in + 7 kg Cabin',
+                    typeTag: 'USB Fast Charging',
+                    color: 'chip-teal',
+                    description: 'Afternoon express hop into Cochin with USB fast charging at all seats.'
+                },
+                {
+                    id: 'FL-04',
+                    operator: 'IndiGo Airlines',
+                    code: '6E-671',
+                    aircraft: 'Airbus A321neo',
+                    depTime: '08:30',
+                    depCity: 'MAA (Chennai)',
+                    arrTime: '11:15',
+                    arrCity: 'JAI (Jaipur)',
+                    duration: '2h 45m',
+                    stops: 'Direct',
+                    adultPrice: 5400,
+                    baggage: '15 kg Check-in + 7 kg Cabin',
+                    typeTag: 'Direct North Corridor',
+                    color: 'chip-navy',
+                    description: 'Direct air corridor connecting southern hubs to the Pink City.'
+                }
+            ],
+
+            'Trains': [
+                {
+                    id: 'TR-01',
+                    operator: 'Indian Railways',
+                    code: 'Train #20643',
+                    aircraft: 'Vande Bharat Semi-High Speed',
+                    depTime: '05:40',
+                    depCity: 'MAS (Chennai Central)',
+                    arrTime: '11:50',
+                    arrCity: 'CBE (Coimbatore Jn)',
+                    duration: '6h 10m',
+                    stops: 'Direct Express',
+                    adultPrice: 1420,
+                    baggage: 'AC Chair Car (CC)',
+                    typeTag: 'Breakfast Included &bull; 99% Confirm',
+                    color: 'chip-gold',
+                    description: 'Semi-high speed Vande Bharat express with panoramic windows and onboard catering.'
+                },
+                {
+                    id: 'TR-02',
+                    operator: 'Indian Railways',
+                    code: 'Train #12626',
+                    aircraft: 'Kerala Superfast Express',
+                    depTime: '20:10',
+                    depCity: 'MAS (Chennai Central)',
+                    arrTime: '06:45',
+                    arrCity: 'ERS (Ernakulam / Cochin)',
+                    duration: '10h 35m',
+                    stops: 'Overnight SF',
+                    adultPrice: 1180,
+                    baggage: 'AC 3-Tier (3A)',
+                    typeTag: 'Pantry Onboard &bull; Bedroll Provided',
+                    color: 'chip-teal',
+                    description: 'Overnight Superfast train with fresh linen, charging ports, and punctual arrival.'
+                },
+                {
+                    id: 'TR-03',
+                    operator: 'Indian Railways',
+                    code: 'Train #22637',
+                    aircraft: 'West Coast Superfast',
+                    depTime: '13:25',
+                    depCity: 'MAS (Chennai Central)',
+                    arrTime: '23:45',
+                    arrCity: 'SRR (Shoranur / Munnar)',
+                    duration: '10h 20m',
+                    stops: 'Direct',
+                    adultPrice: 1650,
+                    baggage: 'AC 2-Tier (2A)',
+                    typeTag: 'Spacious Berth &bull; Reading Lamps',
+                    color: 'chip-navy',
+                    description: 'Executive 2-Tier AC sleeper with curtain privacy and Western Ghats mountain views.'
+                }
+            ],
+
+            'Buses': [
+                {
+                    id: 'BS-01',
+                    operator: 'KSRTC Swift',
+                    code: 'Swift Volvo 9600',
+                    aircraft: 'AC Multi-Axle Luxury Sleeper',
+                    depTime: '20:30',
+                    depCity: 'Koyambedu (Chennai)',
+                    arrTime: '06:15',
+                    arrCity: 'Munnar KSRTC Stand',
+                    duration: '9h 45m',
+                    stops: 'Direct into Hill Station',
+                    adultPrice: 1150,
+                    baggage: 'Single AC Sleeper Berth',
+                    typeTag: 'Direct Hill Stand Drop',
+                    color: 'chip-navy',
+                    description: 'Direct overnight Volvo sleeper straight into Munnar hill town without vehicle change.'
+                },
+                {
+                    id: 'BS-02',
+                    operator: 'Zingbus Electric',
+                    code: 'EV Executive Lounge',
+                    aircraft: 'Premium Zero-Emission Sleeper',
+                    depTime: '21:00',
+                    depCity: 'Majestic (Bangalore)',
+                    arrTime: '06:00',
+                    arrCity: 'Vyttila Hub (Cochin)',
+                    duration: '9h 00m',
+                    stops: 'Overnight',
+                    adultPrice: 980,
+                    baggage: 'Upper/Lower AC Sleeper',
+                    typeTag: 'Female Friendly &bull; Water Bottle',
+                    color: 'chip-teal',
+                    description: 'Eco-friendly electric luxury coach with verified lounge waiting areas and emergency SOS.'
+                },
+                {
+                    id: 'BS-03',
+                    operator: 'Orange Travels',
+                    code: 'Scania Metrolink',
+                    aircraft: 'Multi-Axle Semi-Sleeper',
+                    depTime: '22:15',
+                    depCity: 'Chennai (Perungalathur)',
+                    arrTime: '06:30',
+                    arrCity: 'Coimbatore (Gandhipuram)',
+                    duration: '8h 15m',
+                    stops: 'Highway Express',
+                    adultPrice: 1050,
+                    baggage: 'Individual Recliner',
+                    typeTag: 'Live GPS Tracking',
+                    color: 'chip-gold',
+                    description: 'High-speed highway cruiser with individual charging docks and sanitized blankets.'
+                }
+            ],
+
+            'Outstation Cabs': [
+                {
+                    id: 'CB-01',
+                    operator: 'TripCraft Chauffeur',
+                    code: 'Innova Crysta AC',
+                    aircraft: '6-Seater Luxury MPV',
+                    depTime: 'Flexible',
+                    depCity: 'Cochin Airport (COK)',
+                    arrTime: 'Direct',
+                    arrCity: 'Munnar Resort Doorstep',
+                    duration: '3h 30m',
+                    stops: 'Sightseeing Stops Included',
+                    adultPrice: 3400,
+                    baggage: 'Entire Private Cab (up to 6)',
+                    typeTag: 'All Tolls &amp; Parking Included',
+                    color: 'chip-teal',
+                    isCab: true,
+                    description: 'Private chauffeur transfer directly from Cochin airport to your Munnar resort, with photo stops at Cheeyappara and Valara waterfalls.'
+                },
+                {
+                    id: 'CB-02',
+                    operator: 'TripCraft Chauffeur',
+                    code: 'Maruti Suzuki Dzire',
+                    aircraft: '4-Seater Compact Sedan',
+                    depTime: 'Flexible',
+                    depCity: 'Coimbatore Airport (CJB)',
+                    arrTime: 'Direct',
+                    arrCity: 'Munnar Town Center',
+                    duration: '4h 15m',
+                    stops: 'Door-to-Door Pickup',
+                    adultPrice: 2800,
+                    baggage: 'Private Sedan (up to 4)',
+                    typeTag: 'Fuel &amp; Driver Allowance Included',
+                    color: 'chip-gold',
+                    isCab: true,
+                    description: 'Comfortable air-conditioned private sedan transfer along the scenic Pollachi-Marayoor ghat route.'
+                },
+                {
+                    id: 'CB-03',
+                    operator: 'TripCraft Chauffeur',
+                    code: 'Force Urbania Executive',
+                    aircraft: '12-Seater Group Van',
+                    depTime: 'Flexible',
+                    depCity: 'Cochin Airport (COK)',
+                    arrTime: 'Direct',
+                    arrCity: 'Munnar Resort Doorstep',
+                    duration: '3h 45m',
+                    stops: 'Family / Group Transfer',
+                    adultPrice: 6800,
+                    baggage: 'Large Luggage Bay (up to 12)',
+                    typeTag: 'Recliner Captain Chairs',
+                    color: 'chip-navy',
+                    isCab: true,
+                    description: 'Executive luxury van ideal for larger travel groups, families, or corporate retreats.'
+                }
+            ]
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const nextWeek = new Date(Date.now() + 86400000 * 7).toISOString().split('T')[0];
+            document.getElementById('routeDateInput').value = nextWeek;
+            renderTransportListings();
+        });
+
+        function changeMemberCount(type, delta) {
+            if (type === 'adults') {
+                currentAdults = Math.max(1, Math.min(12, currentAdults + delta));
+                document.getElementById('transAdultsDisplay').textContent = currentAdults;
+            } else {
+                currentChildren = Math.max(0, Math.min(8, currentChildren + delta));
+                document.getElementById('transChildrenDisplay').textContent = currentChildren;
+            }
+            renderTransportListings();
+        }
+
+        function setTransMode(modeName) {
+            currentMode = modeName;
+            document.querySelectorAll('.trans-mode-btn').forEach(b => b.classList.remove('active'));
+            if (modeName === 'Flights') document.getElementById('tabFlights')?.classList.add('active');
+            if (modeName === 'Trains') document.getElementById('tabTrains')?.classList.add('active');
+            if (modeName === 'Buses') document.getElementById('tabBuses')?.classList.add('active');
+            if (modeName === 'Outstation Cabs') document.getElementById('tabCabs')?.classList.add('active');
+
+            const modeLabel = document.getElementById('routeModeLabel');
+            if (modeLabel) modeLabel.textContent = modeName;
+            renderTransportListings();
+            if (typeof showToast === 'function') {
+                showToast(`Switched transport component to: ${modeName}`);
+            }
+        }
+
+        function toggleReturnDiscount(checked) {
+            isRoundtrip = checked;
+            renderTransportListings();
+            if (isRoundtrip) {
+                showToast("Roundtrip Active: 10% discount applied to your return journey!", "success");
+            } else {
+                showToast("Switched to One-way ticket mode.");
+            }
+        }
+
+        function showCitySuggestions(type) {
+            const input = document.getElementById(type === 'from' ? 'routeFromInput' : 'routeToInput');
+            const overlay = document.getElementById(type === 'from' ? 'fromSuggestions' : 'toSuggestions');
+            if (!input || !overlay) return;
+            const q = input.value.trim().toLowerCase();
+
+            const matches = popularCities.filter(c => c.toLowerCase().includes(q));
+            overlay.innerHTML = matches.map(c => `
+                <div style="padding:10px 14px; border-bottom:1px solid var(--gray-100); cursor:pointer; font-size:13px; font-weight:600; color:var(--navy);" onclick="selectCity('${type}', '${c}')">
+                    ${c}
+                </div>
+            `).join('');
+            overlay.style.display = matches.length > 0 ? 'block' : 'none';
+        }
+
+        function selectCity(type, cityName) {
+            const input = document.getElementById(type === 'from' ? 'routeFromInput' : 'routeToInput');
+            const overlay = document.getElementById(type === 'from' ? 'fromSuggestions' : 'toSuggestions');
+            if (input) input.value = cityName;
+            if (overlay) overlay.style.display = 'none';
+            executeRouteSearch();
+        }
+
+        document.addEventListener('click', (e) => {
+            const fromSug = document.getElementById('fromSuggestions');
+            const toSug = document.getElementById('toSuggestions');
+            if (fromSug && !e.target.closest('#routeFromInput') && !e.target.closest('#fromSuggestions')) {
+                fromSug.style.display = 'none';
+            }
+            if (toSug && !e.target.closest('#routeToInput') && !e.target.closest('#toSuggestions')) {
+                toSug.style.display = 'none';
+            }
+        });
+
+        function executeRouteSearch() {
+            const from = (document.getElementById('routeFromInput')?.value || 'Chennai').split('(')[0].trim();
+            const to = (document.getElementById('routeToInput')?.value || 'Cochin / Munnar').split('(')[0].trim();
+            const pairLbl = document.getElementById('routePairLabel');
+            if (pairLbl) pairLbl.textContent = `${from} \u2192 ${to}`;
+            renderTransportListings();
+            if (typeof showToast === 'function') {
+                showToast(`Filtered ${currentMode} schedules for ${from} to ${to}!`, 'info');
+            }
+        }
+
+        function renderTransportListings() {
+            const container = document.getElementById('transportListingCards');
+            if (!container) return;
+            const routes = transportRoutesDB[currentMode] || transportRoutesDB['Flights'];
+            const countLabel = document.getElementById('resultsCountLabel');
+            const fromVal = (document.getElementById('routeFromInput')?.value || 'Chennai').split('(')[0].trim();
+            const toVal = (document.getElementById('routeToInput')?.value || 'Cochin / Munnar').split('(')[0].trim();
+            
+            if (countLabel) {
+                countLabel.innerHTML = `Showing <strong>${routes.length} verified routes</strong> for <strong id="routeModeLabel">${currentMode}</strong> (<span id="routePairLabel">${fromVal} \u2192 ${toVal}</span>)`;
+            }
+
+            container.innerHTML = routes.map(r => {
+                let computedFare = 0;
+                let fareBreakdownText = '';
+
+                if (r.isCab) {
+                    computedFare = isRoundtrip ? Math.round(r.adultPrice * 2 * 0.9) : r.adultPrice;
+                    fareBreakdownText = `Entire private vehicle &middot; up to ${r.baggage.match(/\d+/)?.[0] || 6} passengers`;
+                } else {
+                    const adultSub = currentAdults * r.adultPrice;
+                    const childPrice = Math.round(r.adultPrice * 0.6);
+                    const childSub = currentChildren * childPrice;
+                    let baseTotal = adultSub + childSub;
+                    if (isRoundtrip) {
+                        baseTotal = Math.round(baseTotal * 2 * 0.9);
+                    }
+                    computedFare = baseTotal;
+                    fareBreakdownText = `${currentAdults} Adult${currentAdults > 1 ? 's' : ''}` + 
+                                       (currentChildren > 0 ? ` + ${currentChildren} Child${currentChildren > 1 ? 'ren' : ''} (40% Off)` : '') +
+                                       (isRoundtrip ? ' &middot; Roundtrip 10% Off' : '');
+                }
+
+                return `
+                    <div class="ticket-card">
+                        <div>
+                            <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+                                <span class="chip ${r.color}">${r.operator} ${r.code}</span>
+                                <span style="font-size:11px; color:var(--text-muted);">${r.aircraft}</span>
+                            </div>
+                            <div style="font-size:13px; font-weight:600; color:var(--navy);">${r.typeTag}</div>
+                        </div>
+
+                        <div class="route-visual">
+                            <div>
+                                <div class="route-stop-time">${r.depTime}</div>
+                                <div class="route-stop-city">${r.depCity}</div>
+                            </div>
+                            <div class="route-line-wrap">
+                                <div class="route-duration">${r.duration} &middot; ${r.stops}</div>
+                                <div class="route-line"></div>
+                            </div>
+                            <div>
+                                <div class="route-stop-time">${r.arrTime}</div>
+                                <div class="route-stop-city">${r.arrCity}</div>
+                            </div>
+                        </div>
+
+                        <div style="text-align: right;">
+                            <div class="ticket-fare-amt" data-inr-price="${computedFare}" style="font-size:20px; font-weight:700; color:var(--teal);">&#8377;${computedFare.toLocaleString('en-IN')}</div>
+                            <div style="font-size:11px; color:var(--text-muted); margin-bottom: 8px;">${fareBreakdownText}</div>
+                            <button class="btn btn-teal" style="padding:7px 18px; font-size:13px;" onclick="bookTransportRoute('${r.id}')">
+                                Book ${r.isCab ? 'Cab' : 'Ticket'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            if (typeof convertAllPrices === 'function') {
+                convertAllPrices();
+            } else if (window.TC && typeof window.TC.convertAllPrices === 'function') {
+                window.TC.convertAllPrices();
+            } else if (window.TripCraftCurrency && typeof window.TripCraftCurrency.convertAllPricesOnPage === 'function') {
+                window.TripCraftCurrency.convertAllPricesOnPage();
+            }
+        }
+
+        function bookTransportRoute(routeId) {
+            const routes = transportRoutesDB[currentMode] || [];
+            const r = routes.find(x => x.id === routeId);
+            if (!r) return;
+
+            const user = TripCraftAuth.getUser();
+            if (!user) {
+                TripCraftAuth.requireAuth('transport.html');
+                return;
+            }
+
+            let computedFare = 0;
+            if (r.isCab) {
+                computedFare = isRoundtrip ? Math.round(r.adultPrice * 2 * 0.9) : r.adultPrice;
+            } else {
+                const adultSub = currentAdults * r.adultPrice;
+                const childPrice = Math.round(r.adultPrice * 0.6);
+                const childSub = currentChildren * childPrice;
+                computedFare = isRoundtrip ? Math.round((adultSub + childSub) * 2 * 0.9) : (adultSub + childSub);
+            }
+
+            openBookingModal({
+                title: `${r.operator} ${r.code} (${r.depCity.split('(')[0]} \u2192 ${r.arrCity.split('(')[0]})`,
+                category: currentMode === 'Outstation Cabs' ? 'Private Cab Booking' : `${currentMode} Ticket`,
+                image: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?q=80&w=2070&auto=format&fit=crop',
+                price: `₹${computedFare.toLocaleString('en-IN')}`,
+                numericPrice: r.isCab ? r.adultPrice : r.adultPrice,
+                adults: currentAdults,
+                children: currentChildren,
+                description: `${r.description} ${isRoundtrip ? 'Includes synchronized return journey with 10% roundtrip discount applied.' : ''}`,
+                specs: [
+                    { label: 'Carrier / Model', val: `${r.operator} &middot; ${r.aircraft}` },
+                    { label: 'Timings', val: `Dep: ${r.depTime} \u2014 Arr: ${r.arrTime} (${r.duration})` },
+                    { label: 'Journey Type', val: isRoundtrip ? 'Roundtrip (10% Return Discount)' : 'One-Way Direct' },
+                    { label: 'Members', val: `${currentAdults} Adult${currentAdults > 1 ? 's' : ''}${currentChildren > 0 ? ', ' + currentChildren + ' Child' + (currentChildren > 1 ? 'ren' : '') : ''}` }
+                ]
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms & Conditions — TripCraft</title>
+    <meta name="description" content="Read the official TripCraft Terms and Conditions governing user accounts, booking confirmations, payment processing, liability, and partner obligations.">
+    <meta property="og:title" content="TripCraft Terms & Conditions">
+    <meta property="og:description" content="Official user agreement and booking service terms for the TripCraft platform.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1488646953014-85cb44e25828?q=80&w=1200&auto=format&fit=crop">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="shared.css">
+    <style>
+        .policy-hero {
+            background: linear-gradient(135deg, #090E2B, #0D2C26);
+            padding: 50px var(--px);
+            position: relative;
+            overflow: hidden;
+        }
+        .policy-hero h1 {
+            font-family: 'Bricolage Grotesque', 'Plus Jakarta Sans', sans-serif;
+            font-size: 38px;
+            font-weight: 700;
+            color: #FFFFFF;
+            line-height: 1.15;
+            margin-bottom: 8px;
+        }
+        .policy-hero p {
+            font-size: 14.5px;
+            color: rgba(255, 255, 255, 0.78);
+        }
+        .policy-container {
+            max-width: 960px;
+            margin: 40px auto 70px auto;
+            padding: 0 var(--px);
+        }
+        .policy-card {
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--r-lg);
+            padding: 36px 40px;
+            box-shadow: var(--shadow-sm);
+        }
+        .policy-card h2 {
+            font-family: 'Bricolage Grotesque', 'Plus Jakarta Sans', sans-serif;
+            font-size: 22px;
+            color: var(--navy);
+            margin: 28px 0 12px 0;
+            padding-bottom: 6px;
+            border-bottom: 1px solid var(--gray-100);
+        }
+        .policy-card h2:first-of-type {
+            margin-top: 0;
+        }
+        .policy-card p {
+            font-size: 14px;
+            line-height: 1.7;
+            color: var(--text-mid);
+            margin-bottom: 14px;
+        }
+        .policy-card ul {
+            margin: 10px 0 16px 24px;
+            font-size: 13.5px;
+            line-height: 1.7;
+            color: var(--text-mid);
+        }
+        .policy-meta {
+            display: flex;
+            gap: 20px;
+            font-size: 12.5px;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--gray-200);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAV BAR -->
+    <nav class="nav" id="mainNav">
+        <div class="nav-left">
+            <a href="index.html" class="nav-logo">
+                <div class="nav-logo-mark">
+                    <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                </div>
+                <span>TripCraft</span>
+            </a>
+            <div class="nav-links">
+                <a href="destinations.html" class="nav-link">Destinations</a>
+                <a href="itinerary.html" class="nav-link">Itinerary</a>
+                <a href="transport.html" class="nav-link">Transport</a>
+                <a href="hotels.html" class="nav-link">Hotels</a>
+                <a href="vehicle.html" class="nav-link">Vehicles</a>
+                <a href="guides.html" class="nav-link">Guides</a>
+                <a href="packages.html" class="nav-link">Packages</a>
+                <a href="budget.html" class="nav-link">Budget</a>
+                <a href="solo.html" class="nav-link">Solo Trip</a>
+                <a href="community.html" class="nav-link">Community</a>
+                <a href="album.html" class="nav-link">Album Studio</a>
+            </div>
+        </div>
+
+        <div class="nav-right">
+            <div class="nav-currency-picker">
+                <button type="button" class="currency-toggle-btn active" data-curr="INR" onclick="TripCraftCurrency.setCurrency('INR')">&#8377; INR</button>
+                <button type="button" class="currency-toggle-btn" data-curr="USD" onclick="TripCraftCurrency.setCurrency('USD')">$ USD</button>
+                <button type="button" class="currency-toggle-btn" data-curr="EUR" onclick="TripCraftCurrency.setCurrency('EUR')">&euro; EUR</button>
+            </div>
+
+            <div class="nav-action-wrapper" id="navNotifWrapper" style="position:relative;">
+                <button class="nav-action-icon-btn" onclick="TripCraftNotifications.togglePanel()" title="Trip Notifications">
+                    <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                    <span class="nav-badge" id="navNotifBadge" style="display:none;">0</span>
+                </button>
+                <div class="tc-notif-panel" id="tcNotifPanel">
+                    <div class="tc-notif-header">
+                        <h4>Traveler Notifications</h4>
+                        <button class="tc-notif-clear-btn" onclick="TripCraftNotifications.clearAll()">Clear All</button>
+                    </div>
+                    <div class="tc-notif-list" id="tcNotifList"></div>
+                </div>
+            </div>
+
+            <a href="wishlist.html" class="nav-action-icon-btn" title="Saved Wishlist">
+                <svg viewBox="0 0 24 24" id="navWishlistHeart"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                <span class="nav-badge" id="navWishlistBadge" style="display:none;">0</span>
+            </a>
+
+            <div class="nav-user-dropdown-wrapper" style="position:relative;">
+                <button class="nav-user-btn" onclick="toggleUserMenu()">
+                    <div class="nav-user-avatar" id="navAvatar">PS</div>
+                    <span id="navUserName">Priya</span>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="nav-user-dropdown" id="navUserMenu">
+                    <div class="nav-user-info">
+                        <div class="nav-user-name" id="menuUserName">Priya Sunder</div>
+                        <div class="nav-user-email" id="menuUserEmail">priya.traveler@example.com</div>
+                        <div style="margin-top:6px;"><span class="chip chip-gold" id="menuUserTier">Silver Traveler</span></div>
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <a href="bookings.html" class="dropdown-item">My Bookings</a>
+                    <a href="wishlist.html" class="dropdown-item">My Saved Wishlist</a>
+                    <a href="faq.html" class="dropdown-item">Help Center / FAQ</a>
+                    <a href="contact.html" class="dropdown-item">Customer Support</a>
+                    <div class="dropdown-divider"></div>
+                    <a href="login.html" class="dropdown-item text-danger" onclick="logoutUser()">Sign Out</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <header class="policy-hero">
+        <div style="max-width:960px; margin:0 auto;">
+            <h1>Terms &amp; Conditions</h1>
+            <p>Effective Date: March 1, 2026 &middot; Version 2.4</p>
+        </div>
+    </header>
+
+    <!-- CONTENT -->
+    <main class="policy-container">
+        <div class="policy-card">
+            <div class="policy-meta">
+                <span>Governing Entity: TripCraft Technologies Inc.</span>
+                <span>Jurisdiction: Bangalore, India</span>
+                <span>Applicable to: All Web &amp; API Services</span>
+            </div>
+
+            <h2>1. Platform Scope &amp; Acceptance of Terms</h2>
+            <p>Welcome to TripCraft. By accessing our web application, signing in via RFC 7519 cryptographic authentication, generating travel itineraries, or confirming reservations for transport, accommodations, vehicles, or local guides, you agree to be bound by these Terms and Conditions.</p>
+            <p>TripCraft operates as an AI-orchestrated technology intermediary connecting travelers with verified third-party travel service providers ("Partners"). We do not directly own or operate airlines, hotels, or rental fleets unless explicitly stated.</p>
+
+            <h2>2. User Accounts &amp; Security</h2>
+            <p>To reserve services and participate in the Solo Community or Photo Album Marketplace, you must maintain an authenticated traveler profile:</p>
+            <ul>
+                <li>You are responsible for maintaining the confidentiality of your session tokens and credentials.</li>
+                <li>Accounts must reflect genuine traveler identities. Misrepresentation or creation of fraudulent booking holds will result in immediate profile suspension.</li>
+                <li>Simulated JWT tokens issued by TripCraft authenticate your sessions across all sub-services and secure your bookings ledger.</li>
+            </ul>
+
+            <h2>3. Booking Contracts &amp; Confirmation</h2>
+            <p>Every booking confirmed via the TripCraft platform generates a unique cryptographic Booking Reference Code (e.g., <code>#TC-BK-2026-89421</code>). This code acts as prima facie evidence of your reservation contract with the respective partner.</p>
+            <ul>
+                <li><strong>Hotel Reservations:</strong> Rooms are guaranteed upon receipt of digital confirmation. Check-in typically begins at 12:00 PM; check-out by 11:00 AM.</li>
+                <li><strong>Multi-Modal Transport:</strong> E-tickets for flights, trains, and buses are issued subject to operator schedules and government-issued photo ID verification.</li>
+                <li><strong>Cross-Booking Relational Triggers:</strong> When vehicle rentals or guides are linked to a hotel booking (using <code>hotel_booking_id</code>), cancellations of primary stays will notify you to adjust associated secondary services.</li>
+            </ul>
+
+            <h2>4. Pricing, Taxes &amp; Currency Disclosures</h2>
+            <p>All prices displayed on TripCraft are shown in Indian Rupees (INR, ₹) by default, with optional display conversions in US Dollars (USD, $) and Euros (EUR, €) calculated via baseline conversion rates. All published rates include applicable Indian Goods and Services Tax (GST, 12% to 18%) unless specifically itemized.</p>
+            <p>TripCraft employs dynamic market calibration. Displayed rates reflect seasonal demand, weekend surges, and early booking discounts. The price finalized at checkout is locked for your confirmed reservation.</p>
+
+            <h2>5. Photo Album Studio &amp; Monetization Marketplace</h2>
+            <p>Travelers using the interactive Photo Album Studio to publish curated photobooks retain complete intellectual property ownership over their original photographs. By publishing an album to the marketplace:</p>
+            <ul>
+                <li>You grant TripCraft a non-exclusive license to display previews to potential buyers.</li>
+                <li>You receive <strong>85% net royalties</strong> from each verified sale, deposited directly into your TripCraft wallet balance.</li>
+                <li>Purchasers receive a personal, non-commercial license to view, flip, and export the photobook PDF. Resale of downloaded content is prohibited.</li>
+            </ul>
+
+            <h2>6. Limitation of Liability</h2>
+            <p>TripCraft strives for 100% accuracy across destination guides, real-time rates, and safety scores. However, we are not liable for road closures, natural weather events in mountain passes, flight delays by airlines, or personal property lost during guided treks. Travelers are strongly encouraged to secure comprehensive domestic travel insurance.</p>
+
+            <h2>7. Amendments &amp; Contact</h2>
+            <p>TripCraft reserves the right to amend these terms at any time. Material updates will be announced via the traveler notification center. Questions may be addressed to our legal desk at <a href="mailto:legal@tripcraft.com" style="color:var(--teal); font-weight:600;">legal@tripcraft.com</a> or our <a href="contact.html" style="color:var(--teal); font-weight:600;">24/7 Support Desk</a>.</p>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+    <div class="footer-grid">
+        <div class="footer-brand">
+            <div class="footer-logo">
+                <div class="nav-logo-mark">
+                    <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                </div>
+                <span>TripCraft</span>
+            </div>
+            <p>AI-orchestrated end-to-end travel intelligence platform. Engineered for seamless discovery, instant reservations, solo safety, and creator photobook monetization.</p>
+            <div class="footer-social-strip">
+                <a href="https://twitter.com" target="_blank" class="footer-social-link" title="Twitter / X"><svg viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg></a>
+                <a href="https://instagram.com" target="_blank" class="footer-social-link" title="Instagram"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
+                <a href="https://linkedin.com" target="_blank" class="footer-social-link" title="LinkedIn"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a>
+                <a href="https://github.com" target="_blank" class="footer-social-link" title="GitHub"><svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg></a>
+            </div>
+        </div>
+        <div class="footer-col">
+            <h4>Explore</h4>
+            <ul>
+                <li><a href="destinations.html">Destinations</a></li>
+                <li><a href="packages.html">Curated Packages</a></li>
+                <li><a href="hotels.html">Stays &amp; Resorts</a></li>
+                <li><a href="transport.html">Flights &amp; Rail</a></li>
+                <li><a href="vehicle.html">Car &amp; Bike Rentals</a></li>
+                <li><a href="guides.html">Certified Local Guides</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Special Hubs</h4>
+            <ul>
+                <li><a href="solo.html">Solo Traveler Engine</a></li>
+                <li><a href="community.html">Community &amp; Buddies</a></li>
+                <li><a href="album.html">Photo Album Studio</a></li>
+                <li><a href="budget.html">40/25/20/15 Budgeter</a></li>
+                <li><a href="itinerary.html">Interactive Itinerary</a></li>
+                <li><a href="wishlist.html">Saved Wishlist</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Trust &amp; Legal</h4>
+            <ul>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="contact.html">Customer Support</a></li>
+                <li><a href="faq.html">FAQ &amp; Help Desk</a></li>
+                <li><a href="terms.html">Terms &amp; Conditions</a></li>
+                <li><a href="privacy.html">Privacy Policy</a></li>
+                <li><a href="refund.html">Refund Policy</a></li>
+                <li><a href="sitemap.html">Sitemap</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <div>&copy; 2026 TripCraft Technologies Inc. All rights reserved. 256-bit SSL Encrypted Booking System.</div>
+        <div style="display:flex; gap:16px;">
+            <a href="terms.html">Terms</a>
+            <a href="privacy.html">Privacy</a>
+            <a href="refund.html">Refunds</a>
+            <a href="sitemap.html">Sitemap</a>
+        </div>
+    </div>
+</footer>
+
+    <script src="tc-config.js"></script>
+    <script src="shared.js"></script>
+    <script src="tc-layer.js"></script>
+</body>
+</html>

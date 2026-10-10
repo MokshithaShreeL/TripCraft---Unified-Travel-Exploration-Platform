@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Platform Sitemap &amp; Directory — TripCraft</title>
+    <meta name="description" content="Explore the comprehensive directory of all 24 TripCraft platform modules, travel engines, solo hubs, booking tools, and customer support resources.">
+    <meta property="og:title" content="TripCraft Comprehensive Platform Sitemap">
+    <meta property="og:description" content="Direct links to all core discovery, booking, solo travel, photobook studio, and support pages.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1488646953014-85cb44e25828?q=80&w=1200&auto=format&fit=crop">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="shared.css">
+    <style>
+        .sitemap-hero {
+            background: linear-gradient(135deg, #090E2B, #0D2C26);
+            padding: 50px var(--px);
+            position: relative;
+            overflow: hidden;
+        }
+        .sitemap-hero h1 {
+            font-family: 'Bricolage Grotesque', 'Plus Jakarta Sans', sans-serif;
+            font-size: 38px;
+            font-weight: 700;
+            color: #FFFFFF;
+            line-height: 1.15;
+            margin-bottom: 8px;
+        }
+        .sitemap-hero p {
+            font-size: 14.5px;
+            color: rgba(255, 255, 255, 0.78);
+        }
+
+        .sitemap-container {
+            max-width: 1160px;
+            margin: 40px auto 70px auto;
+            padding: 0 var(--px);
+        }
+
+        .sitemap-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 28px;
+        }
+
+        .sitemap-category-card {
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--r-lg);
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+        }
+        .sitemap-cat-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 12px;
+            border-bottom: 1.5px solid var(--gray-100);
+            margin-bottom: 16px;
+        }
+        .sitemap-cat-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: var(--r-sm);
+            background: rgba(13, 148, 136, 0.1);
+            color: var(--teal);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .sitemap-cat-title {
+            font-family: 'Bricolage Grotesque', 'Plus Jakarta Sans', sans-serif;
+            font-size: 19px;
+            color: var(--navy);
+            font-weight: 700;
+        }
+
+        .sitemap-link-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .sitemap-link-item {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .sitemap-link-item a {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--teal);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.15s;
+        }
+        .sitemap-link-item a:hover {
+            color: var(--navy);
+            text-decoration: underline;
+        }
+        .sitemap-link-desc {
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAV BAR -->
+    <nav class="nav" id="mainNav">
+        <div class="nav-left">
+            <a href="index.html" class="nav-logo">
+                <div class="nav-logo-mark">
+                    <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                </div>
+                <span>TripCraft</span>
+            </a>
+            <div class="nav-links">
+                <a href="destinations.html" class="nav-link">Destinations</a>
+                <a href="itinerary.html" class="nav-link">Itinerary</a>
+                <a href="transport.html" class="nav-link">Transport</a>
+                <a href="hotels.html" class="nav-link">Hotels</a>
+                <a href="vehicle.html" class="nav-link">Vehicles</a>
+                <a href="guides.html" class="nav-link">Guides</a>
+                <a href="packages.html" class="nav-link">Packages</a>
+                <a href="budget.html" class="nav-link">Budget</a>
+                <a href="solo.html" class="nav-link">Solo Trip</a>
+                <a href="community.html" class="nav-link">Community</a>
+                <a href="album.html" class="nav-link">Album Studio</a>
+            </div>
+        </div>
+
+        <div class="nav-right">
+            <div class="nav-currency-picker">
+                <button type="button" class="currency-toggle-btn active" data-curr="INR" onclick="TripCraftCurrency.setCurrency('INR')">&#8377; INR</button>
+                <button type="button" class="currency-toggle-btn" data-curr="USD" onclick="TripCraftCurrency.setCurrency('USD')">$ USD</button>
+                <button type="button" class="currency-toggle-btn" data-curr="EUR" onclick="TripCraftCurrency.setCurrency('EUR')">&euro; EUR</button>
+            </div>
+
+            <div class="nav-action-wrapper" id="navNotifWrapper" style="position:relative;">
+                <button class="nav-action-icon-btn" onclick="TripCraftNotifications.togglePanel()" title="Trip Notifications">
+                    <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                    <span class="nav-badge" id="navNotifBadge" style="display:none;">0</span>
+                </button>
+                <div class="tc-notif-panel" id="tcNotifPanel">
+                    <div class="tc-notif-header">
+                        <h4>Traveler Notifications</h4>
+                        <button class="tc-notif-clear-btn" onclick="TripCraftNotifications.clearAll()">Clear All</button>
+                    </div>
+                    <div class="tc-notif-list" id="tcNotifList"></div>
+                </div>
+            </div>
+
+            <a href="wishlist.html" class="nav-action-icon-btn" title="Saved Wishlist">
+                <svg viewBox="0 0 24 24" id="navWishlistHeart"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                <span class="nav-badge" id="navWishlistBadge" style="display:none;">0</span>
+            </a>
+
+            <div class="nav-user-dropdown-wrapper" style="position:relative;">
+                <button class="nav-user-btn" onclick="toggleUserMenu()">
+                    <div class="nav-user-avatar" id="navAvatar">PS</div>
+                    <span id="navUserName">Priya</span>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="nav-user-dropdown" id="navUserMenu">
+                    <div class="nav-user-info">
+                        <div class="nav-user-name" id="menuUserName">Priya Sunder</div>
+                        <div class="nav-user-email" id="menuUserEmail">priya.traveler@example.com</div>
+                        <div style="margin-top:6px;"><span class="chip chip-gold" id="menuUserTier">Silver Traveler</span></div>
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <a href="bookings.html" class="dropdown-item">My Bookings</a>
+                    <a href="faq.html" class="dropdown-item">Help Center / FAQ</a>
+                    <a href="contact.html" class="dropdown-item">Customer Support</a>
+                    <div class="dropdown-divider"></div>
+                    <a href="login.html" class="dropdown-item text-danger" onclick="logoutUser()">Sign Out</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <header class="sitemap-hero">
+        <div style="max-width:1160px; margin:0 auto;">
+            <h1>TripCraft Platform Directory &amp; Sitemap</h1>
+            <p>Comprehensive overview of all 24 production pages, travel utilities, and account management modules.</p>
+        </div>
+    </header>
+
+    <!-- MAIN SITEMAP CONTENT -->
+    <main class="sitemap-container">
+        <div class="sitemap-grid">
+
+            <!-- Category 1: Discovery & Guides -->
+            <div class="sitemap-category-card">
+                <div class="sitemap-cat-header">
+                    <div class="sitemap-cat-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+                    </div>
+                    <div class="sitemap-cat-title">Discovery &amp; Guides</div>
+                </div>
+                <ul class="sitemap-link-list">
+                    <li class="sitemap-link-item">
+                        <a href="index.html">Homepage (index.html) &rarr;</a>
+                        <span class="sitemap-link-desc">Hero search, 9-step flow visualization, and trending getaways.</span>
+                    </li>
+                    <li class="sitemap-link-item">
+                        <a href="destinations.html">Destinations Explorer (destinations.html) &rarr;</a>
+                        <span class="sitemap-link-desc">Filterable catalog of hill stations, royal cities, and beach havens.</span>
+                    </li>
+                    <li class="sitemap-link-item">
+                        <a href="dest-detail.html">Destination Deep-Dive (dest-detail.html) &rarr;</a>
+                        <span class="sitemap-link-desc">Munnar guide with spots, food trails, and destination comparison.</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Category 2: Core Booking Services -->
+            <div class="sitemap-category-card">
+                <div class="sitemap-cat-header">
+                    <div class="sitemap-cat-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    </div>
+                    <div class="sitemap-cat-title">Travel &amp; Booking Services</div>
+                </div>
+                <ul class="sitemap-link-list">
+                    <li class="sitemap-link-item">
+                        <a href="hotels.html">Hotels &amp; Resorts (hotels.html) &rarr;</a>
+                        <span class="sitemap-link-desc">Dynamic date pricing, urgency meters, and cross-booking triggers.</span>
+                    </li>
+                    <li class="sitemap-link-item">
+                        <a href="transport.html">Multi-Modal Transport (transport.html) &rarr;</a>
+                        <span class="sitemap-link-desc">Flights, Vande Bharat trains, buses, and cabs with child discounts.</span>
+                    </li>
+                    <li class="sitemap-link-item">
+                        <a href="vehicle.html">Vehicle &amp; Bike Rentals (vehicle.html) &rarr;</a>
+                        <span class="sitemap-link-desc">Himalayan 450 bikes and SUVs linked via hotel booking foreign keys.</span>
+                    </li>
+                    <li class="sitemap-link-item">
+                        <a href="guides.html">Certified Local Guides (guides.html) &rarr;</a>
+                        <span class="sitemap-link-desc">Vetted naturalists and historians with multi-language filters.</span>
+                    </li>
+                    <li class="sitemap-link-item">
+                        <a href="packages.html">Holiday Packages (packages.html) &rarr;</a>
+                        <span class="sitemap-link-desc">All-inclusive tour bundles with day-by-day itineraries and group savings.</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Category 3: Planning, Budget & Wishlist -->
+            <div class="sitemap-category-card">
+                <div class="sitemap-cat-header">
+                    <div class="sitemap-cat-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    </div>
+                    <div class="sitemap-cat-title">Planning &amp; Financials</div>
+                </div>
+                <ul class="sitemap-link-list">
+                    <li class="sitemap-link-item">
+                        <a href="itinerary.html">Interactive Itinerary (itinerary.html) &rarr;</a>
+                        <span class="sitemap-link-desc">Drag-and-drop daily schedule builder and shareable trip links.</span>
+                    </li>
+                    <li class="sitemap-link-item">
+                        <a href="budget.html">40/25/20/15 Budget Tracker (budget.html) &rarr;</a>
+                        <span class="sitemap-link-desc">Algorithmic expense partitioning with live planned vs actual meters.</span>
+                    </li>
+                    <li class="sitemap-link-item">
+                        <a href="wishlist.html">Saved Wishlist (wishlist.html) &rarr;</a>
+                        <span class="sitemap-link-desc">Quick 1-click bookers for wishlisted stays and recently accessed escapes.</span>
+                    </li>
+                    <li class="sitemap-link-item">
+                        <a href="bookings.html">My Bookings Ledger (bookings.html) &rarr;</a>
+                        <span class="sitemap-link-desc">Reservation ledger, Explorer Loyalty Tier, and Master PDF export.</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Category 4: Specialized Hubs -->
+            <div class="sitemap-category-card">
+                <div class="sitemap-cat-header">
+                    <div class="sitemap-cat-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    </div>
+                    <div class="sitemap-cat-title">Specialized Hubs</div>
+                </div>
+                <ul class="sitemap-link-list">
+                    <li class="sitemap-link-item">
+                        <a href="solo.html">Solo Travel Engine (solo.html) &rarr;</a>
+                        <span class="sitemap-link-desc">Tailored solo packages, safety indices, and female-friendly pod stays.</span>
+                    </li>
+                    <li class="sitemap-link-item">
+                        <a href="community.html">Community &amp; Buddies (community.html) &rarr;</a>
+                        <span class="sitemap-link-desc">Solo traveler lounge with interactive joint meetup proposal modal.</span>
+                    </li>
+                    <li class="sitemap-link-item">
+                        <a href="album.html">Photo Album Studio (album.html) &rarr;</a>
+                        <span class="sitemap-link-desc">Curate layout slots, interactive flipbook reader, and 85% royalties.</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Category 5: Support & Trust -->
+            <div class="sitemap-category-card">
+                <div class="sitemap-cat-header">
+                    <div class="sitemap-cat-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    </div>
+                    <div class="sitemap-cat-title">Support &amp; Trust Signals</div>
+                </div>
+                <ul class="sitemap-link-list">
+                    <li class="sitemap-link-item">
+                        <a href="about.html">About Us (about.html) &rarr;</a>
+                        <span class="sitemap-link-desc">TripCraft vision, architectural design, and core differentiation.</span>
+                    </li>
+                    <li class="sitemap-link-item">
+                        <a href="contact.html">Customer Support &amp; Helpline (contact.html) &rarr;</a>
+                        <span class="sitemap-link-desc">24/7 toll-free helpline, WhatsApp desk, and support ticket system.</span>
+                    </li>
+                    <li class="sitemap-link-item">
+                        <a href="faq.html">FAQ Knowledge Base (faq.html) &rarr;</a>
+                        <span class="sitemap-link-desc">Searchable accordion answering common questions on cancellations and GST.</span>
+                    </li>
+                    <li class="sitemap-link-item">
+                        <a href="terms.html">Terms &amp; Conditions (terms.html) &rarr;</a>
+                        <span class="sitemap-link-desc">Official booking contracts, pricing rules, and partner obligations.</span>
+                    </li>
+                    <li class="sitemap-link-item">
+                        <a href="privacy.html">Privacy Policy (privacy.html) &rarr;</a>
+                        <span class="sitemap-link-desc">DPDP Act 2023 compliance, cryptographic tokens, and data safeguards.</span>
+                    </li>
+                    <li class="sitemap-link-item">
+                        <a href="refund.html">Cancellation &amp; Refund Policy (refund.html) &rarr;</a>
+                        <span class="sitemap-link-desc">100% hotel refund windows and instant wallet settlement rules.</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Category 6: Developer & Administration -->
+            <div class="sitemap-category-card">
+                <div class="sitemap-cat-header">
+                    <div class="sitemap-cat-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                    </div>
+                    <div class="sitemap-cat-title">Architecture &amp; Admin</div>
+                </div>
+                <ul class="sitemap-link-list">
+                    <li class="sitemap-link-item">
+                        <a href="login.html">Authentication Desk (login.html) &rarr;</a>
+                        <span class="sitemap-link-desc">Simulated RFC 7519 JWT login with 6-user role switcher.</span>
+                    </li>
+                    <li class="sitemap-link-item">
+                        <a href="admin.html">Admin Dashboard &amp; DB Explorer (admin.html) &rarr;</a>
+                        <span class="sitemap-link-desc">29-table interactive relational schema visualizer and record inspector.</span>
+                    </li>
+
+                    <li class="sitemap-link-item">
+                        <a href="download-zip.html">Production ZIP Downloader (download-zip.html) &rarr;</a>
+                        <span class="sitemap-link-desc">Verification checklist and 1-click download of the complete platform archive.</span>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+    <div class="footer-grid">
+        <div class="footer-brand">
+            <div class="footer-logo">
+                <div class="nav-logo-mark">
+                    <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                </div>
+                <span>TripCraft</span>
+            </div>
+            <p>AI-orchestrated end-to-end travel intelligence platform. Engineered for seamless discovery, instant reservations, solo safety, and creator photobook monetization.</p>
+            <div class="footer-social-strip">
+                <a href="https://twitter.com" target="_blank" class="footer-social-link" title="Twitter / X"><svg viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg></a>
+                <a href="https://instagram.com" target="_blank" class="footer-social-link" title="Instagram"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
+                <a href="https://linkedin.com" target="_blank" class="footer-social-link" title="LinkedIn"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a>
+                <a href="https://github.com" target="_blank" class="footer-social-link" title="GitHub"><svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg></a>
+            </div>
+        </div>
+        <div class="footer-col">
+            <h4>Explore</h4>
+            <ul>
+                <li><a href="destinations.html">Destinations</a></li>
+                <li><a href="packages.html">Curated Packages</a></li>
+                <li><a href="hotels.html">Stays &amp; Resorts</a></li>
+                <li><a href="transport.html">Flights &amp; Rail</a></li>
+                <li><a href="vehicle.html">Car &amp; Bike Rentals</a></li>
+                <li><a href="guides.html">Certified Local Guides</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Special Hubs</h4>
+            <ul>
+                <li><a href="solo.html">Solo Traveler Engine</a></li>
+                <li><a href="community.html">Community &amp; Buddies</a></li>
+                <li><a href="album.html">Photo Album Studio</a></li>
+                <li><a href="budget.html">40/25/20/15 Budgeter</a></li>
+                <li><a href="itinerary.html">Interactive Itinerary</a></li>
+                <li><a href="wishlist.html">Saved Wishlist</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Trust &amp; Legal</h4>
+            <ul>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="contact.html">Customer Support</a></li>
+                <li><a href="faq.html">FAQ &amp; Help Desk</a></li>
+                <li><a href="terms.html">Terms &amp; Conditions</a></li>
+                <li><a href="privacy.html">Privacy Policy</a></li>
+                <li><a href="refund.html">Refund Policy</a></li>
+                <li><a href="sitemap.html">Sitemap</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <div>&copy; 2026 TripCraft Technologies Inc. All rights reserved. 256-bit SSL Encrypted Booking System.</div>
+        <div style="display:flex; gap:16px;">
+            <a href="terms.html">Terms</a>
+            <a href="privacy.html">Privacy</a>
+            <a href="refund.html">Refunds</a>
+            <a href="sitemap.html">Sitemap</a>
+        </div>
+    </div>
+</footer>
+
+    <script src="tc-config.js"></script>
+    <script src="shared.js"></script>
+    <script src="tc-layer.js"></script>
+</body>
+</html>

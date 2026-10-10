@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us &amp; Platform Mission — TripCraft</title>
+    <meta name="description" content="Discover TripCraft's mission to unify travel discovery, dynamic booking realism, solo adventurer safety, and creator photobook monetization in one cohesive platform.">
+    <meta property="og:title" content="About TripCraft — Engineering the Future of Travel Intelligence">
+    <meta property="og:description" content="Learn about our architectural design, algorithmic budget allocation, and traveler-first commitment.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1488646953014-85cb44e25828?q=80&w=1200&auto=format&fit=crop">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="shared.css">
+    <style>
+        .about-hero {
+            background: linear-gradient(135deg, #090E2B, #0D2C26);
+            padding: 60px var(--px);
+            position: relative;
+            overflow: hidden;
+        }
+        .about-hero-overlay {
+            position: absolute;
+            inset: 0;
+            background-image: url('https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=1920&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.14;
+        }
+        .about-hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 760px;
+        }
+        .about-hero h1 {
+            font-family: 'Bricolage Grotesque', 'Plus Jakarta Sans', sans-serif;
+            font-size: 42px;
+            font-weight: 700;
+            color: #FFFFFF;
+            line-height: 1.15;
+            margin-bottom: 12px;
+        }
+        .about-hero p {
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.82);
+            line-height: 1.65;
+        }
+
+        .about-container {
+            max-width: 1100px;
+            margin: 50px auto 80px auto;
+            padding: 0 var(--px);
+        }
+
+        .about-pillars-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 28px;
+            margin: 40px 0 60px 0;
+        }
+        .pillar-card {
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--r-lg);
+            padding: 28px;
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .pillar-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+        .pillar-icon-box {
+            width: 44px;
+            height: 44px;
+            border-radius: var(--r-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 18px;
+        }
+        .pillar-icon-box.teal { background: rgba(13, 148, 136, 0.12); color: var(--teal); }
+        .pillar-icon-box.gold { background: rgba(217, 119, 6, 0.12); color: var(--gold); }
+        .pillar-icon-box.navy { background: rgba(11, 31, 58, 0.12); color: var(--navy); }
+        .pillar-card h3 {
+            font-family: 'Bricolage Grotesque', 'Plus Jakarta Sans', sans-serif;
+            font-size: 20px;
+            color: var(--navy);
+            margin-bottom: 8px;
+        }
+        .pillar-card p {
+            font-size: 13.5px;
+            line-height: 1.6;
+            color: var(--text-mid);
+        }
+
+        .about-story-section {
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--r-lg);
+            padding: 40px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 40px;
+        }
+        .about-story-section h2 {
+            font-family: 'Bricolage Grotesque', 'Plus Jakarta Sans', sans-serif;
+            font-size: 26px;
+            color: var(--navy);
+            margin-bottom: 14px;
+        }
+        .about-story-section p {
+            font-size: 14.5px;
+            line-height: 1.7;
+            color: var(--text-mid);
+            margin-bottom: 14px;
+        }
+
+        .stat-counter-strip {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            background: linear-gradient(135deg, #0A1C2A, #0D2C26);
+            border-radius: var(--r-lg);
+            padding: 30px;
+            color: #FFFFFF;
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        @media (max-width: 800px) {
+            .stat-counter-strip {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        .stat-num {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--gold);
+            font-family: 'Bricolage Grotesque', 'Plus Jakarta Sans', sans-serif;
+        }
+        .stat-lbl {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAV BAR -->
+    <nav class="nav" id="mainNav">
+        <div class="nav-left">
+            <a href="index.html" class="nav-logo">
+                <div class="nav-logo-mark">
+                    <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                </div>
+                <span>TripCraft</span>
+            </a>
+            <div class="nav-links">
+                <a href="destinations.html" class="nav-link">Destinations</a>
+                <a href="itinerary.html" class="nav-link">Itinerary</a>
+                <a href="transport.html" class="nav-link">Transport</a>
+                <a href="hotels.html" class="nav-link">Hotels</a>
+                <a href="vehicle.html" class="nav-link">Vehicles</a>
+                <a href="guides.html" class="nav-link">Guides</a>
+                <a href="packages.html" class="nav-link">Packages</a>
+                <a href="budget.html" class="nav-link">Budget</a>
+                <a href="solo.html" class="nav-link">Solo Trip</a>
+                <a href="community.html" class="nav-link">Community</a>
+                <a href="album.html" class="nav-link">Album Studio</a>
+            </div>
+        </div>
+
+        <div class="nav-right">
+            <div class="nav-currency-picker">
+                <button type="button" class="currency-toggle-btn active" data-curr="INR" onclick="TripCraftCurrency.setCurrency('INR')">&#8377; INR</button>
+                <button type="button" class="currency-toggle-btn" data-curr="USD" onclick="TripCraftCurrency.setCurrency('USD')">$ USD</button>
+                <button type="button" class="currency-toggle-btn" data-curr="EUR" onclick="TripCraftCurrency.setCurrency('EUR')">&euro; EUR</button>
+            </div>
+
+            <div class="nav-action-wrapper" id="navNotifWrapper" style="position:relative;">
+                <button class="nav-action-icon-btn" onclick="TripCraftNotifications.togglePanel()" title="Trip Notifications">
+                    <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                    <span class="nav-badge" id="navNotifBadge" style="display:none;">0</span>
+                </button>
+                <div class="tc-notif-panel" id="tcNotifPanel">
+                    <div class="tc-notif-header">
+                        <h4>Traveler Notifications</h4>
+                        <button class="tc-notif-clear-btn" onclick="TripCraftNotifications.clearAll()">Clear All</button>
+                    </div>
+                    <div class="tc-notif-list" id="tcNotifList"></div>
+                </div>
+            </div>
+
+            <a href="wishlist.html" class="nav-action-icon-btn" title="Saved Wishlist">
+                <svg viewBox="0 0 24 24" id="navWishlistHeart"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                <span class="nav-badge" id="navWishlistBadge" style="display:none;">0</span>
+            </a>
+
+            <div class="nav-user-dropdown-wrapper" style="position:relative;">
+                <button class="nav-user-btn" onclick="toggleUserMenu()">
+                    <div class="nav-user-avatar" id="navAvatar">PS</div>
+                    <span id="navUserName">Priya</span>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="nav-user-dropdown" id="navUserMenu">
+                    <div class="nav-user-info">
+                        <div class="nav-user-name" id="menuUserName">Priya Sunder</div>
+                        <div class="nav-user-email" id="menuUserEmail">priya.traveler@example.com</div>
+                        <div style="margin-top:6px;"><span class="chip chip-gold" id="menuUserTier">Silver Traveler</span></div>
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <a href="bookings.html" class="dropdown-item">My Bookings</a>
+                    <a href="wishlist.html" class="dropdown-item">My Saved Wishlist</a>
+                    <a href="faq.html" class="dropdown-item">Help Center / FAQ</a>
+                    <a href="contact.html" class="dropdown-item">Customer Support</a>
+                    <div class="dropdown-divider"></div>
+                    <a href="login.html" class="dropdown-item text-danger" onclick="logoutUser()">Sign Out</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <header class="about-hero">
+        <div class="about-hero-overlay"></div>
+        <div class="about-hero-content">
+            <div style="display:inline-flex; align-items:center; gap:6px; background:rgba(13,148,136,0.2); color:#5EEAD4; border-radius:var(--r-full); padding:4px 12px; font-size:11px; font-weight:700; text-transform:uppercase; margin-bottom:12px;">
+                Our Philosophy &amp; Vision
+            </div>
+            <h1>Transforming Travel Planning Into an Art Form</h1>
+            <p>TripCraft was created to solve travel fragmentation. Rather than juggling dozens of disconnected browser tabs for flights, hotels, cabs, guides, and expense spreadsheets, TripCraft unifies every milestone of your journey into a single intelligent platform.</p>
+        </div>
+    </header>
+
+    <!-- STATS COUNTER STRIP -->
+    <main class="about-container">
+        <div class="stat-counter-strip">
+            <div>
+                <div class="stat-num">29</div>
+                <div class="stat-lbl">Relational DB Tables</div>
+            </div>
+            <div>
+                <div class="stat-num">9.8/10</div>
+                <div class="stat-lbl">Solo Safety Score</div>
+            </div>
+            <div>
+                <div class="stat-num">85%</div>
+                <div class="stat-lbl">Creator Royalties</div>
+            </div>
+            <div>
+                <div class="stat-num">0%</div>
+                <div class="stat-lbl">Booking Fees</div>
+            </div>
+        </div>
+
+        <!-- CORE STORY -->
+        <div class="about-story-section">
+            <h2>The TripCraft Story</h2>
+            <p>Modern travel planning is broken. Travelers spend an average of 14 hours cross-referencing disjointed portals: booking a flight here, searching hotel reviews elsewhere, haggling for local cab rates on the street, and losing track of daily expenditures in fragmented note apps.</p>
+            <p>TripCraft re-engineers this experience from first principles. From our <strong>RFC 7519 cryptographic authentication</strong> and <strong>algorithmic 40/25/20/15 budget partitioning</strong> to our smart <strong>cross-booking relational triggers</strong> (which connect vehicle rentals directly to your hotel check-in dates via Foreign Keys), every layer of TripCraft is architected to save you time and provide peace of mind.</p>
+        </div>
+
+        <!-- THREE CORE PILLARS -->
+        <h2 style="font-family:'Bricolage Grotesque', 'Plus Jakarta Sans', sans-serif; font-size:26px; color:var(--navy); margin-bottom:12px;">What Makes TripCraft Different</h2>
+        <div class="about-pillars-grid">
+            
+            <div class="pillar-card">
+                <div class="pillar-icon-box teal">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+                </div>
+                <h3>Dedicated Solo Safety Hub</h3>
+                <p>We built a tailored discovery engine designed specifically for single adventurers ("avaluku nu oru trip"). Featuring verified safety indices, female-friendly boutique pods, zero single-supplement fees, and a dedicated buddy matcher lounge with joint meetup proposal tools.</p>
+            </div>
+
+            <div class="pillar-card">
+                <div class="pillar-icon-box gold">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                </div>
+                <h3>Photobook Studio &amp; Monetization</h3>
+                <p>Travelers can transform their high-resolution photography into curated photobooks with custom layout slots. Creators earn 85% net royalties deposited directly into their TripCraft wallet whenever fellow travelers purchase their verified travel collections.</p>
+            </div>
+
+            <div class="pillar-card">
+                <div class="pillar-icon-box navy">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                </div>
+                <h3>Enterprise Booking Realism</h3>
+                <p>Dynamic date-driven multipliers, session-locked urgency badges, category-level review breakdowns, 256-bit simulated payment processing, and multi-currency toggles give travelers authentic, enterprise-grade e-commerce reliability.</p>
+            </div>
+
+        </div>
+
+        <!-- LEADERSHIP & ENGINEERING DESK -->
+        <div class="about-story-section">
+            <h2>Engineering &amp; Research Standards</h2>
+            <p>TripCraft was designed and engineered as a modern client-first travel platform. Engineered by a passionate team of travel technocrats and software architects, TripCraft is maintained under strict security standards, adhering to India's DPDP Act 2023 and European GDPR guidelines.</p>
+            <div style="display:flex; gap:14px; margin-top:20px; flex-wrap:wrap;">
+                <a href="destinations.html" class="btn btn-teal">Start Exploring Destinations</a>
+                <a href="contact.html" class="btn btn-outline">Connect with Our Team</a>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+    <div class="footer-grid">
+        <div class="footer-brand">
+            <div class="footer-logo">
+                <div class="nav-logo-mark">
+                    <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                </div>
+                <span>TripCraft</span>
+            </div>
+            <p>AI-orchestrated end-to-end travel intelligence platform. Engineered for seamless discovery, instant reservations, solo safety, and creator photobook monetization.</p>
+            <div class="footer-social-strip">
+                <a href="https://twitter.com" target="_blank" class="footer-social-link" title="Twitter / X"><svg viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg></a>
+                <a href="https://instagram.com" target="_blank" class="footer-social-link" title="Instagram"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
+                <a href="https://linkedin.com" target="_blank" class="footer-social-link" title="LinkedIn"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a>
+                <a href="https://github.com" target="_blank" class="footer-social-link" title="GitHub"><svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg></a>
+            </div>
+        </div>
+        <div class="footer-col">
+            <h4>Explore</h4>
+            <ul>
+                <li><a href="destinations.html">Destinations</a></li>
+                <li><a href="packages.html">Curated Packages</a></li>
+                <li><a href="hotels.html">Stays &amp; Resorts</a></li>
+                <li><a href="transport.html">Flights &amp; Rail</a></li>
+                <li><a href="vehicle.html">Car &amp; Bike Rentals</a></li>
+                <li><a href="guides.html">Certified Local Guides</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Special Hubs</h4>
+            <ul>
+                <li><a href="solo.html">Solo Traveler Engine</a></li>
+                <li><a href="community.html">Community &amp; Buddies</a></li>
+                <li><a href="album.html">Photo Album Studio</a></li>
+                <li><a href="budget.html">40/25/20/15 Budgeter</a></li>
+                <li><a href="itinerary.html">Interactive Itinerary</a></li>
+                <li><a href="wishlist.html">Saved Wishlist</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Trust &amp; Legal</h4>
+            <ul>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="contact.html">Customer Support</a></li>
+                <li><a href="faq.html">FAQ &amp; Help Desk</a></li>
+                <li><a href="terms.html">Terms &amp; Conditions</a></li>
+                <li><a href="privacy.html">Privacy Policy</a></li>
+                <li><a href="refund.html">Refund Policy</a></li>
+                <li><a href="sitemap.html">Sitemap</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <div>&copy; 2026 TripCraft Technologies Inc. All rights reserved. 256-bit SSL Encrypted Booking System.</div>
+        <div style="display:flex; gap:16px;">
+            <a href="terms.html">Terms</a>
+            <a href="privacy.html">Privacy</a>
+            <a href="refund.html">Refunds</a>
+            <a href="sitemap.html">Sitemap</a>
+        </div>
+    </div>
+</footer>
+
+    <script src="tc-config.js"></script>
+    <script src="shared.js"></script>
+    <script src="tc-layer.js"></script>
+</body>
+</html>

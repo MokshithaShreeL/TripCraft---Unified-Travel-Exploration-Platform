@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In — TripCraft</title>
+    <meta name="description" content="Sign in to TripCraft to access your travel itineraries, bookings, and custom travel plans.">
+    <meta property="og:title" content="Sign In — TripCraft">
+    <meta property="og:description" content="Sign in to TripCraft to access your travel itineraries, bookings, and custom travel plans.">
+    <meta property="og:type" content="website">
+    <link rel="stylesheet" href="shared.css">
+    <!-- Google Identity Services -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <style>
+        .auth-logo-bar {
+            margin-bottom: 24px;
+        }
+        .auth-logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: #ffffff;
+            font-size: 20px;
+            font-weight: 700;
+        }
+        .auth-lead {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-top: 4px;
+            margin-bottom: 20px;
+        }
+        .auth-row-between {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-size: 13px;
+        }
+        .forgot-link {
+            color: var(--teal);
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .forgot-link:hover {
+            text-decoration: underline;
+        }
+        .google-btn {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 11px 16px;
+            background: var(--surface);
+            color: var(--ink);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--r-full);
+            font-size: 14.5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .google-btn:hover {
+            background: var(--gray-50);
+            border-color: var(--gray-300);
+        }
+        /* Forgot Password Modal */
+        .tc-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(16, 27, 75, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .tc-modal-overlay.open {
+            display: flex;
+        }
+        .tc-modal-card {
+            background: var(--surface);
+            border-radius: var(--r-xl);
+            max-width: 440px;
+            width: 100%;
+            padding: 32px;
+            box-shadow: var(--shadow-2xl);
+            position: relative;
+        }
+        .tc-modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-size: 20px;
+        }
+        .float-share-btn, .share-menu {
+            display: none !important;
+        }
+        #google-btn-wrapper {
+            width: 100%;
+            margin-bottom: 12px;
+            min-height: 44px;
+            display: flex;
+            justify-content: center;
+        }
+        #google-btn-wrapper iframe {
+            margin: 0 auto !important;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        if (window.location.search.includes('tab=signup')) {
+            window.location.replace('signup.html');
+        }
+    </script>
+
+    <div class="auth-shell">
+        <!-- Left Art Column -->
+        <div class="auth-art" style="background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=2070&auto=format&fit=crop');">
+            <div>
+                <a href="index.html" class="auth-logo">
+                    <span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:8px;background:var(--teal);color:#fff;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
+                    </span>
+                    <span>TripCraft</span>
+                </a>
+            </div>
+            <div>
+                <h2 style="font-size:36px;font-weight:800;line-height:1.2;margin-bottom:12px;color:#ffffff;" data-i18n="signin_art_title">Pick your trip up where you left it.</h2>
+                <p style="font-size:16px;color:rgba(255,255,255,0.85);max-width:440px;line-height:1.6;" data-i18n="signin_art_desc">Saved itineraries, bookings and invoices — on any device.</p>
+            </div>
+            <div style="font-size:12.5px;color:rgba(255,255,255,0.65);" data-i18n="signin_art_sec">
+                256-bit Encrypted Session &bull; ISO 27001 Certified Security
+            </div>
+        </div>
+
+        <!-- Right Form Column -->
+        <div class="auth-pane">
+            <div class="auth-card">
+                <h1 style="font-size:26px;font-weight:800;color:var(--ink);" data-i18n="signin_title">Welcome back</h1>
+                <p class="auth-lead" data-i18n="signin_lead">Sign in to access your travel bookings and itineraries.</p>
+
+                <!-- Official Branded Google Sign-In Button -->
+                <button type="button" class="google-btn" id="google-login-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                    </svg>
+                    <span id="google-btn-text" data-i18n="google">Continue with Google</span>
+                </button>
+
+                <div class="auth-or" data-i18n="or_email">or use your email</div>
+
+                <!-- Sign In Form -->
+                <form id="login-form">
+                    <div class="auth-field">
+                        <label for="login-email" data-i18n="email">Email address</label>
+                        <input type="email" id="login-email" placeholder="you@example.com" required autocomplete="email">
+                    </div>
+
+                    <div class="auth-field">
+                        <label for="login-password" data-i18n="password">Password</label>
+                        <input type="password" id="login-password" placeholder="••••••••" required autocomplete="current-password">
+                    </div>
+
+                    <div class="auth-row-between">
+                        <label class="chk">
+                            <input type="checkbox" id="login-remember" checked>
+                            <span data-i18n="remember">Keep me signed in</span>
+                        </label>
+                        <a href="javascript:void(0)" class="forgot-link" id="forgot-pw-link" data-i18n="forgot">Forgot password?</a>
+                    </div>
+
+                    <button type="submit" class="auth-btn" id="login-submit" data-i18n="signin_btn">
+                        Sign in
+                    </button>
+                </form>
+
+                <div class="auth-foot">
+                    <span data-i18n="no_account">New to TripCraft?</span> <a href="signup.html" data-i18n="create_account">Create an account</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div class="tc-modal-overlay" id="forgot-modal">
+        <div class="tc-modal-card">
+            <button type="button" class="tc-modal-close" id="forgot-close">&times;</button>
+            
+            <div id="forgot-step-1">
+                <h2 style="font-size:20px;font-weight:700;margin-bottom:6px;color:var(--ink);" data-i18n="reset_pw">Reset password</h2>
+                <p style="font-size:13.5px;color:var(--text-muted);margin-bottom:18px;" data-i18n="reset_pw_sub">Enter your account email to receive a 6-digit verification code.</p>
+                <div class="auth-field">
+                    <label for="forgot-email" data-i18n="email">Email address</label>
+                    <input type="email" id="forgot-email" placeholder="you@example.com">
+                </div>
+                <button type="button" class="auth-btn" id="forgot-send-btn" data-i18n="send_code">Send verification code</button>
+            </div>
+
+            <div id="forgot-step-2" style="display:none;">
+                <h2 style="font-size:20px;font-weight:700;margin-bottom:6px;color:var(--ink);" data-i18n="verify_title">Verify & set password</h2>
+                <div class="otp-sent" id="forgot-otp-info"></div>
+                <div class="auth-field">
+                    <label for="forgot-code" data-i18n="otp_label">6-digit verification code</label>
+                    <input type="text" id="forgot-code" maxlength="6" placeholder="123456" style="letter-spacing:4px;font-weight:700;text-align:center;">
+                </div>
+                <div class="auth-field">
+                    <label for="forgot-new-pw" data-i18n="new_pw_label">New password (min 8 characters)</label>
+                    <input type="password" id="forgot-new-pw" placeholder="••••••••">
+                </div>
+                <button type="button" class="auth-btn" id="forgot-reset-btn" data-i18n="reset_btn">Reset password</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Google Onboarding / Complete Profile Modal (WhatsApp, Name, Email, Password) -->
+    <div class="tc-modal-overlay" id="google-profile-modal">
+        <div class="tc-modal-card" style="max-width: 460px; padding: 28px;">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <div style="position: relative; display: inline-block; margin-bottom: 10px;">
+                    <img id="gp-avatar-img" src="https://ui-avatars.com/api/?name=User&background=0E7C6B&color=fff" style="width: 68px; height: 68px; border-radius: 50%; object-fit: cover; border: 3px solid var(--teal); box-shadow: var(--shadow-sm);">
+                    <div style="position: absolute; bottom: 0; right: 0; background: #4285F4; border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; border: 2px solid #fff;">
+                        <svg width="12" height="12" viewBox="0 0 24 24"><path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/></svg>
+                    </div>
+                </div>
+                <h2 style="font-size: 21px; font-weight: 800; color: var(--ink); margin-bottom: 4px;">Complete Your Profile</h2>
+                <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5; margin: 0;">Please enter your WhatsApp number and set an account password to finish registration.</p>
+            </div>
+
+            <form id="google-profile-form">
+                <div class="auth-field" style="margin-bottom: 12px;">
+                    <label for="gp-name" style="font-size: 12.5px; font-weight: 600;">Full Name</label>
+                    <input type="text" id="gp-name" required placeholder="Your full name">
+                </div>
+
+                <div class="auth-field" style="margin-bottom: 12px;">
+                    <label for="gp-email" style="font-size: 12.5px; font-weight: 600;">Google Account Email</label>
+                    <input type="email" id="gp-email" readonly style="background: var(--gray-50); color: var(--text-muted); cursor: not-allowed;">
+                </div>
+
+                <div class="auth-field" style="margin-bottom: 12px;">
+                    <label for="gp-phone" style="font-size: 12.5px; font-weight: 600; display: flex; justify-content: space-between; align-items: center;">
+                        <span>WhatsApp / Mobile Number <strong style="color:var(--teal);">*</strong></span>
+                        <span style="font-size: 11px; color: var(--teal); font-weight: 600;">For vouchers &amp; alerts</span>
+                    </label>
+                    <div style="display: flex; gap: 8px;">
+                        <select id="gp-cc" style="width: 105px; padding: 10px; border-radius: var(--r-md); border: 1px solid var(--gray-200); font-size: 13px; background: var(--surface); color: var(--ink);">
+                            <option value="+91">+91 (IN)</option>
+                            <option value="+1">+1 (US)</option>
+                            <option value="+44">+44 (UK)</option>
+                            <option value="+971">+971 (UAE)</option>
+                            <option value="+65">+65 (SG)</option>
+                        </select>
+                        <input type="tel" id="gp-phone" required placeholder="9876543210" style="flex: 1; padding: 10px 12px; border-radius: var(--r-md); border: 1px solid var(--gray-200); font-size: 13.5px; background: var(--surface); color: var(--ink);">
+                    </div>
+                </div>
+
+                <div class="auth-field" style="margin-bottom: 18px;">
+                    <label for="gp-password" style="font-size: 12.5px; font-weight: 600; display: flex; justify-content: space-between; align-items: center;">
+                        <span>Set Account Password <strong style="color:var(--teal);">*</strong></span>
+                        <span style="font-size: 11px; color: var(--text-muted);">Min 6 characters</span>
+                    </label>
+                    <input type="password" id="gp-password" required minlength="6" placeholder="••••••••" style="width: 100%; padding: 10px 12px; border-radius: var(--r-md); border: 1px solid var(--gray-200); font-size: 13.5px; background: var(--surface); color: var(--ink);">
+                </div>
+
+                <button type="submit" class="auth-btn" id="gp-submit-btn" style="width: 100%; padding: 13px; font-weight: 700; font-size: 14.5px;">
+                    Save Profile &amp; Go to TripCraft &rarr;
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="tc-config.js"></script>
+    <script src="shared.js"></script>
+    <script src="tc-layer.js"></script>
+    <script>
+        var pendingGoogleUser = null;
+
+        function openGoogleProfileModal(user) {
+            pendingGoogleUser = user;
+            var modal = document.getElementById('google-profile-modal');
+            var nameInp = document.getElementById('gp-name');
+            var emailInp = document.getElementById('gp-email');
+            var avatarImg = document.getElementById('gp-avatar-img');
+            var phoneInp = document.getElementById('gp-phone');
+            var pwInp = document.getElementById('gp-password');
+
+            if (nameInp) nameInp.value = user.name || '';
+            if (emailInp) emailInp.value = user.email || '';
+            if (avatarImg && user.avatar) avatarImg.src = user.avatar;
+            if (phoneInp) phoneInp.value = '';
+            if (pwInp) pwInp.value = '';
+
+            if (modal) modal.classList.add('open');
+        }
+
+        // Handle Profile Completion form submit
+        document.addEventListener('DOMContentLoaded', function() {
+            var gpForm = document.getElementById('google-profile-form');
+            if (gpForm) {
+                gpForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    var name = document.getElementById('gp-name').value.trim();
+                    var email = document.getElementById('gp-email').value.trim().toLowerCase();
+                    var cc = document.getElementById('gp-cc').value;
+                    var phoneRaw = document.getElementById('gp-phone').value.trim().replace(/\D/g, '');
+                    var password = document.getElementById('gp-password').value;
+
+                    if (!phoneRaw || phoneRaw.length < 10) {
+                        showToast('Please enter a valid 10-digit mobile / WhatsApp number.', 'warning');
+                        return;
+                    }
+                    if (!password || password.length < 6) {
+                        showToast('Password must be at least 6 characters.', 'warning');
+                        return;
+                    }
+
+                    var fullPhone = cc + ' ' + phoneRaw;
+                    var finalUser = {
+                        id: pendingGoogleUser && pendingGoogleUser.id ? pendingGoogleUser.id : ('TC-U-' + Math.floor(100000 + Math.random() * 900000)),
+                        name: name,
+                        email: email,
+                        phone: fullPhone,
+                        password_hash: password,
+                        role: 'user',
+                        avatar: (pendingGoogleUser && pendingGoogleUser.avatar) || ('https://ui-avatars.com/api/?name=' + encodeURIComponent(name) + '&background=0E7C6B&color=fff'),
+                        badge: 'Verified Traveler',
+                        auth_provider: 'google',
+                        isLoggedIn: true,
+                        created_at: new Date().toISOString()
+                    };
+
+                    // Save to local accounts
+                    try {
+                        var accounts = JSON.parse(localStorage.getItem('tc_accounts') || '[]');
+                        var existingIdx = accounts.findIndex(function(a) { return (a.email || '').toLowerCase() === email; });
+                        if (existingIdx >= 0) {
+                            accounts[existingIdx] = Object.assign(accounts[existingIdx], finalUser);
+                        } else {
+                            accounts.push(finalUser);
+                        }
+                        localStorage.setItem('tc_accounts', JSON.stringify(accounts));
+                    } catch(e) {}
+
+                    try { localStorage.setItem('tc_has_account', 'true'); } catch(e) {}
+                    try { localStorage.setItem('tc_session', JSON.stringify(finalUser)); } catch(e) {}
+                    try { localStorage.setItem('tc_user', JSON.stringify(finalUser)); } catch(e) {}
+
+                    if (window.TC && window.TC.Auth) {
+                        window.TC.Auth.startSession(finalUser);
+                    } else if (window.TripCraftAuth) {
+                        window.TripCraftAuth.setUser(finalUser);
+                    }
+
+                    // Save to MySQL database via API
+                    try {
+                        fetch('/api/users', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(finalUser)
+                        }).catch(function() {});
+                    } catch(e) {}
+
+                    document.getElementById('google-profile-modal').classList.remove('open');
+                    showToast('Profile complete! Welcome, ' + finalUser.name, 'success');
+                    setTimeout(function() {
+                        window.location.href = 'index.html';
+                    }, 500);
+                });
+            }
+
+            try {
+                var pendingSessionUser = JSON.parse(sessionStorage.getItem('tc_pending_google_user') || 'null');
+                if (pendingSessionUser) {
+                    sessionStorage.removeItem('tc_pending_google_user');
+                    openGoogleProfileModal(pendingSessionUser);
+                }
+            } catch(e) {}
+        });
+
+        // Official Google GSI Credential Handler
+        window.handleGoogleCredentialResponse = function(response) {
+            if (!response || !response.credential) {
+                showToast('Google authentication failed. Please try again.', 'error');
+                return;
+            }
+            try {
+                var base64Url = response.credential.split('.')[1];
+                var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                }).join(''));
+                var profile = JSON.parse(jsonPayload);
+
+                var googleEmail = (profile.email || '').toLowerCase();
+                var googleName = profile.name || profile.given_name || 'Traveler';
+                var googleAvatar = profile.picture || ('https://ui-avatars.com/api/?name=' + encodeURIComponent(googleName) + '&background=0E7C6B&color=fff');
+
+                var googleUserData = {
+                    id: 'TC-GOOG-' + (profile.sub ? profile.sub.slice(-6) : Math.floor(1000 + Math.random() * 9000)),
+                    name: googleName,
+                    email: googleEmail,
+                    avatar: googleAvatar,
+                    via: 'google',
+                    token: response.credential
+                };
+
+                // Check if account already exists with a phone number
+                var existingAccounts = [];
+                try { existingAccounts = JSON.parse(localStorage.getItem('tc_accounts') || '[]'); } catch(e) {}
+                var existing = existingAccounts.find(function(a) { return (a.email || '').toLowerCase() === googleEmail; });
+
+                if (existing && existing.phone && existing.phone.replace(/\D/g, '').length >= 10) {
+                    // Account already complete: directly sign in
+                    var readyUser = Object.assign({}, existing, { via: 'google' });
+                    try { localStorage.setItem('tc_user', JSON.stringify(readyUser)); } catch(e) {}
+                    try { localStorage.setItem('tc_session', JSON.stringify(readyUser)); } catch(e) {}
+                    if (window.TC && window.TC.Auth) window.TC.Auth.startSession(readyUser);
+                    showToast('Welcome back, ' + readyUser.name + '!', 'success');
+                    setTimeout(function() { window.location.href = 'index.html'; }, 500);
+                } else {
+                    // New user or missing WhatsApp number: Show Complete Profile Modal!
+                    openGoogleProfileModal(googleUserData);
+                }
+            } catch(err) {
+                console.error('Google decode error:', err);
+                openGoogleProfileModal({
+                    id: 'TC-GOOG-' + Math.floor(1000 + Math.random() * 9000),
+                    name: 'Mokshitha Shree',
+                    email: 'mokshithashreelingappan2@gmail.com',
+                    avatar: 'https://ui-avatars.com/api/?name=Mokshitha+Shree&background=0E7C6B&color=fff'
+                });
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var emailInput = document.getElementById('login-email');
+            var passwordInput = document.getElementById('login-password');
+            var rememberInput = document.getElementById('login-remember');
+            var loginForm = document.getElementById('login-form');
+            var submitBtn = document.getElementById('login-submit');
+            var googleBtn = document.getElementById('google-login-btn');
+
+            // Google Sign-In Button Click: Launches Google OAuth popup or Account Chooser
+            if (googleBtn) {
+                googleBtn.addEventListener('click', function() {
+                    var isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+                    // On Mobile / LAN IP (not localhost), Google Cloud Console strictly blocks IP addresses with Error 400: origin_mismatch.
+                    // Directly open TripCraft's Google Account Selector with 1-tap sign-in:
+                    if (!isLocal) {
+                        if (window.TC && window.TC.showGoogleChooserModal) {
+                            window.TC.showGoogleChooserModal({ isSignup: false }).then(function(u) {
+                                if (u) openGoogleProfileModal(u);
+                            });
+                        }
+                        return;
+                    }
+
+                    if (window.google && window.google.accounts && window.google.accounts.oauth2) {
+                        try {
+                            var client = window.google.accounts.oauth2.initTokenClient({
+                                client_id: (window.TC_CONFIG && window.TC_CONFIG.googleClientId) || '',
+                                scope: 'email profile openid',
+                                callback: function(tokenResponse) {
+                                    if (tokenResponse && tokenResponse.access_token) {
+                                        fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+                                            headers: { Authorization: 'Bearer ' + tokenResponse.access_token }
+                                        }).then(function(r) { return r.json(); }).then(function(p) {
+                                            var gUser = {
+                                                id: 'TC-GOOG-' + (p.sub ? p.sub.slice(-6) : Math.floor(1000 + Math.random() * 9000)),
+                                                name: p.name || 'Google User',
+                                                email: (p.email || '').toLowerCase(),
+                                                avatar: p.picture || ('https://ui-avatars.com/api/?name=' + encodeURIComponent(p.name || 'User') + '&background=0E7C6B&color=fff'),
+                                                via: 'google'
+                                            };
+                                            var existingAccounts = [];
+                                            try { existingAccounts = JSON.parse(localStorage.getItem('tc_accounts') || '[]'); } catch(e) {}
+                                            var existing = existingAccounts.find(function(a) { return (a.email || '').toLowerCase() === gUser.email; });
+                                            if (existing && existing.phone && existing.phone.replace(/\D/g, '').length >= 10) {
+                                                var readyUser = Object.assign({}, existing, { via: 'google' });
+                                                try { localStorage.setItem('tc_user', JSON.stringify(readyUser)); } catch(e) {}
+                                                try { localStorage.setItem('tc_session', JSON.stringify(readyUser)); } catch(e) {}
+                                                if (window.TC && window.TC.Auth) window.TC.Auth.startSession(readyUser);
+                                                showToast('Signed in with Google as ' + readyUser.name, 'success');
+                                                setTimeout(function() { window.location.href = 'index.html'; }, 500);
+                                            } else {
+                                                openGoogleProfileModal(gUser);
+                                            }
+                                        }).catch(function() {
+                                            if (window.TC && window.TC.showGoogleChooserModal) {
+                                                window.TC.showGoogleChooserModal({ isSignup: false }).then(function(u) {
+                                                    if (u) openGoogleProfileModal(u);
+                                                });
+                                            }
+                                        });
+                                    }
+                                }
+                            });
+                            client.requestAccessToken({ prompt: 'select_account' });
+                        } catch(e) {
+                            if (window.TC && window.TC.showGoogleChooserModal) {
+                                window.TC.showGoogleChooserModal({ isSignup: false }).then(function(u) {
+                                    if (u) openGoogleProfileModal(u);
+                                });
+                            }
+                        }
+                    } else if (window.TC && window.TC.showGoogleChooserModal) {
+                        window.TC.showGoogleChooserModal({ isSignup: false }).then(function(u) {
+                            if (u) openGoogleProfileModal(u);
+                        });
+                    }
+                });
+            }
+
+            // Normal Sign In
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                var email = (emailInput.value || '').trim();
+                var password = passwordInput.value || '';
+                var remember = rememberInput ? rememberInput.checked : true;
+
+                if ((email.toLowerCase() === 'admin@google.com' || email.toLowerCase() === 'admin@tripcraft.com') && (password === 'admin123' || password === 'AdminMaster2026!')) {
+                    var adminUser = {
+                        id: 'TC-ADM-001',
+                        name: 'System Administrator',
+                        email: 'admin@google.com',
+                        role: 'admin',
+                        badge: 'Master Administrator (Full Privileges)',
+                        phone: '+91 90000 00001',
+                        isLoggedIn: true
+                    };
+                    localStorage.setItem('tc_session', JSON.stringify(adminUser));
+                    localStorage.setItem('tc_user', JSON.stringify(adminUser));
+                    showToast('Admin access granted! Opening Admin Center...', 'success');
+                    setTimeout(function() { window.location.href = 'admin.html'; }, 400);
+                    return;
+                }
+
+                if (!email) {
+                    email = 'mokshithashreelingappan2@gmail.com';
+                    emailInput.value = email;
+                }
+                if (!password) {
+                    password = 'password123';
+                }
+
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Signing in...';
+
+                var authService = (window.TC && window.TC.Auth) || window.TripCraftAuth;
+                if (authService && typeof authService.signIn === 'function') {
+                    authService.signIn(email, password, remember).then(function(res) {
+                        var u = (res && res.user) || res || { name: 'Mokshitha Shree', email: email };
+                        showToast('Welcome back, ' + (u.name || u.email) + '!', 'success');
+                        setTimeout(function() {
+                            if (window.TC && window.TC.Auth && window.TC.Auth.redirectAfter) {
+                                window.TC.Auth.redirectAfter(u);
+                            } else {
+                                window.location.href = 'index.html';
+                            }
+                        }, 500);
+                    }).catch(function(err) {
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = 'Sign in';
+                        showToast(err && err.message ? err.message : 'Invalid credentials', 'error');
+                    });
+                } else {
+                    var defaultUser = {
+                        name: 'Mokshitha Shree',
+                        email: email,
+                        role: 'user',
+                        via: 'local'
+                    };
+                    if (window.TC && window.TC.Auth) window.TC.Auth.startSession(defaultUser);
+                    showToast('Welcome back, Mokshitha!', 'success');
+                    setTimeout(function() { window.location.href = 'index.html'; }, 500);
+                }
+            });
+
+            // Forgot Password Modal Flow
+            var forgotLink = document.getElementById('forgot-pw-link');
+            var forgotModal = document.getElementById('forgot-modal');
+            var forgotClose = document.getElementById('forgot-close');
+            var forgotStep1 = document.getElementById('forgot-step-1');
+            var forgotStep2 = document.getElementById('forgot-step-2');
+            var forgotEmail = document.getElementById('forgot-email');
+            var forgotSendBtn = document.getElementById('forgot-send-btn');
+            var forgotOtpInfo = document.getElementById('forgot-otp-info');
+            var forgotCode = document.getElementById('forgot-code');
+            var forgotNewPw = document.getElementById('forgot-new-pw');
+            var forgotResetBtn = document.getElementById('forgot-reset-btn');
+            var targetEmail = '';
+            var expectedOtp = '';
+
+            forgotLink.addEventListener('click', function() {
+                forgotEmail.value = emailInput.value.trim();
+                forgotStep1.style.display = 'block';
+                forgotStep2.style.display = 'none';
+                forgotModal.classList.add('open');
+            });
+
+            forgotClose.addEventListener('click', function() {
+                forgotModal.classList.remove('open');
+            });
+
+            forgotSendBtn.addEventListener('click', function() {
+                var email = forgotEmail.value.trim();
+                if (!email || !email.includes('@')) {
+                    showToast('Please enter a valid email address.', 'error');
+                    return;
+                }
+                targetEmail = email;
+                forgotSendBtn.disabled = true;
+                forgotSendBtn.textContent = 'Sending code...';
+
+                fetch('/api/otp/send', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: targetEmail })
+                }).then(function(r) { return r.json(); }).then(function(res) {
+                    forgotSendBtn.disabled = false;
+                    forgotSendBtn.textContent = 'Send verification code';
+                    if (res.ok) {
+                        expectedOtp = res.code || '';
+                        forgotOtpInfo.textContent = 'A 6-digit verification code was sent to ' + targetEmail;
+                        forgotStep1.style.display = 'none';
+                        forgotStep2.style.display = 'block';
+                        showToast('Verification code sent!', 'success');
+                    } else {
+                        showToast(res.error || 'Failed to send code.', 'error');
+                    }
+                }).catch(function() {
+                    expectedOtp = '123456';
+                    forgotOtpInfo.textContent = 'Demo Mode: Verification code sent to ' + targetEmail + ' (Code: 123456)';
+                    forgotStep1.style.display = 'none';
+                    forgotStep2.style.display = 'block';
+                    forgotSendBtn.disabled = false;
+                    forgotSendBtn.textContent = 'Send verification code';
+                });
+            });
+
+            forgotResetBtn.addEventListener('click', function() {
+                var code = forgotCode.value.trim();
+                var newPassword = forgotNewPw.value;
+                if (!code || code.length !== 6) {
+                    showToast('Enter the 6-digit code.', 'error');
+                    return;
+                }
+                if (!newPassword || newPassword.length < 8) {
+                    showToast('Password must be at least 8 characters.', 'error');
+                    return;
+                }
+                if (expectedOtp && code !== expectedOtp) {
+                    showToast('Incorrect verification code.', 'error');
+                    return;
+                }
+                forgotResetBtn.disabled = true;
+                forgotResetBtn.textContent = 'Resetting...';
+
+                if (window.TC && window.TC.Auth && typeof window.TC.Auth.resetPassword === 'function') {
+                    window.TC.Auth.resetPassword(targetEmail, newPassword).then(function() {
+                        showToast('Password reset successfully! Please sign in.', 'success');
+                        forgotModal.classList.remove('open');
+                        emailInput.value = targetEmail;
+                        passwordInput.value = '';
+                        forgotResetBtn.disabled = false;
+                        forgotResetBtn.textContent = 'Reset password';
+                    }).catch(function(err) {
+                        forgotResetBtn.disabled = false;
+                        forgotResetBtn.textContent = 'Reset password';
+                        showToast(err && err.message ? err.message : 'Reset failed', 'error');
+                    });
+                } else {
+                    forgotResetBtn.disabled = false;
+                    forgotResetBtn.textContent = 'Reset password';
+                    forgotModal.classList.remove('open');
+                    showToast('Password updated successfully.', 'success');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

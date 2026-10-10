@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings, Loyalty Tier & Reservation Ledger — TripCraft</title>
+    <meta name="description" content="Review active travel reservations, track your Explorer Loyalty Tier, access referral earnings, and export your master PDF trip dossier.">
+    <meta property="og:title" content="My Bookings, Loyalty Tier & Reservation Ledger — TripCraft">
+    <meta property="og:description" content="Review active travel reservations, track your Explorer Loyalty Tier, access referral earnings, and export your master PDF trip dossier.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1488646953014-85cb44e25828?q=80&w=1200&auto=format&fit=crop">
+    <link rel="stylesheet" href="shared.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        .full-detail-modal-body {
+            padding: 24px;
+        }
+        .full-detail-meta {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            background: var(--gray-50);
+            border: 1px solid var(--gray-100);
+            border-radius: var(--r-md);
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+        .full-detail-timeline {
+            border-left: 2px solid var(--teal);
+            padding-left: 16px;
+            margin-left: 8px;
+            margin-bottom: 20px;
+        }
+        .full-detail-timeline-item {
+            margin-bottom: 12px;
+            position: relative;
+        }
+        .full-detail-timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -21px;
+            top: 4px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--teal);
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="nav">
+        <a href="index.html" class="nav-logo">
+            <div class="nav-logo-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            </div>
+            <div class="nav-logo-text">Trip<span>Craft</span></div>
+        </a>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="destinations.html">Destinations</a>
+            <a href="transport.html">Transport</a>
+            <a href="hotels.html">Hotels</a>
+            <a href="vehicle.html">Vehicles</a>
+            <a href="guides.html">Local Guides</a>
+            <a href="packages.html">Packages</a>
+            <a href="itinerary.html">Itinerary</a>
+            <a href="budget.html">Budget</a>
+            <a href="community.html">Community</a>
+            <a href="solo.html">Solo Trip</a>
+            <a href="album.html">Photo Albums</a>
+            <a href="bookings.html" class="active">My Bookings</a>
+        </div>
+        <div class="nav-cta">
+            <a href="login.html" class="btn btn-ghost">Sign In</a>
+            <a href="signup.html" class="btn btn-gold">Get Started</a>
+        </div>
+    </nav>
+
+    <div class="breadcrumb">
+        <a href="index.html">Home</a>
+        <span class="breadcrumb-sep">&gt;</span>
+        <span>My Account</span>
+        <span class="breadcrumb-sep">&gt;</span>
+        <span>My Bookings &amp; Trip Ledger</span>
+    </div>
+
+    <div class="bookings-hero">
+        <div class="bookings-hero-overlay"></div>
+        <div class="bookings-hero-content">
+            <div class="chip chip-gold" style="margin-bottom: 14px;">
+                <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                Verified Reservation Ledger
+            </div>
+            <h1 id="userWelcomeTitle">My Bookings &amp;<br/><em>Trip History</em></h1>
+            <p id="userWelcomeSub">Manage your upcoming departures, access verified itineraries, download official tax invoices, and track your travel records in one unified dashboard.</p>
+        </div>
+    </div>
+
+    <main class="bookings-container">
+        <!-- Summary Stats Strip -->
+        <div class="trip-stats-grid" id="tripStatsGrid">
+            <div class="trip-stat-card">
+                <div class="trip-stat-icon teal">
+                    <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                </div>
+                <div>
+                    <div class="trip-stat-val" id="statTotalTrips">0</div>
+                    <div class="trip-stat-label">Total Bookings</div>
+                </div>
+            </div>
+            <div class="trip-stat-card">
+                <div class="trip-stat-icon green">
+                    <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                </div>
+                <div>
+                    <div class="trip-stat-val" id="statActiveTrips">0</div>
+                    <div class="trip-stat-label">Confirmed &amp; Upcoming</div>
+                </div>
+            </div>
+            <div class="trip-stat-card">
+                <div class="trip-stat-icon gold">
+                    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                </div>
+                <div>
+                    <div class="trip-stat-val" id="statStaysPackages">0</div>
+                    <div class="trip-stat-label">Stays &amp; Tour Packages</div>
+                </div>
+            </div>
+            <div class="trip-stat-card">
+                <div class="trip-stat-icon navy">
+                    <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                </div>
+                <div>
+                    <div class="trip-stat-val" id="statTotalSpend">&#8377;0</div>
+                    <div class="trip-stat-label">Total Investment</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loyalty & Referral Program Dashboard Mount (Section 9) -->
+        <div id="tcLoyaltyMount"></div>
+
+        <!-- Filter Bar -->
+        <div class="bookings-filter-bar">
+            <div class="booking-tabs">
+                <button class="booking-tab-btn active" onclick="filterBookings('all', this)">All Trips</button>
+                <button class="booking-tab-btn" onclick="filterBookings('solo_trip', this)">Solo Trips</button>
+                <button class="booking-tab-btn" onclick="filterBookings('upcoming', this)">Upcoming</button>
+                <button class="booking-tab-btn" onclick="filterBookings('hotel', this)">Stays &amp; Resorts</button>
+                <button class="booking-tab-btn" onclick="filterBookings('package', this)">Tour Packages</button>
+                <button class="booking-tab-btn" onclick="filterBookings('transport', this)">Flights &amp; Trains</button>
+                <button class="booking-tab-btn" onclick="filterBookings('vehicle', this)">Vehicles</button>
+                <button class="booking-tab-btn" onclick="filterBookings('guide', this)">Local Guides</button>
+            </div>
+            <div style="display:flex; gap:10px; align-items:center;">
+                <button class="btn btn-gold" onclick="downloadTripDossierPDF()" style="font-size:13px; padding:7px 16px;">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    Download Full Trip Dossier (PDF)
+                </button>
+                <a href="destinations.html" class="btn btn-teal" style="font-size:13px; padding:7px 16px;">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    Explore &amp; Book More
+                </a>
+            </div>
+        </div>
+
+        <!-- Bookings List Container -->
+        <div class="bookings-list" id="bookingsList">
+            <!-- Dynamically populated via JS -->
+        </div>
+    </main>
+
+    <!-- Trip Full Details Modal -->
+    <div class="tc-modal-backdrop" id="fullDetailsModalBackdrop">
+        <div class="tc-modal-container" role="dialog" aria-modal="true" style="max-width: 660px;">
+            <div class="tc-modal-banner" id="fullDetailBanner">
+                <button class="tc-modal-close-btn" onclick="closeFullDetailsModal()" aria-label="Close modal">&times;</button>
+                <div class="tc-modal-banner-overlay"></div>
+                <div class="tc-modal-banner-content">
+                    <span class="tc-modal-badge" id="fullDetailCategory">Reservation</span>
+                    <h3 class="tc-modal-title" id="fullDetailTitle">Trip Details</h3>
+                </div>
+            </div>
+            <div class="full-detail-modal-body">
+                <div class="full-detail-meta">
+                    <div>
+                        <div style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Booking ID</div>
+                        <div style="font-weight:700; color:var(--navy);" id="fullDetailId"></div>
+                    </div>
+                    <div>
+                        <div style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Status</div>
+                        <div id="fullDetailStatus"></div>
+                    </div>
+                    <div>
+                        <div style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Scheduled Dates</div>
+                        <div style="font-weight:600; color:var(--teal);" id="fullDetailDates"></div>
+                    </div>
+                    <div>
+                        <div style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Total Paid (incl. GST)</div>
+                        <div style="font-weight:700; color:var(--navy);" id="fullDetailTotal"></div>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 18px;">
+                    <h4 style="font-size:14px; font-weight:700; color:var(--navy); margin-bottom:8px;">Itinerary &amp; Booking Details</h4>
+                    <p style="font-size:13px; color:var(--text-mid); line-height:1.6;" id="fullDetailItinerary"></p>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <h4 style="font-size:14px; font-weight:700; color:var(--navy); margin-bottom:8px;">Specifications &amp; Verified Inclusions</h4>
+                    <div class="tc-modal-specs" id="fullDetailSpecs"></div>
+                </div>
+
+                <div class="tc-modal-actions" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                    <button class="btn btn-ghost" style="color:var(--text-mid); border-color:var(--gray-200);" onclick="closeFullDetailsModal()">Close</button>
+                    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                        <button type="button" class="btn btn-outline" id="fullDetailWaBtn" style="border-color:#25D366; color:#25D366; border-radius:var(--r-full); padding:7px 14px; font-size:12.5px;">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2"/></svg>
+                            WhatsApp
+                        </button>
+                        <button type="button" class="btn btn-outline" id="fullDetailEmBtn" style="border-color:var(--teal); color:var(--teal); border-radius:var(--r-full); padding:7px 14px; font-size:12.5px;">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/></svg>
+                            Email
+                        </button>
+                        <button class="btn btn-gold" id="fullDetailDownloadBtn">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                            Download Invoice (PDF)
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+    <div class="footer-grid">
+        <div class="footer-brand">
+            <div class="footer-logo">
+                <div class="nav-logo-mark">
+                    <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                </div>
+                <span>TripCraft</span>
+            </div>
+            <p>AI-orchestrated end-to-end travel intelligence platform. Engineered for seamless discovery, instant reservations, solo safety, and creator photobook monetization.</p>
+            <div class="footer-social-strip">
+                <a href="https://twitter.com" target="_blank" class="footer-social-link" title="Twitter / X"><svg viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg></a>
+                <a href="https://instagram.com" target="_blank" class="footer-social-link" title="Instagram"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
+                <a href="https://linkedin.com" target="_blank" class="footer-social-link" title="LinkedIn"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a>
+                <a href="https://github.com" target="_blank" class="footer-social-link" title="GitHub"><svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg></a>
+            </div>
+        </div>
+        <div class="footer-col">
+            <h4>Explore</h4>
+            <ul>
+                <li><a href="destinations.html">Destinations</a></li>
+                <li><a href="packages.html">Curated Packages</a></li>
+                <li><a href="hotels.html">Stays &amp; Resorts</a></li>
+                <li><a href="transport.html">Flights &amp; Rail</a></li>
+                <li><a href="vehicle.html">Car &amp; Bike Rentals</a></li>
+                <li><a href="guides.html">Certified Local Guides</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Special Hubs</h4>
+            <ul>
+                <li><a href="solo.html">Solo Traveler Engine</a></li>
+                <li><a href="community.html">Community &amp; Buddies</a></li>
+                <li><a href="album.html">Photo Album Studio</a></li>
+                <li><a href="budget.html">40/25/20/15 Budgeter</a></li>
+                <li><a href="itinerary.html">Interactive Itinerary</a></li>
+                <li><a href="wishlist.html">Saved Wishlist</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Trust &amp; Legal</h4>
+            <ul>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="contact.html">Customer Support</a></li>
+                <li><a href="faq.html">FAQ &amp; Help Desk</a></li>
+                <li><a href="terms.html">Terms &amp; Conditions</a></li>
+                <li><a href="privacy.html">Privacy Policy</a></li>
+                <li><a href="refund.html">Refund Policy</a></li>
+                <li><a href="sitemap.html">Sitemap</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <div>&copy; 2026 TripCraft Technologies Inc. All rights reserved. 256-bit SSL Encrypted Booking System.</div>
+        <div style="display:flex; gap:16px;">
+            <a href="terms.html">Terms</a>
+            <a href="privacy.html">Privacy</a>
+            <a href="refund.html">Refunds</a>
+            <a href="sitemap.html">Sitemap</a>
+        </div>
+    </div>
+</footer>
+
+    <script src="tc-config.js"></script>
+    <script src="shared.js"></script>
+    <script src="tc-layer.js"></script>
+    <script>
+        let currentFilter = 'all';
+        let activeModalBooking = null;
+
+        function renderBookings() {
+            const list = TripCraftBookings.getAll();
+            const container = document.getElementById('bookingsList');
+            if (!container) return;
+
+            let user = null;
+            try {
+                user = JSON.parse(localStorage.getItem('tc_session') || localStorage.getItem('tc_user') || 'null');
+            } catch(e) {}
+
+            const welcomeTitle = document.getElementById('userWelcomeTitle');
+            const welcomeSub = document.getElementById('userWelcomeSub');
+            if (user && user.name) {
+                const firstName = user.name.split(' ')[0];
+                if (list.length === 0) {
+                    if (welcomeTitle) welcomeTitle.innerHTML = `Welcome, ${firstName}!<br/><em>Your Travel Dashboard</em>`;
+                    if (welcomeSub) welcomeSub.textContent = `Your TripCraft account is active (${user.email}). You currently have 0 bookings. Ready to plan and customize your next journey?`;
+                } else {
+                    if (welcomeTitle) welcomeTitle.innerHTML = `${firstName}'s Bookings &amp;<br/><em>Trip History</em>`;
+                    if (welcomeSub) welcomeSub.textContent = `Welcome back, ${firstName}! Here is your verified reservation ledger, departure vouchers, and invoices.`;
+                }
+            }
+
+            // Update stats
+            const totalTrips = list.length;
+            const activeTrips = list.filter(b => b.status === 'Confirmed' || b.status === 'Upcoming').length;
+            const staysPackages = list.filter(b => b.type === 'hotel' || b.type === 'package').length;
+            const totalSpend = list.filter(b => b.status !== 'Cancelled').reduce((acc, b) => acc + (b.total || 0), 0);
+
+            document.getElementById('statTotalTrips').textContent = totalTrips;
+            document.getElementById('statActiveTrips').textContent = activeTrips;
+            document.getElementById('statStaysPackages').textContent = staysPackages;
+            document.getElementById('statTotalSpend').textContent = '₹' + totalSpend.toLocaleString('en-IN');
+
+            // Apply filter
+            let filtered = list;
+            if (currentFilter === 'upcoming') {
+                filtered = list.filter(b => b.status === 'Upcoming' || b.status === 'Confirmed');
+            } else if (currentFilter !== 'all') {
+                filtered = list.filter(b => b.type === currentFilter);
+            }
+
+            if (filtered.length === 0) {
+                const isNewUser = (!list || list.length === 0);
+                const userName = user && user.name ? user.name.split(' ')[0] : 'Traveler';
+                container.innerHTML = `
+                    <div class="empty-bookings-box" style="padding: 48px 24px; text-align: center; background: var(--surface); border-radius: var(--r-xl); border: 1px solid var(--gray-100); margin-top: 20px;">
+                        <div style="width: 64px; height: 64px; border-radius: 50%; background: var(--teal-pale); color: var(--teal); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+                            <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                        </div>
+                        <h3 class="empty-bookings-title" style="font-size: 22px; font-weight: 700; color: var(--ink); margin-bottom: 10px;">
+                            ${isNewUser ? `Welcome, ${userName}! Start Your Journey` : `No bookings found in this category`}
+                        </h3>
+                        <p class="empty-bookings-desc" style="max-width: 520px; margin: 0 auto 28px; color: var(--text-muted); font-size: 14.5px; line-height: 1.6;">
+                            ${isNewUser 
+                                ? `You have zero active bookings. Discover handpicked luxury homestays, licensed local guides, custom itineraries, and all-inclusive packages below.` 
+                                : `You haven't reserved any ${currentFilter === 'all' ? 'trips' : currentFilter + ' services'} yet.`}
+                        </p>
+                        <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
+                            <a href="destinations.html" class="btn btn-teal" style="padding: 10px 24px; font-weight: 600;">Explore Destinations</a>
+                            <a href="itinerary.html" class="btn btn-gold" style="padding: 10px 24px; font-weight: 600;">Build an AI Itinerary</a>
+                            <a href="packages.html" class="btn btn-navy" style="padding: 10px 24px; font-weight: 600;">Tour Packages</a>
+                            <a href="hotels.html" class="btn btn-outline-teal" style="padding: 10px 24px; font-weight: 600;">Browse Stays</a>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            filtered.forEach(b => {
+                const statusClass = (b.status || 'upcoming').toLowerCase();
+                let statusBadge = `<span class="booking-status-badge ${statusClass}">● ${b.status || 'Upcoming'}</span>`;
+                if (b.status === 'Cancelled') {
+                    statusBadge = `<span class="booking-status-badge" style="background:rgba(192,57,43,0.1); color:var(--error); border:1px solid rgba(192,57,43,0.3);">● Cancelled</span>`;
+                }
+
+                let typeLabel = (b.type || 'Stay').toUpperCase();
+
+                let specsHtml = '';
+                if (b.specs && Array.isArray(b.specs)) {
+                    b.specs.slice(0, 3).forEach(s => {
+                        specsHtml += `<div class="booking-spec-item"><span>${s.label}:</span> <strong>${s.val}</strong></div>`;
+                    });
+                } else {
+                    specsHtml = `
+                        <div class="booking-spec-item"><span>Guests:</span> <strong>${b.guests || 1} Person(s)</strong></div>
+                        <div class="booking-spec-item"><span>Travel Date:</span> <strong>${b.travelDate || 'Confirmed'}</strong></div>
+                        <div class="booking-spec-item"><span>Payment:</span> <strong>${b.paymentMode || 'UPI'}</strong></div>
+                    `;
+                }
+
+                const bJson = JSON.stringify(b).replace(/'/g, "&apos;");
+
+                html += `
+                    <div class="booking-card">
+                        <div class="booking-card-media" style="background-image: url('${b.image}');">
+                            <div class="booking-card-overlay"></div>
+                            <span class="booking-type-chip">${typeLabel}</span>
+                        </div>
+                        <div class="booking-card-content">
+                            <div>
+                                <div class="booking-card-header">
+                                    <div>
+                                        <h3 class="booking-card-title">${b.title}</h3>
+                                        <div class="booking-card-loc">
+                                            <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                            ${b.location || b.category}
+                                        </div>
+                                    </div>
+                                    ${statusBadge}
+                                </div>
+                                <div class="booking-card-specs">
+                                    <div class="booking-spec-item"><span>Scheduled:</span> <strong>${b.travelDate || 'Flexible'}</strong></div>
+                                    <div class="booking-spec-item"><span>Guests / Units:</span> <strong>${b.guests || 1}</strong></div>
+                                    <div class="booking-spec-item"><span>Booking ID:</span> <strong>${b.id}</strong></div>
+                                </div>
+                                ${b.hotel_booking_id ? `
+                                    <div style="margin-top:8px;">
+                                        <span class="chip chip-teal" style="font-size:11px; font-weight:700; display:inline-flex; align-items:center; gap:5px; background:rgba(14,124,107,0.12); color:var(--teal); border:1px solid rgba(14,124,107,0.3);">
+                                            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                                            Linked Stay (FK): #${b.hotel_booking_id}
+                                        </span>
+                                    </div>
+                                ` : ''}
+                            </div>
+                            <div style="font-size:12px; color:var(--text-muted);">
+                                Booked on ${new Date(b.createdAt || Date.now()).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' })} &middot; Free cancellation verified
+                            </div>
+                        </div>
+                        <div class="booking-card-right">
+                            <div>
+                                <div class="booking-price-total">₹${(b.total || 0).toLocaleString('en-IN')}</div>
+                                <div class="booking-price-sub">Total Paid (incl. 12% GST)</div>
+                            </div>
+                            <div class="booking-actions">
+                                <button class="btn btn-outline-teal" onclick='openFullDetailsModal(${bJson})'>
+                                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                                    View Full Details
+                                </button>
+                                <button class="btn btn-gold" onclick='TripCraftInvoice.downloadPDF(${bJson})'>
+                                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                                    Download Invoice
+                                </button>
+                                <button class="btn btn-outline" style="border-radius:var(--r-full);border:1px solid #25D366;color:#25D366;padding:7px 12px;font-size:12.5px;display:inline-flex;align-items:center;gap:5px;cursor:pointer;background:transparent;" onclick='TC.shareWhatsApp(${bJson})' title="Share on WhatsApp">
+                                    <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2"/></svg>
+                                    WhatsApp
+                                </button>
+                                <button class="btn btn-teal" style="border-radius:var(--r-full);padding:7px 14px;font-size:12.5px;font-weight:600;display:inline-flex;align-items:center;gap:6px;cursor:pointer;" onclick='TC.openEmailModal(${bJson})' title="Send Voucher to Email">
+                                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                                    Send to Email
+                                </button>
+                                ${b.status !== 'Cancelled' ? `
+                                    <button class="btn btn-ghost" style="color:var(--error); border-color:rgba(192,57,43,0.25);" onclick="handleCancelBooking('${b.id}')">
+                                        Cancel Booking
+                                    </button>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function filterBookings(filter, btn) {
+            currentFilter = filter;
+            document.querySelectorAll('.booking-tab-btn').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+            renderBookings();
+        }
+
+        function handleCancelBooking(id) {
+            if (confirm(`Are you sure you want to cancel booking ${id}? A full refund will be processed to your original payment method.`)) {
+                TripCraftBookings.cancel(id);
+                renderBookings();
+            }
+        }
+
+        function openFullDetailsModal(booking) {
+            activeModalBooking = booking;
+            document.getElementById('fullDetailTitle').textContent = booking.title;
+            document.getElementById('fullDetailCategory').textContent = (booking.type || 'Service').toUpperCase();
+            document.getElementById('fullDetailId').textContent = booking.id;
+            document.getElementById('fullDetailDates').textContent = booking.travelDate || 'Confirmed';
+            document.getElementById('fullDetailTotal').textContent = '₹' + (booking.total || 0).toLocaleString('en-IN');
+            document.getElementById('fullDetailItinerary').textContent = booking.itinerary || booking.description || 'Verified reservation with 24/7 TripCraft customer protection.';
+            
+            const bannerEl = document.getElementById('fullDetailBanner');
+            if (booking.image) {
+                bannerEl.style.backgroundImage = `url('${booking.image}')`;
+            }
+
+            const statusEl = document.getElementById('fullDetailStatus');
+            statusEl.innerHTML = `<span class="booking-status-badge ${(booking.status || 'upcoming').toLowerCase()}">● ${booking.status || 'Upcoming'}</span>`;
+
+            const specsEl = document.getElementById('fullDetailSpecs');
+            let specsHtml = '';
+            if (booking.hotel_booking_id) {
+                specsHtml += `
+                    <div class="tc-modal-spec-row" style="background:var(--teal-pale); padding:6px 10px; border-radius:4px; margin-bottom:8px;">
+                        <span class="tc-modal-spec-label" style="color:var(--teal); font-weight:700;">Relational FK Link</span>
+                        <span class="tc-modal-spec-val" style="color:var(--teal); font-weight:700;">Linked Hotel Stay #${booking.hotel_booking_id}</span>
+                    </div>
+                `;
+            }
+            if (booking.specs && Array.isArray(booking.specs)) {
+                booking.specs.forEach(s => {
+                    specsHtml += `<div class="tc-modal-spec-row"><span class="tc-modal-spec-label">${s.label}</span><span class="tc-modal-spec-val">${s.val}</span></div>`;
+                });
+            } else {
+                specsHtml += `
+                    <div class="tc-modal-spec-row"><span class="tc-modal-spec-label">Base Cost</span><span class="tc-modal-spec-val">₹${(booking.basePrice || 0).toLocaleString('en-IN')}</span></div>
+                    <div class="tc-modal-spec-row"><span class="tc-modal-spec-label">GST 12%</span><span class="tc-modal-spec-val">₹${(booking.gst || 0).toLocaleString('en-IN')}</span></div>
+                    <div class="tc-modal-spec-row"><span class="tc-modal-spec-label">Guests / Units</span><span class="tc-modal-spec-val">${booking.guests || 1}</span></div>
+                    <div class="tc-modal-spec-row"><span class="tc-modal-spec-label">Payment Method</span><span class="tc-modal-spec-val">${booking.paymentMode || 'UPI'}</span></div>
+                `;
+            }
+            specsEl.innerHTML = specsHtml;
+
+            document.getElementById('fullDetailDownloadBtn').onclick = () => {
+                TripCraftInvoice.downloadPDF(activeModalBooking);
+            };
+            const waBtn = document.getElementById('fullDetailWaBtn');
+            if (waBtn) waBtn.onclick = () => TC.shareWhatsApp(activeModalBooking);
+            const emBtn = document.getElementById('fullDetailEmBtn');
+            if (emBtn) emBtn.onclick = () => TC.openEmailModal(activeModalBooking);
+
+            const backdrop = document.getElementById('fullDetailsModalBackdrop');
+            backdrop.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeFullDetailsModal() {
+            const backdrop = document.getElementById('fullDetailsModalBackdrop');
+            if (backdrop) backdrop.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        document.getElementById('fullDetailsModalBackdrop')?.addEventListener('click', e => {
+            if (e.target.id === 'fullDetailsModalBackdrop') closeFullDetailsModal();
+        });
+
+        function downloadTripDossierPDF() {
+            const list = TripCraftBookings.getAll().filter(b => b.status !== 'Cancelled');
+            if (list.length === 0) {
+                showToast("No active bookings found to generate trip dossier!", "warning");
+                return;
+            }
+
+            if (!window.jspdf || !window.jspdf.jsPDF) {
+                showToast("PDF generator initializing...", "info");
+                return;
+            }
+
+            showToast("Generating unified master trip dossier PDF...", "info");
+            const user = TripCraftAuth.getUser() || { name: "Valued Traveler", email: "traveler@tripcraft.com" };
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // Navy Header
+            doc.setFillColor(11, 31, 58);
+            doc.rect(0, 0, 210, 36, 'F');
+
+            doc.setTextColor(230, 180, 80);
+            doc.setFontSize(22);
+            doc.setFont('helvetica', 'bold');
+            doc.text("TripCraft", 14, 18);
+
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(11);
+            doc.setFont('helvetica', 'normal');
+            doc.text("Master Travel Dossier & Unified Itinerary Voucher", 14, 28);
+
+            // Traveler Info Box
+            doc.setTextColor(30, 40, 50);
+            doc.setFontSize(13);
+            doc.setFont('helvetica', 'bold');
+            doc.text(`Primary Traveler: ${user.name} (${user.email})`, 14, 48);
+
+            doc.setFontSize(9.5);
+            doc.setFont('helvetica', 'normal');
+            doc.setTextColor(100, 110, 120);
+            doc.text(`Dossier Issued: ${new Date().toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' })} | Official Travel Ledger`, 14, 55);
+
+            let y = 68;
+            let grandTotal = 0;
+
+            list.forEach((b, idx) => {
+                if (y > 235) {
+                    doc.addPage();
+                    y = 20;
+                }
+
+                grandTotal += (b.total || 0);
+
+                // Service Card
+                doc.setFillColor(245, 247, 248);
+                doc.roundedRect(14, y - 5, 182, 34, 2, 2, 'F');
+
+                doc.setTextColor(14, 124, 107);
+                doc.setFontSize(11);
+                doc.setFont('helvetica', 'bold');
+                doc.text(`${idx + 1}. [${(b.type || 'Stay').toUpperCase()}] ${b.title}`, 18, y + 2);
+
+                doc.setTextColor(50, 60, 70);
+                doc.setFontSize(9);
+                doc.setFont('helvetica', 'normal');
+                doc.text(`Booking ID: ${b.id} | Scheduled Date: ${b.travelDate || 'Confirmed'} | Guests: ${b.guests || 1}`, 18, y + 9);
+
+                if (b.hotel_booking_id) {
+                    doc.setTextColor(14, 124, 107);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text(`* Cross-Booked Vehicle linked to Hotel Stay ID: #${b.hotel_booking_id} (FK)`, 18, y + 16);
+                } else {
+                    doc.setTextColor(110, 120, 130);
+                    doc.setFont('helvetica', 'normal');
+                    doc.text(`Category: ${b.category || 'Service'} | Free Cancellation Verified`, 18, y + 16);
+                }
+
+                doc.setTextColor(11, 31, 58);
+                doc.setFontSize(10);
+                doc.setFont('helvetica', 'bold');
+                doc.text(`Total Paid: Rs. ${(b.total || 0).toLocaleString('en-IN')} (incl. 12% GST)`, 18, y + 23);
+
+                y += 40;
+            });
+
+            // Financial Summary Block
+            if (y > 230) {
+                doc.addPage();
+                y = 20;
+            }
+
+            doc.setFillColor(230, 180, 80);
+            doc.roundedRect(14, y, 182, 22, 2, 2, 'F');
+            doc.setTextColor(11, 31, 58);
+            doc.setFontSize(12);
+            doc.setFont('helvetica', 'bold');
+            doc.text("Total Travel Investment Across All Bookings:", 20, y + 9);
+            doc.setFontSize(14);
+            doc.text(`Rs. ${grandTotal.toLocaleString('en-IN')}`, 20, y + 17);
+
+            // Support info
+            doc.setFontSize(8.5);
+            doc.setTextColor(120, 130, 140);
+            doc.setFont('helvetica', 'normal');
+            doc.text("24/7 Global Trip Assistance: +91 (800) 874-7272 | support@tripcraft.com | Verified via Antigravity 2.0 Security Protocol", 14, 285);
+
+            doc.save(`TripCraft_Master_Trip_Dossier.pdf`);
+            showToast("Master Trip Dossier PDF downloaded successfully!", "success");
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderBookings();
+            if (window.TripCraftLoyalty) TripCraftLoyalty.init();
+        });
+    </script>
+</body>
+</html>

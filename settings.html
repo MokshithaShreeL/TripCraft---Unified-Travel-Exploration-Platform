@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings & Preferences — TripCraft</title>
+    <meta name="description" content="Manage your appearance, theme palette, preferred language, notifications channels, and account security.">
+    <meta property="og:title" content="Settings & Preferences — TripCraft">
+    <meta property="og:description" content="Manage your appearance, theme palette, preferred language, notifications channels.">
+    <meta property="og:type" content="website">
+    <link rel="stylesheet" href="shared.css">
+    <style>
+        .settings-header {
+            margin-bottom: 32px;
+        }
+        .settings-header h1 {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--ink);
+            margin-bottom: 6px;
+        }
+        .settings-header p {
+            color: var(--text-muted);
+            font-size: 15px;
+        }
+        .account-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 0;
+        }
+        .account-profile {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .account-avatar {
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            background: var(--teal-pale);
+            color: var(--teal);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 700;
+            overflow: hidden;
+        }
+        .account-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .account-info h3 {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: 2px;
+        }
+        .account-info p {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+        .btn-test-notify {
+            margin-top: 18px;
+            padding: 10px 20px;
+            font-size: 13.5px;
+            font-weight: 600;
+            background: var(--surface);
+            color: var(--teal);
+            border: 1px solid var(--teal);
+            border-radius: var(--r-full);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-test-notify:hover {
+            background: var(--teal-pale);
+        }
+    </style>
+</head>
+<body>
+    <!-- Nav will be mounted by tc-layer.js -->
+    <nav class="nav"></nav>
+
+    <main class="set-wrap">
+        <header class="settings-header">
+            <h1 data-i18n="nav_settings">Settings</h1>
+            <p>Changes save automatically on this device.</p>
+        </header>
+
+        <!-- 1. APPEARANCE SECTION -->
+        <section class="set-sec">
+            <h2>Appearance</h2>
+            <p class="sec-desc">Customize theme lighting mode and brand color palette.</p>
+
+            <div class="set-row">
+                <div>
+                    <strong style="color:var(--text);display:block;font-size:15px;margin-bottom:2px;">Dark mode</strong>
+                    <span style="font-size:13px;color:var(--text-muted);">Switch between daylight clean theme and dark night mode</span>
+                </div>
+                <div>
+                    <label class="switch">
+                        <input type="checkbox" id="dark-mode-toggle">
+                        <span class="switch-slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div style="padding-top:16px;">
+                <strong style="color:var(--text);display:block;font-size:15px;margin-bottom:4px;">Accent palette</strong>
+                <span style="font-size:13px;color:var(--text-muted);">Choose your primary brand accent combination</span>
+                
+                <div class="swatches" id="palette-swatches">
+                    <!-- Palette 1: Cobalt & Amber -->
+                    <div class="swatch" data-palette="cobalt">
+                        <div class="swatch-dots">
+                            <div class="swatch-dot-1" style="background:#2447E0;"></div>
+                            <div class="swatch-dot-2" style="background:#F6A91B;"></div>
+                        </div>
+                        <span class="swatch-name">Cobalt</span>
+                    </div>
+
+                    <!-- Palette 2: Jaipur Teal & Gold -->
+                    <div class="swatch" data-palette="teal">
+                        <div class="swatch-dots">
+                            <div class="swatch-dot-1" style="background:#0E7C6B;"></div>
+                            <div class="swatch-dot-2" style="background:#E8A838;"></div>
+                        </div>
+                        <span class="swatch-name">Jaipur Teal</span>
+                    </div>
+
+                    <!-- Palette 3: Emerald & Coral -->
+                    <div class="swatch" data-palette="green">
+                        <div class="swatch-dots">
+                            <div class="swatch-dot-1" style="background:#059669;"></div>
+                            <div class="swatch-dot-2" style="background:#F97316;"></div>
+                        </div>
+                        <span class="swatch-name">Emerald</span>
+                    </div>
+
+                    <!-- Palette 4: Marigold & Indigo -->
+                    <div class="swatch" data-palette="orange">
+                        <div class="swatch-dots">
+                            <div class="swatch-dot-1" style="background:#EA580C;"></div>
+                            <div class="swatch-dot-2" style="background:#4F46E5;"></div>
+                        </div>
+                        <span class="swatch-name">Marigold</span>
+                    </div>
+
+                    <!-- Palette 5: Rose & Cyan -->
+                    <div class="swatch" data-palette="rose">
+                        <div class="swatch-dots">
+                            <div class="swatch-dot-1" style="background:#E11D48;"></div>
+                            <div class="swatch-dot-2" style="background:#06B6D4;"></div>
+                        </div>
+                        <span class="swatch-name">Rose</span>
+                    </div>
+
+                    <!-- Palette 6: Purple & Lime -->
+                    <div class="swatch" data-palette="purple">
+                        <div class="swatch-dots">
+                            <div class="swatch-dot-1" style="background:#7C3AED;"></div>
+                            <div class="swatch-dot-2" style="background:#84CC16;"></div>
+                        </div>
+                        <span class="swatch-name">Purple</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. LANGUAGE SECTION -->
+        <section class="set-sec">
+            <h2>Language / மொழி / भाषा</h2>
+            <p class="sec-desc">Select your preferred regional language across all pages.</p>
+
+            <div class="lang-grid" id="lang-selector-cards">
+                <!-- English -->
+                <div class="lang-card" data-lang="en">
+                    <div class="lang-card-flag">🇬🇧</div>
+                    <div>
+                        <div class="lang-card-title">English</div>
+                        <div class="lang-card-sub">English (Default)</div>
+                    </div>
+                </div>
+
+                <!-- Tamil -->
+                <div class="lang-card" data-lang="ta">
+                    <div class="lang-card-flag">🇮🇳</div>
+                    <div>
+                        <div class="lang-card-title">தமிழ்</div>
+                        <div class="lang-card-sub">Tamil (இந்தியா)</div>
+                    </div>
+                </div>
+
+                <!-- Hindi -->
+                <div class="lang-card" data-lang="hi">
+                    <div class="lang-card-flag">🇮🇳</div>
+                    <div>
+                        <div class="lang-card-title">हिन्दी</div>
+                        <div class="lang-card-sub">Hindi (भारत)</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2.5 CURRENCY SECTION -->
+        <section class="set-sec">
+            <h2 data-i18n="set_currency">Currency / நாணயம் / मुद्रा</h2>
+            <p class="sec-desc">Choose your preferred currency for all trip prices, packages, and fares.</p>
+
+            <div class="currency-grid" id="currency-selector-cards">
+                <!-- INR -->
+                <div class="currency-card" data-currency="INR">
+                    <div class="currency-card-sym">₹</div>
+                    <div>
+                        <div class="currency-card-title">INR (₹)</div>
+                        <div class="currency-card-sub">Indian Rupee (Default)</div>
+                    </div>
+                </div>
+
+                <!-- USD -->
+                <div class="currency-card" data-currency="USD">
+                    <div class="currency-card-sym">$</div>
+                    <div>
+                        <div class="currency-card-title">USD ($)</div>
+                        <div class="currency-card-sub">United States Dollar</div>
+                    </div>
+                </div>
+
+                <!-- EUR -->
+                <div class="currency-card" data-currency="EUR">
+                    <div class="currency-card-sym">€</div>
+                    <div>
+                        <div class="currency-card-title">EUR (€)</div>
+                        <div class="currency-card-sub">Euro (European Union)</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. NOTIFICATIONS SECTION -->
+        <section class="set-sec">
+            <h2>Notifications</h2>
+            <p class="sec-desc">Choose which channels you want to receive booking confirmations and trip alerts on.</p>
+
+            <!-- Email Toggle -->
+            <div class="set-row">
+                <div>
+                    <strong style="color:var(--text);display:block;font-size:15px;margin-bottom:2px;">Email notifications</strong>
+                    <span style="font-size:13px;color:var(--text-muted);">Receive booking confirmations, itinerary PDFs and travel receipts</span>
+                </div>
+                <div>
+                    <label class="switch">
+                        <input type="checkbox" id="notify-email" checked>
+                        <span class="switch-slider"></span>
+                    </label>
+                </div>
+            </div>
+
+
+
+            <!-- WhatsApp Toggle -->
+            <div class="set-row">
+                <div>
+                    <strong style="color:var(--text);display:block;font-size:15px;margin-bottom:2px;">WhatsApp updates</strong>
+                    <span style="font-size:13px;color:var(--text-muted);">Receive digital tickets and live trip concierge cards directly on WhatsApp</span>
+                </div>
+                <div>
+                    <label class="switch">
+                        <input type="checkbox" id="notify-wa" checked>
+                        <span class="switch-slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <button type="button" class="btn-test-notify" id="btn-test-notify">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+                Send me a test message
+            </button>
+        </section>
+
+        <!-- 4. ACCOUNT SECTION -->
+        <section class="set-sec">
+            <h2>Account</h2>
+            <p class="sec-desc">Manage your logged-in profile credentials and session state.</p>
+
+            <div id="account-logged-in" style="display:none;">
+                <div class="account-box">
+                    <div class="account-profile">
+                        <div class="account-avatar" id="acc-avatar">U</div>
+                        <div class="account-info">
+                            <h3 id="acc-name">User Name</h3>
+                            <p id="acc-email">user@example.com</p>
+                            <p id="acc-phone" style="color:var(--text-mid);font-size:12px;margin-top:2px;">+91 9876543210</p>
+                        </div>
+                    </div>
+                    <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                        <button type="button" class="btn btn-outline" id="btn-logout" style="border-radius:var(--r-full);padding:8px 18px;font-size:13.5px;color:var(--ink);border:1px solid var(--gray-200);cursor:pointer;background:transparent;">
+                            Sign out
+                        </button>
+                        <button type="button" class="btn" id="btn-delete-account" style="border-radius:var(--r-full);padding:8px 18px;font-size:13.5px;color:#dc2626;border:1px solid #fca5a5;background:rgba(239,68,68,0.08);cursor:pointer;font-weight:600;display:inline-flex;align-items:center;gap:6px;">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                            Delete Account
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="account-guest" style="padding:12px 0;">
+                <p style="font-size:14px;color:var(--text-muted);margin-bottom:16px;">You are currently browsing as a guest. Sign in to synchronize trips across devices.</p>
+                <div style="display:flex;gap:12px;flex-wrap:wrap;">
+                    <a href="login.html" class="btn btn-primary" style="padding:9px 22px;text-decoration:none;font-size:14px;">Sign in</a>
+                    <a href="signup.html" class="btn btn-outline" style="padding:9px 22px;text-decoration:none;font-size:14px;border:1px solid var(--gray-200);color:var(--ink);border-radius:var(--r-full);">Create account</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer will be mounted by tc-layer.js -->
+    <footer class="footer"></footer>
+
+    <!-- Scripts -->
+    <script src="tc-config.js"></script>
+    <script src="shared.js"></script>
+    <script src="tc-layer.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 1. Appearance / Dark Mode
+            var darkToggle = document.getElementById('dark-mode-toggle');
+            var isDark = document.documentElement.classList.contains('dark') || localStorage.getItem('tc_dark') === 'true';
+            darkToggle.checked = isDark;
+
+            darkToggle.addEventListener('change', function() {
+                var on = darkToggle.checked;
+                if (window.TC && window.TC.setDark) {
+                    window.TC.setDark(on);
+                } else {
+                    document.documentElement.classList.toggle('dark', on);
+                    localStorage.setItem('tc_dark', on ? 'true' : 'false');
+                }
+                showToast('Appearance updated', 'success');
+            });
+
+            // Palette Swatches
+            var currentPalette = localStorage.getItem('tc_palette') || 'cobalt';
+            var swatches = document.querySelectorAll('.swatch');
+            
+            function updateActiveSwatch(p) {
+                swatches.forEach(function(s) {
+                    if (s.getAttribute('data-palette') === p) {
+                        s.classList.add('active');
+                    } else {
+                        s.classList.remove('active');
+                    }
+                });
+            }
+            updateActiveSwatch(currentPalette);
+
+            swatches.forEach(function(s) {
+                s.addEventListener('click', function() {
+                    var pal = s.getAttribute('data-palette');
+                    if (window.TC && window.TC.setPalette) {
+                        window.TC.setPalette(pal);
+                    } else if (window.applyPalette) {
+                        window.applyPalette(pal);
+                    }
+                    updateActiveSwatch(pal);
+                    showToast('Palette changed to ' + pal, 'success');
+                });
+            });
+
+            // 2. Language Cards
+            var currentLang = localStorage.getItem('tc_lang') || 'en';
+            var langCards = document.querySelectorAll('.lang-card');
+
+            function updateActiveLang(lang) {
+                langCards.forEach(function(c) {
+                    if (c.getAttribute('data-lang') === lang) {
+                        c.classList.add('active');
+                    } else {
+                        c.classList.remove('active');
+                    }
+                });
+            }
+            updateActiveLang(currentLang);
+
+            langCards.forEach(function(c) {
+                c.addEventListener('click', function() {
+                    var lang = c.getAttribute('data-lang');
+                    if (window.TC && window.TC.setLang) {
+                        window.TC.setLang(lang);
+                    }
+                    updateActiveLang(lang);
+                    showToast('Language updated', 'success');
+                });
+            });
+
+            // 2.5 Currency Cards
+            var currentCurr = (window.TC && window.TC.getCurrency) ? window.TC.getCurrency() : (localStorage.getItem('tc_currency') || 'INR');
+            var currCards = document.querySelectorAll('.currency-card');
+
+            function updateActiveCurrency(curr) {
+                currCards.forEach(function(c) {
+                    if (c.getAttribute('data-currency') === curr) {
+                        c.classList.add('active');
+                    } else {
+                        c.classList.remove('active');
+                    }
+                });
+            }
+            updateActiveCurrency(currentCurr);
+
+            currCards.forEach(function(c) {
+                c.addEventListener('click', function() {
+                    var curr = c.getAttribute('data-currency');
+                    if (window.TC && window.TC.setCurrency) {
+                        window.TC.setCurrency(curr);
+                    } else {
+                        localStorage.setItem('tc_currency', curr);
+                    }
+                    updateActiveCurrency(curr);
+                });
+            });
+
+            // 3. Notifications Channels (Email & WhatsApp only)
+            var notifyEmail = document.getElementById('notify-email');
+            var notifyWa = document.getElementById('notify-wa');
+            var testBtn = document.getElementById('btn-test-notify');
+
+            var prefs = { email: true, whatsapp: true };
+            try {
+                var stored = JSON.parse(localStorage.getItem('tc_notifications'));
+                if (stored) {
+                    prefs = Object.assign(prefs, stored);
+                }
+            } catch(e) {}
+
+            notifyEmail.checked = !!prefs.email;
+            notifyWa.checked = !!prefs.whatsapp;
+
+            function savePrefs() {
+                var updated = {
+                    email: notifyEmail.checked,
+                    whatsapp: notifyWa.checked
+                };
+                localStorage.setItem('tc_notifications', JSON.stringify(updated));
+                showToast('Saved', 'success');
+            }
+
+            notifyEmail.addEventListener('change', savePrefs);
+            notifyWa.addEventListener('change', savePrefs);
+
+            // Test Notifications: Actually launches WhatsApp / Email apps
+            testBtn.addEventListener('click', function() {
+                var channels = [];
+                if (notifyEmail.checked) channels.push('email');
+                if (notifyWa.checked) channels.push('whatsapp');
+
+                if (channels.length === 0) {
+                    showToast('Please enable at least one notification channel.', 'warning');
+                    return;
+                }
+
+                var msg = '🌴 TripCraft Notification: Your travel reservations and itinerary updates are verified & active! 🌴\n\nDirect Wi-Fi / LAN Access: http://192.168.1.44:3000/bookings.html';
+                var subject = 'TripCraft Live Notification Test';
+
+                var targetPhone = (sessionUser && sessionUser.phone) || '+91 98765 43210';
+                var targetEmail = (sessionUser && sessionUser.email) || 'admin@tripcraft.com';
+                var cleanDigits = targetPhone.replace(/[^\d]/g, '') || '919876543210';
+
+                // Direct App Launcher to user's phone / email (or TripCraft concierge)
+                if (notifyWa.checked) {
+                    window.open('https://api.whatsapp.com/send?phone=' + cleanDigits + '&text=' + encodeURIComponent(msg), '_blank', 'noopener');
+                }
+                if (notifyEmail.checked) {
+                    window.open('mailto:' + encodeURIComponent(targetEmail) + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(msg), '_blank');
+                }
+
+                showToast('Opened live test notification addressed to ' + (sessionUser ? sessionUser.name : 'TripCraft Concierge') + '!', 'success');
+            });
+
+            // 4. Account State
+            var accLogged = document.getElementById('account-logged-in');
+            var accGuest = document.getElementById('account-guest');
+            var accAvatar = document.getElementById('acc-avatar');
+            var accName = document.getElementById('acc-name');
+            var accEmail = document.getElementById('acc-email');
+            var accPhone = document.getElementById('acc-phone');
+            var btnLogout = document.getElementById('btn-logout');
+            var btnDelete = document.getElementById('btn-delete-account');
+
+            var sessionUser = null;
+            try {
+                sessionUser = JSON.parse(localStorage.getItem('tc_session') || localStorage.getItem('tc_user') || localStorage.getItem('tripcraft_user') || 'null');
+            } catch(e) {}
+
+            if (sessionUser && sessionUser.email) {
+                accGuest.style.display = 'none';
+                accLogged.style.display = 'block';
+                accName.textContent = sessionUser.name || 'Traveler';
+                accEmail.textContent = sessionUser.email;
+                accPhone.textContent = sessionUser.phone || 'Phone not set';
+
+                var sName = (sessionUser.name || '').trim();
+                var initials = 'TC';
+                if (sName) {
+                    var parts = sName.split(/\s+/).filter(Boolean);
+                    initials = parts.length >= 2 ? (parts[0][0] + parts[1][0]).toUpperCase() : sName.slice(0, 2).toUpperCase();
+                } else if (sessionUser.email) {
+                    var clean = sessionUser.email.split('@')[0].replace(/[^a-zA-Z0-9]/g, '');
+                    initials = (clean.slice(0, 2) || 'TC').toUpperCase();
+                }
+                accAvatar.textContent = initials;
+
+                btnLogout.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    if (window.TC && window.TC.Auth && typeof window.TC.Auth.signOut === 'function') {
+                        window.TC.Auth.signOut();
+                    } else if (window.TripCraftAuth && typeof window.TripCraftAuth.logout === 'function') {
+                        window.TripCraftAuth.logout();
+                    } else {
+                        try {
+                            localStorage.removeItem('tc_session');
+                            localStorage.removeItem('tc_user');
+                            localStorage.removeItem('tripcraft_user');
+                            localStorage.removeItem('tripcraft_jwt');
+                            sessionStorage.clear();
+                        } catch(err) {}
+                        window.location.href = 'index.html';
+                    }
+                });
+
+                if (btnDelete) {
+                    btnDelete.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        if (confirm('Are you sure you want to permanently delete your TripCraft account?\n\nThis will permanently remove your profile, saved trips, and preferences.')) {
+                            if (window.TC && window.TC.Auth && typeof window.TC.Auth.deleteAccount === 'function') {
+                                window.TC.Auth.deleteAccount(sessionUser.email);
+                            } else {
+                                try {
+                                    var accs = JSON.parse(localStorage.getItem('tc_accounts') || '[]');
+                                    accs = accs.filter(function(a) { return a.email !== sessionUser.email; });
+                                    localStorage.setItem('tc_accounts', JSON.stringify(accs));
+                                    if (window.TC && window.TC.forgetGoogleAccount) {
+                                        window.TC.forgetGoogleAccount(sessionUser.email);
+                                    } else {
+                                        var gAccs = JSON.parse(localStorage.getItem('tc_google_accounts') || '[]');
+                                        gAccs = gAccs.filter(function(a) { return a.email !== sessionUser.email; });
+                                        localStorage.setItem('tc_google_accounts', JSON.stringify(gAccs));
+                                    }
+                                    localStorage.removeItem('tc_session');
+                                    localStorage.removeItem('tc_user');
+                                    localStorage.removeItem('tripcraft_user');
+                                    localStorage.removeItem('tripcraft_jwt');
+                                    if (sessionUser.id) {
+                                        localStorage.removeItem('tripcraft_wishlist_' + sessionUser.id);
+                                        localStorage.removeItem('tripcraft_notifications_' + sessionUser.id);
+                                    }
+                                    sessionStorage.clear();
+                                } catch(err) {}
+                                showToast('Account has been deleted.', 'info');
+                                setTimeout(function() { window.location.href = 'index.html'; }, 300);
+                            }
+                        }
+                    });
+                }
+            } else {
+                accGuest.style.display = 'block';
+                accLogged.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Curated Holiday Tour Packages with Day-Wise Itineraries — TripCraft</title>
+    <meta name="description" content="All-inclusive holiday packages featuring flights, 4-star stays, day-by-day itineraries, verified inclusions, and automated 4+ group discounts.">
+    <meta property="og:title" content="Curated Holiday Tour Packages with Day-Wise Itineraries — TripCraft">
+    <meta property="og:description" content="All-inclusive holiday packages featuring flights, 4-star stays, day-by-day itineraries, verified inclusions, and automated 4+ group discounts.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=1200&auto=format&fit=crop">
+    <link rel="stylesheet" href="shared.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        .pkg-hero {
+            background: linear-gradient(135deg, #090E2B, #101B4B);
+            padding: 56px var(--px);
+            position: relative;
+            overflow: hidden;
+        }
+        .pkg-hero-overlay {
+            position: absolute;
+            inset: 0;
+            background-image: url('https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=1920&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.16;
+        }
+        .pkg-hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 680px;
+        }
+        .pkg-hero h1 {
+            font-family: 'Bricolage Grotesque', 'Plus Jakarta Sans', sans-serif;
+            font-size: 42px;
+            font-weight: 700;
+            color: #FFFFFF;
+            line-height: 1.15;
+            margin-bottom: 12px;
+        }
+        .pkg-hero h1 em {
+            color: var(--gold);
+            font-style: normal;
+        }
+        .pkg-hero p {
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.75);
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+        .packages-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+        .package-card {
+            background: var(--white);
+            border-radius: var(--r-lg);
+            border: 1px solid var(--gray-100);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+        }
+        .package-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+        .package-img {
+            height: 200px;
+            position: relative;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: flex-end;
+            padding: 14px;
+        }
+        .package-img-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(11, 31, 58, 0.8) 0%, transparent 60%);
+        }
+        .package-duration-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: rgba(11, 31, 58, 0.75);
+            backdrop-filter: blur(6px);
+            color: var(--white);
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: var(--r-full);
+            z-index: 1;
+        }
+        .package-dest-name {
+            font-family: 'Bricolage Grotesque', 'Plus Jakarta Sans', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--white);
+            position: relative;
+            z-index: 1;
+        }
+        .package-body {
+            padding: 18px 20px 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .package-title {
+            font-family: 'Bricolage Grotesque', 'Plus Jakarta Sans', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 6px;
+        }
+        .package-desc {
+            font-size: 13px;
+            color: var(--text-mid);
+            line-height: 1.55;
+            margin-bottom: 14px;
+        }
+        .package-chips {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+        .package-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 14px;
+            border-top: 1px solid var(--gray-100);
+            margin-top: auto;
+        }
+        .package-price {
+            font-size: 19px;
+            font-weight: 700;
+            color: var(--teal);
+        }
+        .package-price-sub {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="nav">
+        <a href="index.html" class="nav-logo">
+            <div class="nav-logo-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            </div>
+            <div class="nav-logo-text">Trip<span>Craft</span></div>
+        </a>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="destinations.html">Destinations</a>
+            <a href="transport.html">Transport</a>
+            <a href="hotels.html">Hotels</a>
+            <a href="vehicle.html">Vehicles</a>
+            <a href="guides.html">Local Guides</a>
+            <a href="packages.html" class="active">Packages</a>
+            <a href="itinerary.html">Itinerary</a>
+            <a href="budget.html">Budget</a>
+            <a href="community.html">Community</a>
+            <a href="solo.html">Solo Trip</a>
+            <a href="album.html">Photo Albums</a>
+            <a href="bookings.html">My Bookings</a>
+        </div>
+        <div class="nav-cta">
+            <a href="login.html" class="btn btn-ghost">Sign In</a>
+            <a href="signup.html" class="btn btn-gold">Get Started</a>
+        </div>
+    </nav>
+
+    <div class="breadcrumb">
+        <a href="index.html">Home</a>
+        <span class="breadcrumb-sep">&gt;</span>
+        <span>Holiday Tour Packages</span>
+    </div>
+
+    <div class="pkg-hero">
+        <div class="pkg-hero-overlay"></div>
+        <div class="pkg-hero-content">
+            <div class="chip chip-gold" style="margin-bottom: 14px;">
+                <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8"/></svg>
+                100% All-Inclusive Handcrafted Packages
+            </div>
+            <h1>Effortless journeys with<br/><em>curated holiday plans</em></h1>
+            <p>Every itinerary is bundled with flights, luxury handpicked hotels, private transfers, and guided sightseeing.</p>
+        </div>
+    </div>
+
+    <div class="layout-2col">
+        <!-- Filter Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-title">Filter Packages</div>
+            
+            <div class="filter-group">
+                <div class="filter-label">Destination Region</div>
+                <label class="filter-opt"><input type="checkbox" checked> Southeast Asia</label>
+                <label class="filter-opt"><input type="checkbox" checked> Middle East Luxury</label>
+                <label class="filter-opt"><input type="checkbox" checked> Indian Tropical &amp; Hills</label>
+                <label class="filter-opt"><input type="checkbox"> Europe &amp; UK</label>
+            </div>
+
+            <div class="filter-group">
+                <div class="filter-label">Duration</div>
+                <label class="filter-opt"><input type="checkbox" checked> 3 &ndash; 5 Days (Quick Break)</label>
+                <label class="filter-opt"><input type="checkbox" checked> 6 &ndash; 8 Days (Complete Trip)</label>
+                <label class="filter-opt"><input type="checkbox"> 9+ Days (Grand Expedition)</label>
+            </div>
+
+            <div class="filter-group">
+                <div class="filter-label">Inclusions</div>
+                <label class="filter-opt"><input type="checkbox" checked> Roundtrip Flights Included</label>
+                <label class="filter-opt"><input type="checkbox" checked> 4★ / 5★ Hotels</label>
+                <label class="filter-opt"><input type="checkbox" checked> Private Airport Transfers</label>
+                <label class="filter-opt"><input type="checkbox"> Dedicated Guide</label>
+            </div>
+
+            <div class="filter-group">
+                <div class="filter-label">Budget per Person</div>
+                <div class="range-wrap">
+                    <input type="range" min="15000" max="80000" step="2500" value="50000">
+                    <div class="range-labels"><span>&#8377;15k</span><span class="range-val">&#8377;50,000</span><span>&#8377;80k+</span></div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Packages Grid -->
+        <main class="results-bg">
+            <div class="results-header">
+                <div class="results-count">Showing <strong>6 all-inclusive packages</strong> (Click any card for full details)</div>
+                <select class="sort-select">
+                    <option>Featured &amp; Best Value</option>
+                    <option>Price: Low to High</option>
+                    <option>Price: High to Low</option>
+                    <option>Duration: Long to Short</option>
+                </select>
+            </div>
+
+            <div class="packages-grid">
+                <!-- Package 1: Bali -->
+                <div class="package-card" onclick="openDetailModal({
+                    title: 'Bali Tropical Haven &amp; Pool Villa Escape',
+                    category: 'All-Inclusive International Package',
+                    subtitle: 'Ubud, Seminyak &amp; Nusa Penida &middot; Indonesia',
+                    image: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=1920&auto=format&fit=crop',
+                    price: '&#8377;45,000',
+                    rating: '4.9 (420 Bookings)',
+                    description: 'Explore Bali with private pool villa stays in Ubud, beach clubs in Seminyak, a full-day Nusa Penida speedboat tour, and daily breakfast.',
+                    specs: [
+                        { label: 'Trip Duration', val: '5 Nights / 6 Days' },
+                        { label: 'Stays', val: '3N Ubud Pool Villa + 2N Beach Resort' },
+                        { label: 'Inclusions', val: 'Roundtrip Flights, Daily Breakfast, Speedboat, Transfers' },
+                        { label: 'Group Size', val: 'Min 1 &middot; Max 12' }
+                    ],
+                    highlights: ['Roundtrip Flights', 'Private Pool Villa', 'Nusa Penida Cruise', '24/7 Concierge'],
+                    itinerary: [
+                        { day: 'Day 1: Arrival &amp; Ubud Villa Check-in', desc: 'Private transfer from Ngurah Rai Airport to Ubud. Check-in to private pool villa, welcome floral bath, and candlelit Balinese dinner.' },
+                        { day: 'Day 2: Tegallalang &amp; Sacred Monkey Forest', desc: 'Morning visit to emerald Tegallalang rice terraces, jungle swing adventure, and an afternoon walk through Ubud Monkey Forest sanctuary.' },
+                        { day: 'Day 3: Mount Batur Sunrise &amp; Hot Springs', desc: '4x4 Jeep sunrise excursion at Mt. Batur volcano caldera followed by relaxing natural mineral hot springs in Kintamani.' },
+                        { day: 'Day 4: Seminyak Transfer &amp; Sunset Beach Club', desc: 'Scenic transfer to coastal Seminyak. Check-in to beachfront resort and reserved VIP lounge access at Potato Head Beach Club.' },
+                        { day: 'Day 5: Nusa Penida Island Speedboat Day Cruise', desc: 'Fast boat to Nusa Penida. Visit iconic Kelingking T-Rex cliff, Angel Billabong natural infinity pool, and crystal bay snorkeling.' },
+                        { day: 'Day 6: Seminyak Souvenir Shopping &amp; Departure', desc: 'Morning gourmet breakfast, spa wellness treatment, duty-free shopping, and private chauffeur transfer back to Denpasar airport.' }
+                    ],
+                    inclusions: [
+                        'Roundtrip flights with 20kg baggage included',
+                        '3 Nights Ubud Private Pool Villa + 2 Nights Seminyak Beachfront Resort',
+                        'Nusa Penida island speedboat tour with snorkeling equipment',
+                        'Daily artisan buffet breakfast &amp; 2 curated dinner experiences',
+                        'All private air-conditioned airport and sightseeing transfers'
+                    ],
+                    exclusions: [
+                        'Indonesia Visa on Arrival ($35 USD payable at Denpasar airport)',
+                        'Personal shopping, drinks, and discretionary tipping',
+                        'Optional watersports at Tanjung Benoa'
+                    ]
+                })">
+                    <div class="package-img" style="background-image: url('https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=1920&auto=format&fit=crop');">
+                        <div class="package-img-overlay"></div>
+                        <div class="package-duration-badge">5N / 6D</div>
+                        <div class="package-dest-name">Bali, Indonesia</div>
+                    </div>
+                    <div class="package-body">
+                        <h3 class="package-title">Bali Tropical Haven Escape</h3>
+                        <p class="package-desc">Private pool villa in Ubud, beachfront resort in Seminyak, and Nusa Penida island speedboat cruise.</p>
+                        <div class="package-chips">
+                            <span class="chip chip-teal">Flights</span>
+                            <span class="chip chip-gold">Pool Villa</span>
+                            <span class="chip chip-navy">Speedboat</span>
+                        </div>
+                        <div class="package-footer">
+                            <div>
+                                <div class="package-price">&#8377;45,000</div>
+                                <div class="package-price-sub">per person &middot; all inclusive</div>
+                            </div>
+                            <button class="btn btn-teal" onclick="event.stopPropagation(); openBookingModal({
+                                title: 'Bali Tropical Haven Escape',
+                                category: 'Tour Package',
+                                image: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=1920&auto=format&fit=crop',
+                                price: '&#8377;45,000',
+                                description: 'All-inclusive 5N/6D Bali experience with flights, luxury pool villas, and island tours.',
+                                specs: [
+                                    { label: 'Duration', val: '5 Nights / 6 Days' },
+                                    { label: 'Includes', val: 'Roundtrip Flights, 4★ Pool Villas, Speedboat Tour' }
+                                ]
+                            })">Book Package</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Package 2: Dubai -->
+                <div class="package-card" onclick="openDetailModal({
+                    title: 'Dubai Luxury Extravaganza &amp; Desert Safari',
+                    category: 'Luxury International Package',
+                    subtitle: 'Downtown Dubai &amp; Arabian Desert &middot; UAE',
+                    image: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=1920&auto=format&fit=crop',
+                    price: '&#8377;62,000',
+                    rating: '4.9 (310 Bookings)',
+                    description: 'Stay at 5-star hotel in downtown Dubai, enjoy VIP Burj Khalifa observation deck, private 4x4 desert dune bashing, and luxury marina dinner.',
+                    specs: [
+                        { label: 'Trip Duration', val: '4 Nights / 5 Days' },
+                        { label: 'Hotel', val: '5★ Grand Millennium Dubai' },
+                        { label: 'Inclusions', val: 'Airfare, UAE Visa, Desert Safari, Burj Khalifa Pass' }
+                    ],
+                    highlights: ['5★ Luxury Hotel', 'Burj Khalifa Pass', 'Desert Safari BBQ', 'Marina Cruise'],
+                    itinerary: [
+                        { day: 'Day 1: Arrival &amp; Dubai Marina Dhow Cruise', desc: 'Welcome at Dubai International Airport with luxury vehicle transfer. Evening illuminated Marina Dhow Cruise dinner with live Tanoura show.' },
+                        { day: 'Day 2: City Tour &amp; Burj Khalifa 124th Floor', desc: 'Guided tour of Old Dubai, Gold Souk, Palm Jumeirah monorail ride, and sunset atop Burj Khalifa 124th &amp; 125th floor observation decks.' },
+                        { day: 'Day 3: 4x4 Desert Safari &amp; Bedouin Camp', desc: 'Afternoon thrilling dune bashing across red Arabian sands, sandboarding, camel rides, falconry photo op, and royal BBQ dinner buffet.' },
+                        { day: 'Day 4: Abu Dhabi Sheikh Zayed Mosque Day Tour', desc: 'Full-day excursion to Abu Dhabi visiting the magnificent Sheikh Zayed Grand Mosque, Emirates Palace photo stop, and Ferrari World.' },
+                        { day: 'Day 5: Dubai Mall Shopping &amp; Departure', desc: 'Free morning for shopping at Dubai Mall or Souk Madinat Jumeirah, followed by chauffeur drop to airport for onward flight.' }
+                    ],
+                    inclusions: [
+                        'Emirates / FlyDubai roundtrip direct airfare with 30kg luggage',
+                        '4 Nights 5-Star Grand Millennium Dubai with daily breakfast buffet',
+                        'Burj Khalifa 124th &amp; 125th Floor Observation Deck peak sunset tickets',
+                        'VIP 4x4 Desert Safari with quad biking voucher &amp; BBQ dinner',
+                        'UAE Tourist Visa fees and OK to Board processing included'
+                    ],
+                    exclusions: [
+                        'Dubai Tourism Dirham fee (approx AED 20 per room per night)',
+                        'Ferrari World interior rides beyond general access pass',
+                        'Personal shopping at malls and souks'
+                    ]
+                })">
+                    <div class="package-img" style="background-image: url('https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=1920&auto=format&fit=crop');">
+                        <div class="package-img-overlay"></div>
+                        <div class="package-duration-badge">4N / 5D</div>
+                        <div class="package-dest-name">Dubai, UAE</div>
+                    </div>
+                    <div class="package-body">
+                        <h3 class="package-title">Dubai Luxury Extravaganza</h3>
+                        <p class="package-desc">5-star hotel in Downtown, Burj Khalifa 124th floor VIP access, desert safari BBQ, and Marina yacht cruise.</p>
+                        <div class="package-chips">
+                            <span class="chip chip-gold">5★ Hotel</span>
+                            <span class="chip chip-teal">Burj Khalifa</span>
+                            <span class="chip chip-navy">Desert Safari</span>
+                        </div>
+                        <div class="package-footer">
+                            <div>
+                                <div class="package-price">&#8377;62,000</div>
+                                <div class="package-price-sub">per person &middot; all inclusive</div>
+                            </div>
+                            <button class="btn btn-teal" onclick="event.stopPropagation(); openBookingModal({
+                                title: 'Dubai Luxury Extravaganza',
+                                category: 'Tour Package',
+                                image: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=1920&auto=format&fit=crop',
+                                price: '&#8377;62,000',
+                                description: 'All-inclusive 4N/5D Dubai holiday with 5-star stays, desert safari, and airfare.',
+                                specs: [
+                                    { label: 'Duration', val: '4 Nights / 5 Days' },
+                                    { label: 'Includes', val: 'Emirates Airfare, 5★ Hotel, Desert Safari, Burj Khalifa' }
+                                ]
+                            })">Book Package</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Package 3: Thailand -->
+                <div class="package-card" onclick="openDetailModal({
+                    title: 'Thailand Beach Bliss &amp; Phi Phi Island Hopping',
+                    category: 'Tropical Tour Package',
+                    subtitle: 'Phuket &amp; Krabi &middot; Thailand',
+                    image: 'https://images.unsplash.com/photo-1528181304800-259b08848526?q=80&w=1920&auto=format&fit=crop',
+                    price: '&#8377;38,000',
+                    rating: '4.8 (580 Bookings)',
+                    description: 'Island hopping package across Phuket and Krabi with speedboat tours to Phi Phi, snorkeling in Maya Bay, and beachfront resort stays.',
+                    specs: [
+                        { label: 'Trip Duration', val: '6 Nights / 7 Days' },
+                        { label: 'Stays', val: 'Phuket Resort (3N) + Krabi Resort (3N)' },
+                        { label: 'Inclusions', val: 'Roundtrip Flights, Speedboat, Phi Phi Island Tour' }
+                    ],
+                    highlights: ['Roundtrip Flights', 'Beach Resorts', 'Speedboat Tours', 'Daily Breakfast'],
+                    itinerary: [
+                        { day: 'Day 1: Arrival in Phuket &amp; Patong Beach Walk', desc: 'Arrive at Phuket International Airport, private transfer to 4-star beach resort in Patong. Sunset cocktail by the ocean.' },
+                        { day: 'Day 2: Phi Phi Islands Speedboat Day Cruise', desc: 'Full-day catamaran speedboat tour to Maya Bay, Viking Cave, Monkey Beach, with snorkeling in turquoise waters and buffet lunch.' },
+                        { day: 'Day 3: Phuket Big Buddha &amp; Old Town Exploration', desc: 'Panoramic view from 45m marble Big Buddha, Chalong Temple blessing, and heritage Sino-Portuguese cafe walk in Old Phuket Town.' },
+                        { day: 'Day 4: Scenic Ferry Transfer to Krabi Ao Nang', desc: 'Speed ferry transfer from Phuket across Phang Nga bay to Krabi. Check-in to Ao Nang cliffside resort with pool overlooking limestone karsts.' },
+                        { day: 'Day 5: 4-Island Longtail Boat Excursion', desc: 'Island hopping to Phra Nang Cave Beach, Chicken Island sandbar, Tup Island, and Poda Island with coral reef snorkeling.' },
+                        { day: 'Day 6: Tiger Cave Temple &amp; Emerald Pool', desc: 'Climb 1,237 steps to Tiger Cave Temple peak with 360-degree mountain views, followed by therapeutic mineral soak in natural Emerald Pool.' },
+                        { day: 'Day 7: Krabi Souvenir Stroll &amp; Flight Home', desc: 'Morning beachfront breakfast, tropical fruit market visit, and private chauffeur transfer to Krabi International Airport.' }
+                    ],
+                    inclusions: [
+                        'AirAsia / Thai Airways roundtrip flight tickets included',
+                        '3 Nights 4★ Resort in Phuket + 3 Nights 4★ Cliffside Resort in Krabi',
+                        'Phi Phi Island speedboat excursion with marine national park fees',
+                        '4-Island Krabi longtail cruise with snorkeling gear and lunch',
+                        'All inter-city boat and hotel chauffeur transfers'
+                    ],
+                    exclusions: [
+                        'Thailand tourist entry visa / fast track (visa-free for eligible passports)',
+                        'Scuba diving certification dives (optional add-on)',
+                        'Personal water sport rentals (jet ski, parasailing)'
+                    ]
+                })">
+                    <div class="package-img" style="background-image: url('https://images.unsplash.com/photo-1528181304800-259b08848526?q=80&w=1920&auto=format&fit=crop');">
+                        <div class="package-img-overlay"></div>
+                        <div class="package-duration-badge">6N / 7D</div>
+                        <div class="package-dest-name">Phuket &amp; Krabi</div>
+                    </div>
+                    <div class="package-body">
+                        <h3 class="package-title">Thailand Beach Bliss</h3>
+                        <p class="package-desc">Speedboat island hopping across Phi Phi, Maya Bay snorkeling, sunset cruises, and beachfront dining.</p>
+                        <div class="package-chips">
+                            <span class="chip chip-teal">Flights</span>
+                            <span class="chip chip-gold">Resort</span>
+                            <span class="chip chip-navy">Speedboat</span>
+                        </div>
+                        <div class="package-footer">
+                            <div>
+                                <div class="package-price">&#8377;38,000</div>
+                                <div class="package-price-sub">per person &middot; all inclusive</div>
+                            </div>
+                            <button class="btn btn-teal" onclick="event.stopPropagation(); openBookingModal({
+                                title: 'Thailand Beach Bliss',
+                                category: 'Tour Package',
+                                image: 'https://images.unsplash.com/photo-1528181304800-259b08848526?q=80&w=1920&auto=format&fit=crop',
+                                price: '&#8377;38,000',
+                                description: 'Tropical getaway across Phuket and Krabi with flights and speedboat excursions.',
+                                specs: [
+                                    { label: 'Duration', val: '6 Nights / 7 Days' },
+                                    { label: 'Includes', val: 'Flights, Beach Resorts, Phi Phi Islands, Speedboat' }
+                                ]
+                            })">Book Package</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Package 4: Kerala Backwaters -->
+                <div class="package-card" onclick="openDetailModal({
+                    title: 'Kerala Backwaters &amp; Munnar Tea Hills',
+                    category: 'Domestic Nature Package',
+                    subtitle: 'Munnar, Thekkady &amp; Alleppey &middot; Kerala',
+                    image: 'https://images.unsplash.com/photo-1593693397690-362cb9666fc2?q=80&w=1920&auto=format&fit=crop',
+                    price: '&#8377;22,500',
+                    rating: '4.9 (670 Bookings)',
+                    description: 'Explore misty Munnar tea hills, Thekkady spice plantations, and spend a night on a luxury private houseboat in Alleppey backwaters.',
+                    specs: [
+                        { label: 'Trip Duration', val: '4 Nights / 5 Days' },
+                        { label: 'Houseboat', val: 'Private AC Deluxe Houseboat' },
+                        { label: 'Inclusions', val: 'Chauffeur Car, All Meals on Houseboat, Sightseeing' }
+                    ],
+                    highlights: ['Private Houseboat', 'Tea Plantation', 'Spice Farm', 'Chauffeur Car'],
+                    itinerary: [
+                        { day: 'Day 1: Kochi Arrival to Munnar Hill Station', desc: 'Chauffeur pickup from Kochi Airport/Railway. Drive through Cheeyappara &amp; Valara waterfalls to Munnar. Evening tea plantation stroll.' },
+                        { day: 'Day 2: Eravikulam National Park &amp; Mattupetty Dam', desc: 'Spot endangered Nilgiri Tahr at Eravikulam, boat ride on Mattupetty Dam, visit Echo Point, and attend tea tasting at KDHP Tea Museum.' },
+                        { day: 'Day 3: Munnar to Thekkady Spice Plantation &amp; Boating', desc: 'Scenic ghat road drive to Periyar wildlife sanctuary in Thekkady. Spice garden guided walking tour and evening Kalaripayattu martial arts show.' },
+                        { day: 'Day 4: Alleppey Backwaters Private Houseboat Cruise', desc: 'Board traditional thatched-roof AC luxury houseboat in Alleppey. Cruise serene Vembanad backwaters with fresh Karimeen fish lunch &amp; dinner.' },
+                        { day: 'Day 5: Cochin Dutch Palace &amp; Departure', desc: 'Morning breakfast on backwaters, checkout and drive to Fort Kochi. Visit historic Chinese fishing nets and Jewish Synagogue before airport drop.' }
+                    ],
+                    inclusions: [
+                        'Dedicated AC Sedan / Innova with verified courteous chauffeur for all 5 days',
+                        '2 Nights Munnar Luxury Hill Cottage + 1 Night Thekkady Resort',
+                        '1 Night Exclusive Deluxe Private Houseboat with all 3 authentic Kerala meals',
+                        'Daily breakfast at all hill station hotels',
+                        'All toll fees, parking, driver allowances, and state entry taxes'
+                    ],
+                    exclusions: [
+                        'Airfare / Train tickets to and from Kochi (Cochin)',
+                        'Periyar Tiger Reserve boat safari tickets (direct entry fee)',
+                        'Personal ayurvedic massage therapies and shopping'
+                    ]
+                })">
+                    <div class="package-img" style="background-image: url('https://images.unsplash.com/photo-1593693397690-362cb9666fc2?q=80&w=1920&auto=format&fit=crop');">
+                        <div class="package-img-overlay"></div>
+                        <div class="package-duration-badge">4N / 5D</div>
+                        <div class="package-dest-name">Kerala Backwaters</div>
+                    </div>
+                    <div class="package-body">
+                        <h3 class="package-title">Kerala Hills &amp; Houseboat</h3>
+                        <p class="package-desc">Misty Munnar tea gardens, spice plantation walks, and an overnight private houseboat cruise on Vembanad Lake.</p>
+                        <div class="package-chips">
+                            <span class="chip chip-teal">Houseboat</span>
+                            <span class="chip chip-gold">Tea Estate</span>
+                            <span class="chip chip-navy">Chauffeur</span>
+                        </div>
+                        <div class="package-footer">
+                            <div>
+                                <div class="package-price">&#8377;22,500</div>
+                                <div class="package-price-sub">per person &middot; all meals on boat</div>
+                            </div>
+                            <button class="btn btn-teal" onclick="event.stopPropagation(); openBookingModal({
+                                title: 'Kerala Backwaters &amp; Munnar Tea Hills',
+                                category: 'Tour Package',
+                                image: 'https://images.unsplash.com/photo-1593693397690-362cb9666fc2?q=80&w=1920&auto=format&fit=crop',
+                                price: '&#8377;22,500',
+                                description: 'Misty Munnar tea gardens and private luxury houseboat cruise on Alleppey backwaters.',
+                                specs: [
+                                    { label: 'Duration', val: '4 Nights / 5 Days' },
+                                    { label: 'Includes', val: 'Private Houseboat, 4★ Munnar Cottage, Chauffeur Vehicle' }
+                                ]
+                            })">Book Package</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Package 5: Andaman -->
+                <div class="package-card" onclick="openDetailModal({
+                    title: 'Andaman Marine Discovery &amp; Scuba Expedition',
+                    category: 'Island Adventure Package',
+                    subtitle: 'Port Blair &amp; Havelock Island &middot; Andaman',
+                    image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1920&auto=format&fit=crop',
+                    price: '&#8377;34,000',
+                    rating: '4.9 (380 Bookings)',
+                    description: 'Explore Radhanagar Beach, take a catamaran cruise to Havelock Island, enjoy introductory scuba diving, and visit Cellular Jail light &amp; sound show.',
+                    specs: [
+                        { label: 'Trip Duration', val: '5 Nights / 6 Days' },
+                        { label: 'Stays', val: 'Beachfront Resorts in Havelock &amp; Port Blair' },
+                        { label: 'Inclusions', val: 'Catamaran Cruise, Scuba Diving Session, Airport Transfers' }
+                    ],
+                    highlights: ['Scuba Diving Pass', 'Catamaran Cruise', 'Beach Resort', 'Light &amp; Sound'],
+                    itinerary: [
+                        { day: 'Day 1: Port Blair Arrival &amp; Historic Cellular Jail', desc: 'Pickup at Veer Savarkar International Airport, hotel check-in. Afternoon visit to Cellular Jail memorial followed by the stirring Light &amp; Sound show.' },
+                        { day: 'Day 2: Premium Catamaran Cruise to Havelock Island', desc: 'Board high-speed Makruzz catamaran cruise to Havelock. Check-in to private beachfront wooden cottages with direct turquoise sea access.' },
+                        { day: 'Day 3: Radhanagar Beach Sunset &amp; Sea Kayaking', desc: 'Morning kayak tour through mangrove creeks. Afternoon relaxing and sunset photography at Asia’s cleanest Radhanagar Beach (Beach No. 7).' },
+                        { day: 'Day 4: Elephant Beach Guided Scuba Diving Session', desc: 'Speedboat to Elephant Beach. Certified PADI instructor dive session amongst vibrant coral reefs, clownfish, and sea turtles with HD underwater video.' },
+                        { day: 'Day 5: Neil Island Natural Coral Bridge &amp; Port Blair', desc: 'Morning cruise to Neil Island natural rock bridge and Laxmanpur sunset beach. Evening catamaran return to Port Blair for local seafood dinner.' },
+                        { day: 'Day 6: Sagarika Emporium Souvenir Shopping &amp; Departure', desc: 'Visit Sagarika Govt. Emporium for authentic sea shell and pearl handicrafts, followed by airport drop with unforgettable island memories.' }
+                    ],
+                    inclusions: [
+                        'Makruzz / Nautika high-speed AC catamaran ferry tickets',
+                        '3 Nights Havelock Beachfront Resort + 2 Nights Port Blair 4★ Hotel',
+                        'PADI certified introductory Scuba Diving session with underwater video and photos',
+                        'Daily breakfast buffet across both resort destinations',
+                        'All inter-island jetty pickups, private transfers, and port entry permits'
+                    ],
+                    exclusions: [
+                        'Mainland to Port Blair flight tickets',
+                        'Professional camera permits at Cellular Jail',
+                        'Personal water activities at Elephant Beach (Sea Walk, Jet Ski)'
+                    ]
+                })">
+                    <div class="package-img" style="background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1920&auto=format&fit=crop');">
+                        <div class="package-img-overlay"></div>
+                        <div class="package-duration-badge">5N / 6D</div>
+                        <div class="package-dest-name">Andaman Explorer</div>
+                    </div>
+                    <div class="package-body">
+                        <h3 class="package-title">Andaman Marine Discovery</h3>
+                        <p class="package-desc">Radhanagar Beach sunsets, premium catamaran cruise to Havelock, coral reef scuba diving, and seaside stays.</p>
+                        <div class="package-chips">
+                            <span class="chip chip-teal">Catamaran</span>
+                            <span class="chip chip-gold">Scuba Diving</span>
+                            <span class="chip chip-navy">Beachfront</span>
+                        </div>
+                        <div class="package-footer">
+                            <div>
+                                <div class="package-price">&#8377;34,000</div>
+                                <div class="package-price-sub">per person &middot; with scuba pass</div>
+                            </div>
+                            <button class="btn btn-teal" onclick="event.stopPropagation(); openBookingModal({
+                                title: 'Andaman Marine Discovery',
+                                category: 'Tour Package',
+                                image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1920&auto=format&fit=crop',
+                                price: '&#8377;34,000',
+                                description: 'Island expedition across Port Blair and Havelock with catamaran cruise and scuba diving.',
+                                specs: [
+                                    { label: 'Duration', val: '5 Nights / 6 Days' },
+                                    { label: 'Includes', val: 'Catamaran Cruise, Scuba Session, Beach Resort Stays' }
+                                ]
+                            })">Book Package</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Package 6: Singapore -->
+                <div class="package-card" onclick="openDetailModal({
+                    title: 'Singapore Futuristic City Break &amp; Universal',
+                    category: 'International City Package',
+                    subtitle: 'Marina Bay &amp; Sentosa &middot; Singapore',
+                    image: 'https://images.unsplash.com/photo-1525625293386-3f8f99389edd?q=80&w=1920&auto=format&fit=crop',
+                    price: '&#8377;52,000',
+                    rating: '4.8 (290 Bookings)',
+                    description: 'Experience Singapore with Universal Studios VIP pass, Cloud Forest &amp; Supertrees entry, Sentosa Island cable car, and Orchard Road hotel.',
+                    specs: [
+                        { label: 'Trip Duration', val: '3 Nights / 4 Days' },
+                        { label: 'Hotel', val: '4★ Orchard Road Hotel' },
+                        { label: 'Inclusions', val: 'Airfare, Universal Pass, Sentosa Cable Car, Airport Chauffeur' }
+                    ],
+                    highlights: ['Singapore Airlines', 'Universal Studios Pass', 'Gardens by the Bay', 'Airport Chauffeur'],
+                    itinerary: [
+                        { day: 'Day 1: Changi Jewel Arrival &amp; Marina Bay Sands Light Show', desc: 'Arrive at Changi Airport, witness the HSBC Rain Vortex waterfall. Hotel check-in. Evening Marina Bay waterfront promenade walk and Spectra light &amp; water show.' },
+                        { day: 'Day 2: Universal Studios Singapore Full-Day Thrills', desc: 'Direct Sentosa Express transfer. Full-day access to Universal Studios USS: Transformers 3D, Battlestar Galactica rollercoasters, and Jurassic Park Rapids.' },
+                        { day: 'Day 3: Gardens by the Bay, Supertrees &amp; Sentosa Cable Car', desc: 'Explore the mist-filled Cloud Forest dome, Flower Dome, and OCBC Skyway Supertrees walk. Afternoon Mount Faber cable car ride over Singapore harbor.' },
+                        { day: 'Day 4: Orchard Road Shopping Stroll &amp; Departure', desc: 'Morning designer boutique shopping along Orchard Road and authentic Hainanese chicken rice lunch at Maxwell Food Centre before airport transfer.' }
+                    ],
+                    inclusions: [
+                        'Singapore Airlines / IndiGo roundtrip airfare included',
+                        '3 Nights 4★ Hotel on Orchard Road with international breakfast buffet',
+                        'Universal Studios Singapore one-day general admission theme park pass',
+                        'Gardens by the Bay dual conservatory tickets (Cloud Forest + Flower Dome)',
+                        'Changi Airport roundtrip chauffeur transfers'
+                    ],
+                    exclusions: [
+                        'Singapore electronic tourist visa (SG e-Visa assistance available)',
+                        'USS Express Pass upgrade (front-of-line skip)',
+                        'Meals not specified in itinerary'
+                    ]
+                })">
+                    <div class="package-img" style="background-image: url('https://images.unsplash.com/photo-1525625293386-3f8f99389edd?q=80&w=1920&auto=format&fit=crop');">
+                        <div class="package-img-overlay"></div>
+                        <div class="package-duration-badge">3N / 4D</div>
+                        <div class="package-dest-name">Singapore City</div>
+                    </div>
+                    <div class="package-body">
+                        <h3 class="package-title">Singapore Futuristic City</h3>
+                        <p class="package-desc">Universal Studios express pass, Gardens by the Bay Supertrees, Sentosa cable car, and Marina Bay night walk.</p>
+                        <div class="package-chips">
+                            <span class="chip chip-teal">Flights</span>
+                            <span class="chip chip-gold">Universal Pass</span>
+                            <span class="chip chip-navy">Hotel</span>
+                        </div>
+                        <div class="package-footer">
+                            <div>
+                                <div class="package-price">&#8377;52,000</div>
+                                <div class="package-price-sub">per person &middot; with passes</div>
+                            </div>
+                            <button class="btn btn-teal" onclick="event.stopPropagation(); openBookingModal({
+                                title: 'Singapore Futuristic City',
+                                category: 'Tour Package',
+                                image: 'https://images.unsplash.com/photo-1525625293386-3f8f99389edd?q=80&w=1920&auto=format&fit=crop',
+                                price: '&#8377;52,000',
+                                description: 'Complete 3N/4D Singapore holiday package with flights and attraction passes.',
+                                specs: [
+                                    { label: 'Duration', val: '3 Nights / 4 Days' },
+                                    { label: 'Includes', val: 'Airfare, 4★ Hotel, Universal Studios, Gardens by the Bay' }
+                                ]
+                            })">Book Package</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pagination">
+                <button class="page-btn active">1</button>
+                <button class="page-btn">2</button>
+                <button class="page-btn">&rarr;</button>
+            </div>
+        </main>
+    </div>
+
+    <footer class="footer">
+    <div class="footer-grid">
+        <div class="footer-brand">
+            <div class="footer-logo">
+                <div class="nav-logo-mark">
+                    <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                </div>
+                <span>TripCraft</span>
+            </div>
+            <p>AI-orchestrated end-to-end travel intelligence platform. Engineered for seamless discovery, instant reservations, solo safety, and creator photobook monetization.</p>
+            <div class="footer-social-strip">
+                <a href="https://twitter.com" target="_blank" class="footer-social-link" title="Twitter / X"><svg viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg></a>
+                <a href="https://instagram.com" target="_blank" class="footer-social-link" title="Instagram"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
+                <a href="https://linkedin.com" target="_blank" class="footer-social-link" title="LinkedIn"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a>
+                <a href="https://github.com" target="_blank" class="footer-social-link" title="GitHub"><svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg></a>
+            </div>
+        </div>
+        <div class="footer-col">
+            <h4>Explore</h4>
+            <ul>
+                <li><a href="destinations.html">Destinations</a></li>
+                <li><a href="packages.html">Curated Packages</a></li>
+                <li><a href="hotels.html">Stays &amp; Resorts</a></li>
+                <li><a href="transport.html">Flights &amp; Rail</a></li>
+                <li><a href="vehicle.html">Car &amp; Bike Rentals</a></li>
+                <li><a href="guides.html">Certified Local Guides</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Special Hubs</h4>
+            <ul>
+                <li><a href="solo.html">Solo Traveler Engine</a></li>
+                <li><a href="community.html">Community &amp; Buddies</a></li>
+                <li><a href="album.html">Photo Album Studio</a></li>
+                <li><a href="budget.html">40/25/20/15 Budgeter</a></li>
+                <li><a href="itinerary.html">Interactive Itinerary</a></li>
+                <li><a href="wishlist.html">Saved Wishlist</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Trust &amp; Legal</h4>
+            <ul>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="contact.html">Customer Support</a></li>
+                <li><a href="faq.html">FAQ &amp; Help Desk</a></li>
+                <li><a href="terms.html">Terms &amp; Conditions</a></li>
+                <li><a href="privacy.html">Privacy Policy</a></li>
+                <li><a href="refund.html">Refund Policy</a></li>
+                <li><a href="sitemap.html">Sitemap</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <div>&copy; 2026 TripCraft Technologies Inc. All rights reserved. 256-bit SSL Encrypted Booking System.</div>
+        <div style="display:flex; gap:16px;">
+            <a href="terms.html">Terms</a>
+            <a href="privacy.html">Privacy</a>
+            <a href="refund.html">Refunds</a>
+            <a href="sitemap.html">Sitemap</a>
+        </div>
+    </div>
+</footer>
+
+    <script src="tc-config.js"></script>
+    <script src="shared.js"></script>
+    <script src="tc-layer.js"></script>
+</body>
+</html>

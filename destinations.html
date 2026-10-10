@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explore Destinations & Curated Escapes — TripCraft</title>
+    <meta name="description" content="Discover top hill stations, royal heritage cities, tropical islands, and mountain retreats with verified seasonal weather guides and budget estimates.">
+    <meta property="og:title" content="Explore Destinations & Curated Escapes — TripCraft">
+    <meta property="og:description" content="Discover top hill stations, royal heritage cities, tropical islands, and mountain retreats with verified seasonal weather guides and budget estimates.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1593693397690-362cb9666fc2?q=80&w=1200&auto=format&fit=crop">
+    <link rel="stylesheet" href="shared.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        .dest-hero {
+            background: linear-gradient(135deg, #090E2B, #101B4B);
+            padding: 56px var(--px);
+            position: relative;
+            overflow: hidden;
+        }
+        .dest-hero-overlay {
+            position: absolute;
+            inset: 0;
+            background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1920&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.16;
+        }
+        .dest-hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 680px;
+        }
+        .dest-hero h1 {
+            font-family: 'Bricolage Grotesque', 'Plus Jakarta Sans', sans-serif;
+            font-size: 42px;
+            font-weight: 700;
+            color: #FFFFFF;
+            line-height: 1.15;
+            margin-bottom: 12px;
+        }
+        .dest-hero h1 em {
+            color: var(--gold);
+            font-style: normal;
+        }
+        .dest-hero p {
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.75);
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+        .dest-grid-catalog {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 22px;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="nav">
+        <a href="index.html" class="nav-logo">
+            <div class="nav-logo-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            </div>
+            <div class="nav-logo-text">Trip<span>Craft</span></div>
+        </a>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="destinations.html" class="active">Destinations</a>
+            <a href="transport.html">Transport</a>
+            <a href="hotels.html">Hotels</a>
+            <a href="vehicle.html">Vehicles</a>
+            <a href="guides.html">Local Guides</a>
+            <a href="packages.html">Packages</a>
+            <a href="itinerary.html">Itinerary</a>
+            <a href="budget.html">Budget</a>
+            <a href="community.html">Community</a>
+            <a href="solo.html">Solo Trip</a>
+            <a href="album.html">Photo Albums</a>
+            <a href="bookings.html">My Bookings</a>
+        </div>
+        <div class="nav-cta">
+            <a href="login.html" class="btn btn-ghost">Sign In</a>
+            <a href="signup.html" class="btn btn-gold">Get Started</a>
+        </div>
+    </nav>
+
+    <div class="breadcrumb">
+        <a href="index.html">Home</a>
+        <span class="breadcrumb-sep">&gt;</span>
+        <span>Destinations</span>
+    </div>
+
+    <div class="dest-hero">
+        <div class="dest-hero-overlay"></div>
+        <div class="dest-hero-content">
+            <div class="chip chip-gold" style="margin-bottom: 14px;">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/></svg>
+                Handcrafted Discovery Guides
+            </div>
+            <h1>Discover your next <br/><em>dream destination</em></h1>
+            <p>From misty mountain peaks to sun-drenched coastal havens and historic royal fortresses, find the ideal place for your next adventure.</p>
+
+            <div class="hero-search-wrapper" style="width: 100%;">
+                <div class="dest-search-bar-wrap">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="var(--teal)" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                    <input type="text" id="destSearchInput" placeholder="Filter destinations, hotels, or packages by place name..." autocomplete="off" />
+                </div>
+                <div class="search-results-overlay" id="destSearchOverlay"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="layout-2col">
+        <!-- Filter Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-title">Filter Destinations</div>
+            
+            <div class="filter-group">
+                <div class="filter-label">Region</div>
+                <label class="filter-opt"><input type="checkbox" checked> South India</label>
+                <label class="filter-opt"><input type="checkbox" checked> North India</label>
+                <label class="filter-opt"><input type="checkbox" checked> Coastal &amp; Islands</label>
+                <label class="filter-opt"><input type="checkbox" checked> International Escapes</label>
+            </div>
+
+            <div class="filter-group">
+                <div class="filter-label">Trip Style</div>
+                <label class="filter-opt"><input type="checkbox" checked> Hill Station &amp; Nature</label>
+                <label class="filter-opt"><input type="checkbox" checked> Royal Heritage &amp; Forts</label>
+                <label class="filter-opt"><input type="checkbox" checked> Beaches &amp; Marine Life</label>
+                <label class="filter-opt"><input type="checkbox"> Spiritual &amp; Cultural</label>
+                <label class="filter-opt"><input type="checkbox"> High Altitude Trekking</label>
+            </div>
+
+            <div class="filter-group">
+                <div class="filter-label">Estimated Budget</div>
+                <div class="range-wrap">
+                    <input type="range" min="3000" max="60000" step="1000" value="25000">
+                    <div class="range-labels"><span>&#8377;3k</span><span class="range-val">&#8377;25,000</span><span>&#8377;60k+</span></div>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <div class="filter-label">Best Season</div>
+                <label class="filter-opt"><input type="checkbox" checked> September &ndash; March (Winter)</label>
+                <label class="filter-opt"><input type="checkbox"> April &ndash; June (Summer)</label>
+                <label class="filter-opt"><input type="checkbox"> July &ndash; August (Monsoon)</label>
+            </div>
+        </aside>
+
+        <!-- Main Destination Grid -->
+        <main class="results-bg">
+            <div class="results-header">
+                <div class="results-count">Showing <strong>8 featured destinations</strong> (Click any card for full details)</div>
+                <select class="sort-select">
+                    <option>Most Popular</option>
+                    <option>Highest Rated (★ 4.8+)</option>
+                    <option>Price: Low to High</option>
+                    <option>Price: High to Low</option>
+                </select>
+            </div>
+
+                        <!-- PAGE 1 CARDS -->
+            <div class="dest-grid-catalog" id="destPageGrid1">
+                <!-- Munnar -->
+                <div class="dest-card" onclick="window.location.href='dest-detail.html?dest=Munnar'">
+                    <div class="dest-card-img" style="background-image: url('https://images.unsplash.com/photo-1593693397690-362cb9666fc2?q=80&w=1920&auto=format&fit=crop');">
+                        <div class="dest-card-overlay"></div>
+                        <div class="dest-card-badge">Hill Station</div>
+                        <button class="dest-card-fav" onclick="event.stopPropagation(); showToast('Saved Munnar to Wishlist!');"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+                        <div class="dest-card-img-name">Munnar</div>
+                    </div>
+                    <div class="dest-card-body">
+                        <div class="dest-card-name">Munnar</div>
+                        <div class="dest-card-loc">
+                            <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            Idukki District &middot; Kerala
+                        </div>
+                        <div class="dest-card-tags">
+                            <span class="chip chip-teal">Tea Plantations</span>
+                            <span class="chip chip-gold">Anamudi Peak</span>
+                        </div>
+                        <div class="dest-card-footer">
+                            <div class="rating"><span class="rating-star">&#9733;</span><span class="rating-val">4.8</span><span class="rating-count">(2.4k)</span></div>
+                            <div class="dest-card-price">from &#8377;4,500</div>
+                            <button class="btn btn-teal" style="font-size:12px; padding:6px 14px; margin-left:auto; border-radius:6px;" onclick="event.stopPropagation(); openBookingModal({
+                                title: 'Munnar Complete Tour Package',
+                                category: 'Hill Station & Tea Country',
+                                subtitle: 'Idukki District · Kerala',
+                                image: 'https://images.unsplash.com/photo-1593693397690-362cb9666fc2?q=80&w=1920&auto=format&fit=crop',
+                                price: '₹4,500',
+                                numericPrice: 4500,
+                                description: 'Curated 5-day tour package covering best viewpoints, premium stays, and local guidance in Munnar.'
+                            })">Book Now</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Jaipur -->
+                <div class="dest-card" onclick="window.location.href='dest-detail.html?dest=Jaipur'">
+                    <div class="dest-card-img" style="background-image: url('https://images.unsplash.com/photo-1599661046289-e31897846e41?q=80&w=1920&auto=format&fit=crop');">
+                        <div class="dest-card-overlay"></div>
+                        <div class="dest-card-badge">Royal Heritage</div>
+                        <button class="dest-card-fav" onclick="event.stopPropagation(); showToast('Saved Jaipur to Wishlist!');"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+                        <div class="dest-card-img-name">Jaipur</div>
+                    </div>
+                    <div class="dest-card-body">
+                        <div class="dest-card-name">Jaipur</div>
+                        <div class="dest-card-loc">
+                            <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            Pink City &middot; Rajasthan
+                        </div>
+                        <div class="dest-card-tags">
+                            <span class="chip chip-gold">Amber Fort</span>
+                            <span class="chip chip-navy">Hawa Mahal</span>
+                        </div>
+                        <div class="dest-card-footer">
+                            <div class="rating"><span class="rating-star">&#9733;</span><span class="rating-val">4.7</span><span class="rating-count">(3.1k)</span></div>
+                            <div class="dest-card-price">from &#8377;5,200</div>
+                            <button class="btn btn-teal" style="font-size:12px; padding:6px 14px; margin-left:auto; border-radius:6px;" onclick="event.stopPropagation(); openBookingModal({
+                                title: 'Jaipur Complete Royal Tour',
+                                category: 'Royal Heritage & Forts',
+                                subtitle: 'Rajasthan',
+                                image: 'https://images.unsplash.com/photo-1599661046289-e31897846e41?q=80&w=1920&auto=format&fit=crop',
+                                price: '₹5,200',
+                                numericPrice: 5200,
+                                description: 'Curated royal tour covering Amber Fort, Hawa Mahal, City Palace, and authentic Rajasthani dining.'
+                            })">Book Now</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Andaman -->
+                <div class="dest-card" onclick="window.location.href='dest-detail.html?dest=Andaman'">
+                    <div class="dest-card-img" style="background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1920&auto=format&fit=crop');">
+                        <div class="dest-card-overlay"></div>
+                        <div class="dest-card-badge">Coastal &amp; Islands</div>
+                        <button class="dest-card-fav" onclick="event.stopPropagation(); showToast('Saved Andaman to Wishlist!');"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+                        <div class="dest-card-img-name">Andaman</div>
+                    </div>
+                    <div class="dest-card-body">
+                        <div class="dest-card-name">Andaman &amp; Nicobar</div>
+                        <div class="dest-card-loc">
+                            <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            Havelock &middot; UT India
+                        </div>
+                        <div class="dest-card-tags">
+                            <span class="chip chip-teal">Radhanagar Beach</span>
+                            <span class="chip chip-gold">Coral Reef Scuba</span>
+                        </div>
+                        <div class="dest-card-footer">
+                            <div class="rating"><span class="rating-star">&#9733;</span><span class="rating-val">4.9</span><span class="rating-count">(1.8k)</span></div>
+                            <div class="dest-card-price">from &#8377;8,900</div>
+                            <button class="btn btn-teal" style="font-size:12px; padding:6px 14px; margin-left:auto; border-radius:6px;" onclick="event.stopPropagation(); openBookingModal({
+                                title: 'Andaman Tropical Island Escape',
+                                category: 'Tropical Island & Coral Reefs',
+                                subtitle: 'Havelock & Neil Island',
+                                image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1920&auto=format&fit=crop',
+                                price: '₹8,900',
+                                numericPrice: 8900,
+                                description: '5-day island package with scuba diving, catamaran transfers, Radhanagar sunset, and beachside stay.'
+                            })">Book Now</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Manali -->
+                <div class="dest-card" onclick="window.location.href='dest-detail.html?dest=Manali'">
+                    <div class="dest-card-img" style="background-image: url('https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?q=80&w=1920&auto=format&fit=crop');">
+                        <div class="dest-card-overlay"></div>
+                        <div class="dest-card-badge">Snow Peaks</div>
+                        <button class="dest-card-fav" onclick="event.stopPropagation(); showToast('Saved Manali to Wishlist!');"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+                        <div class="dest-card-img-name">Manali</div>
+                    </div>
+                    <div class="dest-card-body">
+                        <div class="dest-card-name">Manali</div>
+                        <div class="dest-card-loc">
+                            <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            Kullu Valley &middot; Himachal Pradesh
+                        </div>
+                        <div class="dest-card-tags">
+                            <span class="chip chip-gold">Solang Valley</span>
+                            <span class="chip chip-teal">Atal Tunnel</span>
+                        </div>
+                        <div class="dest-card-footer">
+                            <div class="rating"><span class="rating-star">&#9733;</span><span class="rating-val">4.7</span><span class="rating-count">(2.9k)</span></div>
+                            <div class="dest-card-price">from &#8377;4,800</div>
+                            <button class="btn btn-teal" style="font-size:12px; padding:6px 14px; margin-left:auto; border-radius:6px;" onclick="event.stopPropagation(); openBookingModal({
+                                title: 'Manali Alpine Adventure Tour',
+                                category: 'Snow Peaks & Valleys',
+                                subtitle: 'Himachal Pradesh',
+                                image: 'https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?q=80&w=1920&auto=format&fit=crop',
+                                price: '₹4,800',
+                                numericPrice: 4800,
+                                description: 'Includes Solang adventure, Hadimba visit, Atal Tunnel excursion, and cedar wood resort stay.'
+                            })">Book Now</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Goa -->
+                <div class="dest-card" onclick="window.location.href='dest-detail.html?dest=Goa'">
+                    <div class="dest-card-img" style="background-image: url('https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?q=80&w=1920&auto=format&fit=crop');">
+                        <div class="dest-card-overlay"></div>
+                        <div class="dest-card-badge">Coastal &amp; Beaches</div>
+                        <button class="dest-card-fav" onclick="event.stopPropagation(); showToast('Saved Goa to Wishlist!');"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+                        <div class="dest-card-img-name">Goa</div>
+                    </div>
+                    <div class="dest-card-body">
+                        <div class="dest-card-name">Goa Coastal Getaway</div>
+                        <div class="dest-card-loc">
+                            <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            North &amp; South Goa
+                        </div>
+                        <div class="dest-card-tags">
+                            <span class="chip chip-teal">Palolem Beach</span>
+                            <span class="chip chip-gold">Fontainhas</span>
+                        </div>
+                        <div class="dest-card-footer">
+                            <div class="rating"><span class="rating-star">&#9733;</span><span class="rating-val">4.8</span><span class="rating-count">(4.2k)</span></div>
+                            <div class="dest-card-price">from &#8377;3,900</div>
+                            <button class="btn btn-teal" style="font-size:12px; padding:6px 14px; margin-left:auto; border-radius:6px;" onclick="event.stopPropagation(); openBookingModal({
+                                title: 'Goa Coastal Getaway Tour',
+                                category: 'Beaches & Heritage Architecture',
+                                subtitle: 'Goa',
+                                image: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?q=80&w=1920&auto=format&fit=crop',
+                                price: '₹3,900',
+                                numericPrice: 3900,
+                                description: 'Sun, sand, and Portuguese heritage with beachfront villa stay, watersports, and catamaran cruise.'
+                            })">Book Now</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Leh Ladakh -->
+                <div class="dest-card" onclick="window.location.href='dest-detail.html?dest=Ladakh'">
+                    <div class="dest-card-img" style="background-image: url('https://images.unsplash.com/photo-1581793745862-99fde7fa73d2?q=80&w=1920&auto=format&fit=crop');">
+                        <div class="dest-card-overlay"></div>
+                        <div class="dest-card-badge">High Altitude</div>
+                        <button class="dest-card-fav" onclick="event.stopPropagation(); showToast('Saved Ladakh to Wishlist!');"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+                        <div class="dest-card-img-name">Ladakh</div>
+                    </div>
+                    <div class="dest-card-body">
+                        <div class="dest-card-name">Leh Ladakh</div>
+                        <div class="dest-card-loc">
+                            <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            Jammu &amp; Kashmir
+                        </div>
+                        <div class="dest-card-tags">
+                            <span class="chip chip-gold">Pangong Lake</span>
+                            <span class="chip chip-teal">Khardung La</span>
+                        </div>
+                        <div class="dest-card-footer">
+                            <div class="rating"><span class="rating-star">&#9733;</span><span class="rating-val">4.9</span><span class="rating-count">(1.5k)</span></div>
+                            <div class="dest-card-price">from &#8377;12,500</div>
+                            <button class="btn btn-teal" style="font-size:12px; padding:6px 14px; margin-left:auto; border-radius:6px;" onclick="event.stopPropagation(); openBookingModal({
+                                title: 'Ladakh High Passes Odyssey',
+                                category: 'High Altitude & Monasteries',
+                                subtitle: 'Leh & Nubra Valley',
+                                image: 'https://images.unsplash.com/photo-1581793745862-99fde7fa73d2?q=80&w=1920&auto=format&fit=crop',
+                                price: '₹12,500',
+                                numericPrice: 12500,
+                                description: '6-day high altitude expedition across Khardung La, Nubra Valley sand dunes, and turquoise Pangong Tso.'
+                            })">Book Now</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bali -->
+                <div class="dest-card" onclick="window.location.href='dest-detail.html?dest=Bali'">
+                    <div class="dest-card-img" style="background-image: url('https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=1920&auto=format&fit=crop');">
+                        <div class="dest-card-overlay"></div>
+                        <div class="dest-card-badge">International</div>
+                        <button class="dest-card-fav" onclick="event.stopPropagation(); showToast('Saved Bali to Wishlist!');"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+                        <div class="dest-card-img-name">Bali</div>
+                    </div>
+                    <div class="dest-card-body">
+                        <div class="dest-card-name">Bali</div>
+                        <div class="dest-card-loc">
+                            <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            Indonesia
+                        </div>
+                        <div class="dest-card-tags">
+                            <span class="chip chip-teal">Ubud Rice Terraces</span>
+                            <span class="chip chip-gold">Uluwatu Temple</span>
+                        </div>
+                        <div class="dest-card-footer">
+                            <div class="rating"><span class="rating-star">&#9733;</span><span class="rating-val">4.9</span><span class="rating-count">(5.2k)</span></div>
+                            <div class="dest-card-price">from &#8377;45,000</div>
+                            <button class="btn btn-teal" style="font-size:12px; padding:6px 14px; margin-left:auto; border-radius:6px;" onclick="event.stopPropagation(); openBookingModal({
+                                title: 'Bali Tropical Paradise & Culture',
+                                category: 'International Escapes',
+                                subtitle: 'Indonesia',
+                                image: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=1920&auto=format&fit=crop',
+                                price: '₹45,000',
+                                numericPrice: 45000,
+                                description: '6-day luxury tour with private pool villa in Ubud, Nusa Penida cruise, Uluwatu sunset, and airport transfers.'
+                            })">Book Now</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAGE 2 CARDS -->
+            <div class="dest-grid-catalog" id="destPageGrid2" style="display: none;">
+                <!-- Ooty -->
+                <div class="dest-card" onclick="window.location.href='dest-detail.html?dest=Ooty'">
+                    <div class="dest-card-img" style="background-image: url('https://images.unsplash.com/photo-1589182373726-e4f658ab50f0?q=80&w=1920&auto=format&fit=crop');">
+                        <div class="dest-card-overlay"></div>
+                        <div class="dest-card-badge">Hill Station</div>
+                        <button class="dest-card-fav" onclick="event.stopPropagation(); showToast('Saved Ooty to Wishlist!');"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+                        <div class="dest-card-img-name">Ooty</div>
+                    </div>
+                    <div class="dest-card-body">
+                        <div class="dest-card-name">Ooty</div>
+                        <div class="dest-card-loc">
+                            <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            Nilgiris &middot; Tamil Nadu
+                        </div>
+                        <div class="dest-card-tags">
+                            <span class="chip chip-gold">Toy Train</span>
+                            <span class="chip chip-teal">Doddabetta Peak</span>
+                        </div>
+                        <div class="dest-card-footer">
+                            <div class="rating"><span class="rating-star">&#9733;</span><span class="rating-val">4.8</span><span class="rating-count">(3.4k)</span></div>
+                            <div class="dest-card-price">from &#8377;4,200</div>
+                            <button class="btn btn-teal" style="font-size:12px; padding:6px 14px; margin-left:auto; border-radius:6px;" onclick="event.stopPropagation(); openBookingModal({
+                                title: 'Ooty Nilgiri Mountain Escape',
+                                category: 'Hill Station & Tea Country',
+                                subtitle: 'Tamil Nadu',
+                                image: 'https://images.unsplash.com/photo-1589182373726-e4f658ab50f0?q=80&w=1920&auto=format&fit=crop',
+                                price: '₹4,200',
+                                numericPrice: 4200,
+                                description: 'Toy train ride, botanical gardens, Pykara falls, and colonial heritage hotel stay.'
+                            })">Book Now</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Udaipur -->
+                <div class="dest-card" onclick="window.location.href='dest-detail.html?dest=Udaipur'">
+                    <div class="dest-card-img" style="background-image: url('https://images.unsplash.com/photo-1615836245337-f5b9b2303f10?q=80&w=1920&auto=format&fit=crop');">
+                        <div class="dest-card-overlay"></div>
+                        <div class="dest-card-badge">Royal Heritage</div>
+                        <button class="dest-card-fav" onclick="event.stopPropagation(); showToast('Saved Udaipur to Wishlist!');"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+                        <div class="dest-card-img-name">Udaipur</div>
+                    </div>
+                    <div class="dest-card-body">
+                        <div class="dest-card-name">Udaipur</div>
+                        <div class="dest-card-loc">
+                            <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            City of Lakes &middot; Rajasthan
+                        </div>
+                        <div class="dest-card-tags">
+                            <span class="chip chip-gold">Lake Pichola</span>
+                            <span class="chip chip-teal">City Palace</span>
+                        </div>
+                        <div class="dest-card-footer">
+                            <div class="rating"><span class="rating-star">&#9733;</span><span class="rating-val">4.9</span><span class="rating-count">(2.7k)</span></div>
+                            <div class="dest-card-price">from &#8377;5,800</div>
+                            <button class="btn btn-teal" style="font-size:12px; padding:6px 14px; margin-left:auto; border-radius:6px;" onclick="event.stopPropagation(); openBookingModal({
+                                title: 'Udaipur City of Lakes Tour',
+                                category: 'Royal Heritage & Lakes',
+                                subtitle: 'Rajasthan',
+                                image: 'https://images.unsplash.com/photo-1615836245337-f5b9b2303f10?q=80&w=1920&auto=format&fit=crop',
+                                price: '₹5,800',
+                                numericPrice: 5800,
+                                description: 'Boat cruise on Lake Pichola, private City Palace tour, and luxury haveli accommodation.'
+                            })">Book Now</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Varanasi -->
+                <div class="dest-card" onclick="window.location.href='dest-detail.html?dest=Varanasi'">
+                    <div class="dest-card-img" style="background-image: url('https://images.unsplash.com/photo-1561361513-2d000a50f0dc?q=80&w=1920&auto=format&fit=crop');">
+                        <div class="dest-card-overlay"></div>
+                        <div class="dest-card-badge">Spiritual &amp; Culture</div>
+                        <button class="dest-card-fav" onclick="event.stopPropagation(); showToast('Saved Varanasi to Wishlist!');"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+                        <div class="dest-card-img-name">Varanasi</div>
+                    </div>
+                    <div class="dest-card-body">
+                        <div class="dest-card-name">Varanasi</div>
+                        <div class="dest-card-loc">
+                            <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            Ganga Ghats &middot; Uttar Pradesh
+                        </div>
+                        <div class="dest-card-tags">
+                            <span class="chip chip-gold">Ganga Aarti</span>
+                            <span class="chip chip-navy">Kashi Vishwanath</span>
+                        </div>
+                        <div class="dest-card-footer">
+                            <div class="rating"><span class="rating-star">&#9733;</span><span class="rating-val">4.8</span><span class="rating-count">(4.1k)</span></div>
+                            <div class="dest-card-price">from &#8377;3,600</div>
+                            <button class="btn btn-teal" style="font-size:12px; padding:6px 14px; margin-left:auto; border-radius:6px;" onclick="event.stopPropagation(); openBookingModal({
+                                title: 'Varanasi Spiritual Odyssey',
+                                category: 'Spiritual Capital & Ghats',
+                                subtitle: 'Uttar Pradesh',
+                                image: 'https://images.unsplash.com/photo-1561361513-2d000a50f0dc?q=80&w=1920&auto=format&fit=crop',
+                                price: '₹3,600',
+                                numericPrice: 3600,
+                                description: 'Sunrise boat cruise, VIP access to evening Ganga Aarti, and heritage temple guide.'
+                            })">Book Now</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rishikesh -->
+                <div class="dest-card" onclick="window.location.href='dest-detail.html?dest=Rishikesh'">
+                    <div class="dest-card-img" style="background-image: url('https://images.unsplash.com/photo-1544735716-392fe2489ffa?q=80&w=1920&auto=format&fit=crop');">
+                        <div class="dest-card-overlay"></div>
+                        <div class="dest-card-badge">Adventure &amp; Yoga</div>
+                        <button class="dest-card-fav" onclick="event.stopPropagation(); showToast('Saved Rishikesh to Wishlist!');"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+                        <div class="dest-card-img-name">Rishikesh</div>
+                    </div>
+                    <div class="dest-card-body">
+                        <div class="dest-card-name">Rishikesh</div>
+                        <div class="dest-card-loc">
+                            <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            Foothills of Himalayas &middot; Uttarakhand
+                        </div>
+                        <div class="dest-card-tags">
+                            <span class="chip chip-teal">White Water Rafting</span>
+                            <span class="chip chip-gold">Yoga Ashrams</span>
+                        </div>
+                        <div class="dest-card-footer">
+                            <div class="rating"><span class="rating-star">&#9733;</span><span class="rating-val">4.9</span><span class="rating-count">(3.6k)</span></div>
+                            <div class="dest-card-price">from &#8377;4,100</div>
+                            <button class="btn btn-teal" style="font-size:12px; padding:6px 14px; margin-left:auto; border-radius:6px;" onclick="event.stopPropagation(); openBookingModal({
+                                title: 'Rishikesh Adventure & Yoga Tour',
+                                category: 'Adventure & Spiritual',
+                                subtitle: 'Uttarakhand',
+                                image: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?q=80&w=1920&auto=format&fit=crop',
+                                price: '₹4,100',
+                                numericPrice: 4100,
+                                description: '16 km Ganga river rafting, cliff jumping, morning yoga session, and riverside resort stay.'
+                            })">Book Now</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hampi -->
+                <div class="dest-card" onclick="window.location.href='dest-detail.html?dest=Hampi'">
+                    <div class="dest-card-img" style="background-image: url('https://images.unsplash.com/photo-1600100397608-f010f4439050?q=80&w=1920&auto=format&fit=crop');">
+                        <div class="dest-card-overlay"></div>
+                        <div class="dest-card-badge">UNESCO Ruins</div>
+                        <button class="dest-card-fav" onclick="event.stopPropagation(); showToast('Saved Hampi to Wishlist!');"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+                        <div class="dest-card-img-name">Hampi</div>
+                    </div>
+                    <div class="dest-card-body">
+                        <div class="dest-card-name">Hampi</div>
+                        <div class="dest-card-loc">
+                            <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            Vijayanagara &middot; Karnataka
+                        </div>
+                        <div class="dest-card-tags">
+                            <span class="chip chip-gold">Stone Chariot</span>
+                            <span class="chip chip-teal">Coracle Ride</span>
+                        </div>
+                        <div class="dest-card-footer">
+                            <div class="rating"><span class="rating-star">&#9733;</span><span class="rating-val">4.8</span><span class="rating-count">(2.2k)</span></div>
+                            <div class="dest-card-price">from &#8377;3,800</div>
+                            <button class="btn btn-teal" style="font-size:12px; padding:6px 14px; margin-left:auto; border-radius:6px;" onclick="event.stopPropagation(); openBookingModal({
+                                title: 'Hampi Ancient Empire Expedition',
+                                category: 'UNESCO World Heritage',
+                                subtitle: 'Karnataka',
+                                image: 'https://images.unsplash.com/photo-1600100397608-f010f4439050?q=80&w=1920&auto=format&fit=crop',
+                                price: '₹3,800',
+                                numericPrice: 3800,
+                                description: 'Guided exploration of stone chariot, Virupaksha temple, coracle river ride, and heritage stay.'
+                            })">Book Now</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Varkala -->
+                <div class="dest-card" onclick="window.location.href='dest-detail.html?dest=Varkala'">
+                    <div class="dest-card-img" style="background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1920&auto=format&fit=crop');">
+                        <div class="dest-card-overlay"></div>
+                        <div class="dest-card-badge">Coastal Cliffs</div>
+                        <button class="dest-card-fav" onclick="event.stopPropagation(); showToast('Saved Varkala to Wishlist!');"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+                        <div class="dest-card-img-name">Varkala</div>
+                    </div>
+                    <div class="dest-card-body">
+                        <div class="dest-card-name">Varkala</div>
+                        <div class="dest-card-loc">
+                            <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            North Cliff &middot; Kerala
+                        </div>
+                        <div class="dest-card-tags">
+                            <span class="chip chip-teal">Papanasam Beach</span>
+                            <span class="chip chip-gold">Mineral Springs</span>
+                        </div>
+                        <div class="dest-card-footer">
+                            <div class="rating"><span class="rating-star">&#9733;</span><span class="rating-val">4.8</span><span class="rating-count">(2.9k)</span></div>
+                            <div class="dest-card-price">from &#8377;4,400</div>
+                            <button class="btn btn-teal" style="font-size:12px; padding:6px 14px; margin-left:auto; border-radius:6px;" onclick="event.stopPropagation(); openBookingModal({
+                                title: 'Varkala Clifftop Ocean Retreat',
+                                category: 'Coastal & Cliffs',
+                                subtitle: 'Kerala',
+                                image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1920&auto=format&fit=crop',
+                                price: '₹4,400',
+                                numericPrice: 4400,
+                                description: 'Clifftop sunset views, Ayurveda spa session, Kappil backwater kayaking, and sea-facing resort.'
+                            })">Book Now</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Coorg -->
+                <div class="dest-card" onclick="window.location.href='dest-detail.html?dest=Coorg'">
+                    <div class="dest-card-img" style="background-image: url('https://images.unsplash.com/photo-1593693397690-362cb9666fc2?q=80&w=1920&auto=format&fit=crop');">
+                        <div class="dest-card-overlay"></div>
+                        <div class="dest-card-badge">Coffee Country</div>
+                        <button class="dest-card-fav" onclick="event.stopPropagation(); showToast('Saved Coorg to Wishlist!');"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+                        <div class="dest-card-img-name">Coorg</div>
+                    </div>
+                    <div class="dest-card-body">
+                        <div class="dest-card-name">Coorg</div>
+                        <div class="dest-card-loc">
+                            <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            Kodagu &middot; Karnataka
+                        </div>
+                        <div class="dest-card-tags">
+                            <span class="chip chip-gold">Coffee Plantations</span>
+                            <span class="chip chip-teal">Abbey Falls</span>
+                        </div>
+                        <div class="dest-card-footer">
+                            <div class="rating"><span class="rating-star">&#9733;</span><span class="rating-val">4.8</span><span class="rating-count">(3.1k)</span></div>
+                            <div class="dest-card-price">from &#8377;4,600</div>
+                            <button class="btn btn-teal" style="font-size:12px; padding:6px 14px; margin-left:auto; border-radius:6px;" onclick="event.stopPropagation(); openBookingModal({
+                                title: 'Coorg Coffee Highlands Tour',
+                                category: 'Coffee Country & Mist Valleys',
+                                subtitle: 'Karnataka',
+                                image: 'https://images.unsplash.com/photo-1593693397690-362cb9666fc2?q=80&w=1920&auto=format&fit=crop',
+                                price: '₹4,600',
+                                numericPrice: 4600,
+                                description: 'Coffee estate tour, Abbey Falls, Dubare Elephant Camp, and luxury plantation stay.'
+                            })">Book Now</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kashmir -->
+                <div class="dest-card" onclick="window.location.href='dest-detail.html?dest=Kashmir'">
+                    <div class="dest-card-img" style="background-image: url('https://images.unsplash.com/photo-1595815771614-ade9d652a65d?q=80&w=1920&auto=format&fit=crop');">
+                        <div class="dest-card-overlay"></div>
+                        <div class="dest-card-badge">Alpine Paradise</div>
+                        <button class="dest-card-fav" onclick="event.stopPropagation(); showToast('Saved Kashmir to Wishlist!');"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+                        <div class="dest-card-img-name">Kashmir</div>
+                    </div>
+                    <div class="dest-card-body">
+                        <div class="dest-card-name">Kashmir Valley</div>
+                        <div class="dest-card-loc">
+                            <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            Srinagar &amp; Gulmarg &middot; J&amp;K
+                        </div>
+                        <div class="dest-card-tags">
+                            <span class="chip chip-gold">Dal Lake Shikara</span>
+                            <span class="chip chip-teal">Gulmarg Gondola</span>
+                        </div>
+                        <div class="dest-card-footer">
+                            <div class="rating"><span class="rating-star">&#9733;</span><span class="rating-val">4.9</span><span class="rating-count">(4.8k)</span></div>
+                            <div class="dest-card-price">from &#8377;8,500</div>
+                            <button class="btn btn-teal" style="font-size:12px; padding:6px 14px; margin-left:auto; border-radius:6px;" onclick="event.stopPropagation(); openBookingModal({
+                                title: 'Kashmir Valley Paradise Tour',
+                                category: 'Paradise on Earth & Alpine Lakes',
+                                subtitle: 'Srinagar & Gulmarg',
+                                image: 'https://images.unsplash.com/photo-1595815771614-ade9d652a65d?q=80&w=1920&auto=format&fit=crop',
+                                price: '₹8,500',
+                                numericPrice: 8500,
+                                description: 'Shikara boat ride, carved cedar houseboat stay, Gulmarg snow gondola, and Pahalgam valley.'
+                            })">Book Now</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pagination">
+                <button class="page-btn active" id="btnPage1" onclick="switchDestPage(1)">1</button>
+                <button class="page-btn" id="btnPage2" onclick="switchDestPage(2)">2</button>
+                <button class="page-btn" id="btnPageNext" onclick="switchDestPage(2)">&rarr;</button>
+            </div></div>
+        </main>
+    </div>
+
+    <footer class="footer">
+    <div class="footer-grid">
+        <div class="footer-brand">
+            <div class="footer-logo">
+                <div class="nav-logo-mark">
+                    <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                </div>
+                <span>TripCraft</span>
+            </div>
+            <p>AI-orchestrated end-to-end travel intelligence platform. Engineered for seamless discovery, instant reservations, solo safety, and creator photobook monetization.</p>
+            <div class="footer-social-strip">
+                <a href="https://twitter.com" target="_blank" class="footer-social-link" title="Twitter / X"><svg viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg></a>
+                <a href="https://instagram.com" target="_blank" class="footer-social-link" title="Instagram"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
+                <a href="https://linkedin.com" target="_blank" class="footer-social-link" title="LinkedIn"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a>
+                <a href="https://github.com" target="_blank" class="footer-social-link" title="GitHub"><svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg></a>
+            </div>
+        </div>
+        <div class="footer-col">
+            <h4>Explore</h4>
+            <ul>
+                <li><a href="destinations.html">Destinations</a></li>
+                <li><a href="packages.html">Curated Packages</a></li>
+                <li><a href="hotels.html">Stays &amp; Resorts</a></li>
+                <li><a href="transport.html">Flights &amp; Rail</a></li>
+                <li><a href="vehicle.html">Car &amp; Bike Rentals</a></li>
+                <li><a href="guides.html">Certified Local Guides</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Special Hubs</h4>
+            <ul>
+                <li><a href="solo.html">Solo Traveler Engine</a></li>
+                <li><a href="community.html">Community &amp; Buddies</a></li>
+                <li><a href="album.html">Photo Album Studio</a></li>
+                <li><a href="budget.html">40/25/20/15 Budgeter</a></li>
+                <li><a href="itinerary.html">Interactive Itinerary</a></li>
+                <li><a href="wishlist.html">Saved Wishlist</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Trust &amp; Legal</h4>
+            <ul>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="contact.html">Customer Support</a></li>
+                <li><a href="faq.html">FAQ &amp; Help Desk</a></li>
+                <li><a href="terms.html">Terms &amp; Conditions</a></li>
+                <li><a href="privacy.html">Privacy Policy</a></li>
+                <li><a href="refund.html">Refund Policy</a></li>
+                <li><a href="sitemap.html">Sitemap</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <div>&copy; 2026 TripCraft Technologies Inc. All rights reserved. 256-bit SSL Encrypted Booking System.</div>
+        <div style="display:flex; gap:16px;">
+            <a href="terms.html">Terms</a>
+            <a href="privacy.html">Privacy</a>
+            <a href="refund.html">Refunds</a>
+            <a href="sitemap.html">Sitemap</a>
+        </div>
+    </div>
+</footer>
+
+    <script src="tc-config.js"></script>
+    <script src="shared.js"></script>
+    <script src="tc-layer.js"></script>
+    <script>
+        // Switch between Page 1 and Page 2 in destinations catalog
+        function switchDestPage(pageNum) {
+            const p1 = document.getElementById('destPageGrid1');
+            const p2 = document.getElementById('destPageGrid2');
+            const b1 = document.getElementById('btnPage1');
+            const b2 = document.getElementById('btnPage2');
+            const bNext = document.getElementById('btnPageNext');
+            const resultsCount = document.querySelector('.results-count');
+
+            if (pageNum === 1) {
+                if (p1) p1.style.display = 'grid';
+                if (p2) p2.style.display = 'none';
+                if (b1) b1.classList.add('active');
+                if (b2) b2.classList.remove('active');
+                if (bNext) bNext.onclick = () => switchDestPage(2);
+                if (resultsCount) resultsCount.innerHTML = 'Showing <strong>Page 1 of 2 (7 top destinations)</strong> — Click any card for full details';
+            } else {
+                if (p1) p1.style.display = 'none';
+                if (p2) p2.style.display = 'grid';
+                if (b1) b1.classList.remove('active');
+                if (b2) b2.classList.add('active');
+                if (bNext) bNext.onclick = () => switchDestPage(1);
+                if (resultsCount) resultsCount.innerHTML = 'Showing <strong>Page 2 of 2 (8 curated escapes)</strong> — Click any card for full details';
+            }
+
+            const grid = document.querySelector('.results-bg');
+            if (grid) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.getElementById('destSearchInput');
+            const overlay = document.getElementById('destSearchOverlay');
+
+            if (searchInput && overlay) {
+                searchInput.addEventListener('input', (e) => {
+                    const q = e.target.value.trim().toLowerCase();
+                    if (!q) {
+                        overlay.style.display = 'none';
+                        return;
+                    }
+
+                    // Query TripCraftDB DESTINATION and PLACE tables
+                    let dbDest = [];
+                    let dbPlaces = [];
+
+                    if (window.TripCraftDB) {
+                        dbDest = TripCraftDB.getTable('DESTINATION').filter(d => 
+                            d.name.toLowerCase().includes(q) || d.state.toLowerCase().includes(q) || d.category.toLowerCase().includes(q)
+                        );
+                        dbPlaces = TripCraftDB.getTable('PLACE').filter(p => 
+                            p.name.toLowerCase().includes(q) || p.destination.toLowerCase().includes(q)
+                        );
+                    }
+
+                    // Also check catalog destinations from TripCraftSearch
+                    if (window.TripCraftSearch && window.TripCraftSearch.catalog) {
+                        window.TripCraftSearch.catalog.forEach(item => {
+                            if (item.type === 'destination' && (item.title.toLowerCase().includes(q) || item.location.toLowerCase().includes(q))) {
+                                const destSimpleName = item.title.split(',')[0].trim();
+                                if (!dbDest.some(d => d.name.toLowerCase() === destSimpleName.toLowerCase())) {
+                                    dbDest.push({
+                                        name: destSimpleName,
+                                        state: item.location,
+                                        category: item.category,
+                                        rating: item.rating
+                                    });
+                                }
+                            }
+                        });
+                    }
+
+                    // Also find matching hotels from destinationHotelsDB
+                    const matchedHotels = [];
+                    Object.keys(destinationHotelsDB).forEach(destKey => {
+                        if (destKey.toLowerCase().includes(q) || q.includes(destKey.toLowerCase())) {
+                            destinationHotelsDB[destKey].forEach(h => matchedHotels.push({ ...h, destination: destKey }));
+                        } else {
+                            destinationHotelsDB[destKey].forEach(h => {
+                                if (h.name.toLowerCase().includes(q) || h.amenities.toLowerCase().includes(q)) {
+                                    matchedHotels.push({ ...h, destination: destKey });
+                                }
+                            });
+                        }
+                    });
+
+                    if (dbDest.length === 0 && dbPlaces.length === 0 && matchedHotels.length === 0) {
+                        overlay.innerHTML = `<div style="padding:14px 18px; font-size:13.5px; color:var(--text-muted);">No destinations or hotels matching "<strong>${e.target.value}</strong>"</div>`;
+                        overlay.style.display = 'block';
+                        return;
+                    }
+
+                    let resultsHtml = `<div style="padding:8px 14px; font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; background:var(--gray-50); border-bottom:1px solid var(--gray-200);">Database Query Results (DESTINATIONS &amp; HOTELS)</div>`;
+
+                    // Matched Hotels in Destination with Real Images & Booking Buttons
+                    if (matchedHotels.length > 0) {
+                        resultsHtml += `<div style="padding:7px 14px; font-size:11.5px; font-weight:700; color:var(--teal); background:var(--teal-pale);">🏨 Handpicked Hotels in Matched Destination:</div>`;
+                        matchedHotels.forEach(h => {
+                            resultsHtml += `
+                                <div style="padding:12px 16px; border-bottom:1px solid var(--gray-100); display:flex; justify-content:space-between; align-items:center; gap:14px;">
+                                    <div style="display:flex; align-items:center; gap:12px;">
+                                        <div style="width:48px; height:48px; border-radius:8px; background-image:url('${h.image}'); background-size:cover; background-position:center; flex-shrink:0;"></div>
+                                        <div>
+                                            <div style="font-weight:700; color:var(--navy); font-size:14px;">${h.name}</div>
+                                            <div style="font-size:12px; color:var(--text-muted);">${h.destination} &bull; ${h.amenities}</div>
+                                            <div style="font-size:12.5px; font-weight:700; color:var(--teal);">&#8377;${h.price.toLocaleString('en-IN')} <span style="font-size:10px; font-weight:400; color:var(--text-muted);">/ night &middot; ★ ${h.rating}</span></div>
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-teal" style="padding:7px 14px; font-size:12px; flex-shrink:0;" onclick="event.stopPropagation(); openBookingModal({
+                                        title: '${h.name.replace(/'/g, "\'")}',
+                                        category: 'Hotel Reservation',
+                                        image: '${h.image}',
+                                        price: '&#8377;${h.price.toLocaleString('en-IN')}',
+                                        description: 'Reserve verified stay in ${h.destination} with verified guest amenities.',
+                                        specs: [
+                                            { label: 'Location', val: '${h.destination}' },
+                                            { label: 'Amenities', val: '${h.amenities}' },
+                                            { label: 'Rating', val: '★ ${h.rating} Verified Guest Rating' }
+                                        ]
+                                    })">Book Hotel</button>
+                                </div>
+                            `;
+                        });
+                    }
+
+                    // Destinations
+                    dbDest.forEach(d => {
+                        resultsHtml += `
+                            <div class="search-result-item" onclick="window.location.href='dest-detail.html?dest=${encodeURIComponent(d.name)}'" style="padding:12px 16px; border-bottom:1px solid var(--gray-100); cursor:pointer; display:flex; justify-content:space-between; align-items:center;">
+                                <div>
+                                    <div style="font-weight:700; color:var(--navy); font-size:14px;">${d.name}, ${d.state}</div>
+                                    <div style="font-size:12px; color:var(--text-muted);">${d.category} &middot; Top Attractions &amp; Handpicked Hotels</div>
+                                </div>
+                                <span class="chip chip-gold">★ ${d.rating || '4.8'}</span>
+                            </div>
+                        `;
+                    });
+
+                    overlay.innerHTML = resultsHtml;
+                    overlay.style.display = 'block';
+                });
+
+                document.addEventListener('click', (e) => {
+                    if (!searchInput.contains(e.target) && !overlay.contains(e.target)) {
+                        overlay.style.display = 'none';
+                    }
+                });
+            }
+        });
+
+        // Comprehensive Hotels Database for All Destinations
+        const destinationHotelsDB = {
+            'Munnar': [
+                { name: 'Munnar Tea Country Resort', price: 5400, rating: '4.8', image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=600&auto=format&fit=crop', amenities: 'Valley View · Spa · Free Breakfast' },
+                { name: 'Fragrant Nature Munnar', price: 7200, rating: '4.9', image: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=600&auto=format&fit=crop', amenities: 'Fireplace · Heated Pool · Waterfall' },
+                { name: 'Blanket Hotel & Spa', price: 8900, rating: '4.9', image: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=600&auto=format&fit=crop', amenities: 'Attukad Falls View · Jacuzzi' }
+            ],
+            'Jaipur': [
+                { name: 'The Heritage Haveli Palace', price: 6800, rating: '4.9', image: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=600&auto=format&fit=crop', amenities: 'Royal Suite · Courtyard Pool' },
+                { name: 'Alsisar Haveli Boutique', price: 5200, rating: '4.8', image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=600&auto=format&fit=crop', amenities: 'Heritage Decor · Puppet Show' },
+                { name: 'Fairmont Jaipur Luxury Resort', price: 12500, rating: '4.9', image: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=600&auto=format&fit=crop', amenities: 'Palace Architecture · Royal Spa' }
+            ],
+            'Goa': [
+                { name: 'South Goa Beachfront Villa', price: 8200, rating: '4.9', image: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?q=80&w=600&auto=format&fit=crop', amenities: 'Private Beach · Poolside Bar' },
+                { name: 'Heritage Village Resort & Spa', price: 6100, rating: '4.7', image: 'https://images.unsplash.com/photo-1544644181-1484b3fdfc62?q=80&w=600&auto=format&fit=crop', amenities: 'Ayurvedic Spa · Sea View' },
+                { name: 'W Goa Luxury Coastal Retreat', price: 14500, rating: '4.9', image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=600&auto=format&fit=crop', amenities: 'Clifftop Rock Pool · DJ Lounge' }
+            ],
+            'Ladakh': [
+                { name: 'The Grand Dragon Ladakh', price: 9500, rating: '4.9', image: 'https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?q=80&w=600&auto=format&fit=crop', amenities: 'Heated Rooms · Mountain View' },
+                { name: 'Nubra Valley Organic Retreat', price: 5800, rating: '4.8', image: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=600&auto=format&fit=crop', amenities: 'Organic Farm · Sand Dunes' }
+            ],
+            'Andaman': [
+                { name: 'Havelock Island Beach Resort', price: 7800, rating: '4.8', image: 'https://images.unsplash.com/photo-1589394815804-964ed0be2eb5?q=80&w=600&auto=format&fit=crop', amenities: 'Coral Reef Scuba · Private Beach' },
+                { name: 'Barefoot at Havelock', price: 9200, rating: '4.9', image: 'https://images.unsplash.com/photo-1507525428033-b723cf961d3e?q=80&w=600&auto=format&fit=crop', amenities: 'Radhanagar Beach · Eco Villas' }
+            ],
+            'Manali': [
+                { name: 'The Himalayan Luxury Castle', price: 7400, rating: '4.8', image: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=600&auto=format&fit=crop', amenities: 'Victorian Castle · Heated Pool' },
+                { name: 'Apple Country Resorts', price: 5100, rating: '4.7', image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=600&auto=format&fit=crop', amenities: 'Snow Peaks · Cedar Spa' }
+            ],
+            'Ooty': [
+                { name: 'Savoy - IHCL SeleQtions Ooty', price: 8400, rating: '4.9', image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=600&auto=format&fit=crop', amenities: 'Colonial Fireplaces · High Tea' },
+                { name: 'Sinclairs Retreat Ooty', price: 4800, rating: '4.7', image: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=600&auto=format&fit=crop', amenities: 'Valley View · Bonfire' }
+            ],
+            'Udaipur': [
+                { name: 'Fateh Garh Heritage Palace', price: 7900, rating: '4.9', image: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=600&auto=format&fit=crop', amenities: 'Lake View Infinity Pool · Vintage Cars' },
+                { name: 'Radisson Blu Udaipur Palace Resort', price: 6500, rating: '4.8', image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=600&auto=format&fit=crop', amenities: 'Fateh Sagar View · Spa' }
+            ],
+            'Bali': [
+                { name: 'Ubud Hanging Gardens Jungle Villa', price: 16500, rating: '4.9', image: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=600&auto=format&fit=crop', amenities: 'Private Pool · Jungle Gorge' },
+                { name: 'The Seminyak Beach Resort', price: 11200, rating: '4.8', image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=600&auto=format&fit=crop', amenities: 'Beachfront · Sunset Bar' }
+            ],
+            'Varanasi': [
+                { name: 'BrijRama Palace Heritage Hotel', price: 12800, rating: '4.9', image: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=600&auto=format&fit=crop', amenities: 'Direct Riverfront · Private Bajra Boat' },
+                { name: 'Surya Kaiser Palace Boutique Stay', price: 4200, rating: '4.7', image: 'https://images.unsplash.com/photo-1544644181-1484b3fdfc62?q=80&w=600&auto=format&fit=crop', amenities: 'Swimming Pool · Garden Dining' }
+            ],
+            'Rishikesh': [
+                { name: 'Aloha On The Ganges Riverside Resort', price: 7800, rating: '4.9', image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=600&auto=format&fit=crop', amenities: 'Infinity River Pool · Yoga' },
+                { name: 'Ganga Kinare Riverside Boutique Hotel', price: 5400, rating: '4.8', image: 'https://images.unsplash.com/photo-1544644181-1484b3fdfc62?q=80&w=600&auto=format&fit=crop', amenities: 'Private Ghat · River Lawn' }
+            ],
+            'Hampi': [
+                { name: 'Evolve Back Kamalapura Palace', price: 18500, rating: '4.9', image: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=600&auto=format&fit=crop', amenities: 'Palace Suite · Private Jacuzzi' },
+                { name: 'Heritage Resort Hampi', price: 6200, rating: '4.8', image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=600&auto=format&fit=crop', amenities: 'Organic Farm · Coracle Assist' }
+            ],
+            'Varkala': [
+                { name: 'Gateway Varkala - IHCL SeleQtions', price: 7900, rating: '4.8', image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=600&auto=format&fit=crop', amenities: 'Clifftop Ocean View · Ayurvedic Spa' },
+                { name: 'Elixir Cliff Beach Resort & Spa', price: 6200, rating: '4.9', image: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=600&auto=format&fit=crop', amenities: 'Jacuzzi Suite · Sunset Lawn' }
+            ],
+            'Coorg': [
+                { name: 'The Tamara Coorg Luxury Resort', price: 14200, rating: '4.9', image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=600&auto=format&fit=crop', amenities: 'Forest Cottages · Coffee Spa' },
+                { name: 'Club Mahindra Madikeri Resort', price: 6800, rating: '4.7', image: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=600&auto=format&fit=crop', amenities: 'Two Pools · Coffee Tasting' }
+            ],
+            'Kashmir': [
+                { name: 'The Khyber Himalayan Resort Gulmarg', price: 18900, rating: '4.9', image: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=600&auto=format&fit=crop', amenities: 'Snow Peak View · Heated Pool' },
+                { name: 'Mascot Heritage Dal Lake Houseboats', price: 5800, rating: '4.8', image: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=600&auto=format&fit=crop', amenities: 'Cedar Wood Suite · Private Shikara' }
+            ]
+        };
+    </script>
+</body>
+</html>

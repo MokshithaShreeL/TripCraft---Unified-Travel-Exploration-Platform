@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Curated Stays, Heritage Haveli & Luxury Resorts — TripCraft</title>
+    <meta name="description" content="Reserve verified stays with dynamic date pricing, transparent cancellation policies, and automated vehicle rental pairing.">
+    <meta property="og:title" content="Curated Stays, Heritage Haveli & Luxury Resorts — TripCraft">
+    <meta property="og:description" content="Reserve verified stays with dynamic date pricing, transparent cancellation policies, and automated vehicle rental pairing.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1200&auto=format&fit=crop">
+    <link rel="stylesheet" href="shared.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        .hotels-hero {
+            background: linear-gradient(135deg, #090E2B, #101B4B);
+            padding: 56px var(--px);
+            position: relative;
+            overflow: hidden;
+        }
+        .hotels-hero-overlay {
+            position: absolute;
+            inset: 0;
+            background-image: url('https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1920&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.16;
+        }
+        .hotels-hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 680px;
+        }
+        .hotels-hero h1 {
+            font-family: 'Bricolage Grotesque', 'Plus Jakarta Sans', sans-serif;
+            font-size: 42px;
+            font-weight: 700;
+            color: #FFFFFF;
+            line-height: 1.15;
+            margin-bottom: 12px;
+        }
+        .hotels-hero h1 em {
+            color: var(--gold);
+            font-style: normal;
+        }
+        .hotels-hero p {
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.75);
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+        .hotel-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+        .hotel-card {
+            background: var(--white);
+            border-radius: var(--r-lg);
+            border: 1px solid var(--gray-100);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+        }
+        .hotel-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+        .hotel-img {
+            height: 200px;
+            position: relative;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: flex-end;
+            padding: 14px;
+        }
+        .hotel-img-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(11, 31, 58, 0.75) 0%, transparent 60%);
+        }
+        .hotel-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: rgba(11, 31, 58, 0.75);
+            backdrop-filter: blur(6px);
+            color: var(--white);
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: var(--r-full);
+            z-index: 1;
+        }
+        .hotel-body {
+            padding: 18px 20px 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .hotel-name {
+            font-family: 'Bricolage Grotesque', 'Plus Jakarta Sans', sans-serif;
+            font-size: 19px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+        .hotel-loc {
+            font-size: 12.5px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 12px;
+        }
+        .hotel-loc svg {
+            width: 12px;
+            height: 12px;
+            stroke: var(--teal);
+            fill: none;
+            stroke-width: 2;
+        }
+        .hotel-amenities {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+        .hotel-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 14px;
+            border-top: 1px solid var(--gray-100);
+            margin-top: auto;
+        }
+        .hotel-price {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--teal);
+        }
+        .hotel-price-sub {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="nav">
+        <a href="index.html" class="nav-logo">
+            <div class="nav-logo-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            </div>
+            <div class="nav-logo-text">Trip<span>Craft</span></div>
+        </a>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="destinations.html">Destinations</a>
+            <a href="transport.html">Transport</a>
+            <a href="hotels.html" class="active">Hotels</a>
+            <a href="vehicle.html">Vehicles</a>
+            <a href="guides.html">Local Guides</a>
+            <a href="packages.html">Packages</a>
+            <a href="itinerary.html">Itinerary</a>
+            <a href="budget.html">Budget</a>
+            <a href="community.html">Community</a>
+            <a href="solo.html">Solo Trip</a>
+            <a href="album.html">Photo Albums</a>
+            <a href="bookings.html">My Bookings</a>
+        </div>
+        <div class="nav-cta">
+            <a href="login.html" class="btn btn-ghost">Sign In</a>
+            <a href="signup.html" class="btn btn-gold">Get Started</a>
+        </div>
+    </nav>
+
+    <div class="breadcrumb">
+        <a href="index.html">Home</a>
+        <span class="breadcrumb-sep">&gt;</span>
+        <span>Hotels &amp; Resorts</span>
+    </div>
+
+    <div class="hotels-hero">
+        <div class="hotels-hero-overlay"></div>
+        <div class="hotels-hero-content">
+            <div class="chip chip-gold" style="margin-bottom: 14px;">
+                <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                Handpicked Boutique &amp; Luxury Stays
+            </div>
+            <h1>Bespoke stays for<br/><em>unforgettable journeys</em></h1>
+            <p>From misty tea estate villas to restored royal havelis and beachfront resorts, each property is verified for comfort, safety, and hygiene.</p>
+        </div>
+    </div>
+
+    <div class="layout-2col">
+        <!-- Filter Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-title">Filter Stays</div>
+            
+            <div class="filter-group">
+                <div class="filter-label">Property Type</div>
+                <label class="filter-opt"><input type="checkbox" checked> Heritage Haveli &amp; Palace</label>
+                <label class="filter-opt"><input type="checkbox" checked> Luxury Tea Estate Resort</label>
+                <label class="filter-opt"><input type="checkbox" checked> Beachfront Villa</label>
+                <label class="filter-opt"><input type="checkbox" checked> Mountain Chalet</label>
+                <label class="filter-opt"><input type="checkbox"> Verified Boutique Hostel</label>
+            </div>
+
+            <div class="filter-group">
+                <div class="filter-label">Amenities</div>
+                <label class="filter-opt"><input type="checkbox" checked> Infinity Pool</label>
+                <label class="filter-opt"><input type="checkbox" checked> Complimentary Breakfast</label>
+                <label class="filter-opt"><input type="checkbox" checked> High-Speed WiFi</label>
+                <label class="filter-opt"><input type="checkbox"> Ayurvedic Spa</label>
+                <label class="filter-opt"><input type="checkbox"> Mountain / Sea View</label>
+            </div>
+
+            <div class="filter-group">
+                <div class="filter-label">Rating</div>
+                <label class="filter-opt"><input type="radio" name="star" checked> 4.5★ &amp; Above</label>
+                <label class="filter-opt"><input type="radio" name="star"> 4.0★ &amp; Above</label>
+                <label class="filter-opt"><input type="radio" name="star"> All Ratings</label>
+            </div>
+
+            <div class="filter-group">
+                <div class="filter-label">Price per Night</div>
+                <div class="range-wrap">
+                    <input type="range" min="1500" max="15000" step="500" value="8000">
+                    <div class="range-labels"><span>&#8377;1,500</span><span class="range-val">&#8377;8,000</span><span>&#8377;15,000+</span></div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Results Grid -->
+        <main class="results-bg">
+            <div class="results-header">
+                <div class="results-count">Showing <strong>6 verified stays</strong> (Click any card for full details)</div>
+                <select class="sort-select">
+                    <option>Recommended</option>
+                    <option>Guest Rating: High to Low</option>
+                    <option>Price: Low to High</option>
+                    <option>Price: High to Low</option>
+                </select>
+            </div>
+
+            <div class="hotel-grid">
+                <!-- Stay 1 -->
+                <div class="hotel-card" onclick="openDetailModal({
+                    title: 'Munnar Tea Country Resort',
+                    category: 'Luxury Estate Resort &amp; Spa',
+                    subtitle: 'Chithirapuram &middot; Munnar, Kerala',
+                    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1920&auto=format&fit=crop',
+                    price: '&#8377;5,400',
+                    rating: '4.8 (340 Reviews)',
+                    description: 'Luxury cottage nestled among rolling tea plantations with private balcony overlooking the Western Ghats and on-site Ayurvedic wellness centre.',
+                    specs: [
+                        { label: 'Room Type', val: 'Valley View Deluxe Cottage' },
+                        { label: 'Inclusions', val: 'Breakfast Buffet, Plantation Walk, Free WiFi' },
+                        { label: 'Check-in / Out', val: '12:00 PM / 11:00 AM' },
+                        { label: 'Cancellation', val: 'Free cancellation up to 48 hours' }
+                    ],
+                    highlights: ['Valley View', 'Ayurvedic Spa', 'Breakfast Included', 'Tea Tasting']
+                })">
+                    <div class="hotel-img" style="background-image: url('https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1920&auto=format&fit=crop');">
+                        <div class="hotel-img-overlay"></div>
+                        <div class="hotel-badge">Estate Resort &middot; <span style="display:inline-flex; align-items:center; gap:3px;"><svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Verified Partner</span></div>
+                        <button class="dest-card-fav"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+                    </div>
+                    <div class="hotel-body">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                            <h3 class="hotel-name">Munnar Tea Country Resort</h3>
+                            <div class="rating"><span class="rating-star">&#9733;</span><span class="rating-val">4.8</span></div>
+                        </div>
+                        <div class="hotel-loc">
+                            <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            Chithirapuram &middot; Munnar, Kerala
+                        </div>
+                        <div class="hotel-amenities">
+                            <span class="chip chip-teal">Valley View</span>
+                            <span class="chip chip-gold">Ayurvedic Spa</span>
+                            <span class="chip chip-navy">Breakfast</span>
+                        </div>
+                        <div class="tc-urgency-strip">
+                            <span class="tc-urgency-pill"><span class="tc-pulse-dot"></span> Only 3 rooms left</span>
+                            <span class="tc-viewers-pill"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg> 14 people viewing now</span>
+                        </div>
+                        <div class="hotel-footer">
+                            <div class="tc-card-price-comp">
+                                <div class="tc-price-top-row">
+                                    <span class="tc-price-strikethrough">&#8377;6,600</span>
+                                    <span class="tc-savings-tag">Save &#8377;1,200 (18% off)</span>
+                                </div>
+                                <div class="hotel-price">&#8377;5,400</div>
+                                <div class="hotel-price-sub">per night &middot; taxes included</div>
+                                <div class="tc-cancellation-badge">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                    Free cancellation until 24hrs before
+                                </div>
+                            </div>
+                            <button class="btn btn-teal" onclick="event.stopPropagation(); openBookingModal({
+                                title: 'Munnar Tea Country Resort',
+                                category: 'Resort &amp; Spa',
+                                image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1920&auto=format&fit=crop',
+                                price: '&#8377;5,400',
+                                cancellationPolicy: 'Free cancellation until 24hrs before arrival',
+                                description: 'Luxury cottage nestled among rolling tea plantations with private balcony overlooking the Western Ghats.',
+                                specs: [
+                                    { label: 'Room Type', val: 'Valley View Deluxe Cottage' },
+                                    { label: 'Inclusions', val: 'Breakfast Buffet, Plantation Walk, Free WiFi' },
+                                    { label: 'Cancellation', val: 'Free cancellation until 24hrs before' },
+                                    { label: 'Rating', val: '★ 4.8 (340 verified reviews)' }
+                                ]
+                            })">Book Room</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stay 2 -->
+                <div class="hotel-card" onclick="openDetailModal({
+                    title: 'The Heritage Haveli Palace',
+                    category: 'Royal Heritage Haveli',
+                    subtitle: 'Old Pink City &middot; Jaipur, Rajasthan',
+                    image: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=1920&auto=format&fit=crop',
+                    price: '&#8377;6,800',
+                    rating: '4.9 (512 Reviews)',
+                    cancellationPolicy: 'Free cancellation until 48hrs before arrival',
+                    description: '200-year-old restored Rajput palace featuring handcrafted frescos, courtyard musicians, royal dining, and antique furnishings.',
+                    specs: [
+                        { label: 'Room Type', val: 'Royal Maharaja Suite' },
+                        { label: 'Inclusions', val: 'Royal Welcome, Breakfast, Cultural Evening Show' },
+                        { label: 'Cancellation', val: 'Free cancellation until 48 hours' }
+                    ],
+                    highlights: ['Courtyard Pool', 'Royal Dining', 'Rooftop Terrace', 'Cultural Show']
+                })">
+                    <div class="hotel-img" style="background-image: url('https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=1920&auto=format&fit=crop');">
+                        <div class="hotel-img-overlay"></div>
+                        <div class="hotel-badge">Heritage Haveli &middot; <span style="display:inline-flex; align-items:center; gap:3px;"><svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Verified Partner</span></div>
+                        <button class="dest-card-fav"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+                    </div>
+                    <div class="hotel-body">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                            <h3 class="hotel-name">The Heritage Haveli Palace</h3>
+                            <div class="rating"><span class="rating-star">&#9733;</span><span class="rating-val">4.9</span></div>
+                        </div>
+                        <div class="hotel-loc">
+                            <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            Old Pink City &middot; Jaipur, Rajasthan
+                        </div>
+                        <div class="hotel-amenities">
+                            <span class="chip chip-gold">Courtyard Pool</span>
+                            <span class="chip chip-teal">Royal Dining</span>
+                            <span class="chip chip-navy">Rooftop</span>
+                        </div>
+                        <div class="tc-urgency-strip">
+                            <span class="tc-urgency-pill"><span class="tc-pulse-dot"></span> Only 2 rooms left</span>
+                            <span class="tc-viewers-pill"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg> 19 people viewing now</span>
+                        </div>
+                        <div class="hotel-footer">
+                            <div class="tc-card-price-comp">
+                                <div class="tc-price-top-row">
+                                    <span class="tc-price-strikethrough">&#8377;8,300</span>
+                                    <span class="tc-savings-tag">Save &#8377;1,500 (18% off)</span>
+                                </div>
+                                <div class="hotel-price">&#8377;6,800</div>
+                                <div class="hotel-price-sub">per night &middot; royal suite</div>
+                                <div class="tc-cancellation-badge">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                    Free cancellation until 48hrs before
+                                </div>
+                            </div>
+                            <button class="btn btn-teal" onclick="event.stopPropagation(); openBookingModal({
+                                title: 'The Heritage Haveli Palace',
+                                category: 'Heritage Hotel',
+                                image: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=1920&auto=format&fit=crop',
+                                price: '&#8377;6,800',
+                                cancellationPolicy: 'Free cancellation until 48hrs before arrival',
+                                description: '200-year-old restored Rajput palace featuring handcrafted frescos, antique furnishings, and courtyard musicians.',
+                                specs: [
+                                    { label: 'Room Type', val: 'Royal Maharaja Suite' },
+                                    { label: 'Inclusions', val: 'Royal Welcome, Breakfast, Cultural Evening Show' },
+                                    { label: 'Cancellation', val: 'Free cancellation until 48 hours' },
+                                    { label: 'Rating', val: '★ 4.9 (512 verified reviews)' }
+                                ]
+                            })">Book Room</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stay 3 -->
+                <div class="hotel-card" onclick="openDetailModal({
+                    title: 'Barefoot Andaman Sanctuary',
+                    category: 'Beachfront Eco Resort',
+                    subtitle: 'Radhanagar Beach &middot; Havelock, Andaman',
+                    image: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=1920&auto=format&fit=crop',
+                    price: '&#8377;8,200',
+                    rating: '4.9 (290 Reviews)',
+                    description: 'Eco-conscious thatched luxury villas set among tropical rainforest steps away from Radhanagar Beach turquoise waters with on-site PADI dive center.',
+                    specs: [
+                        { label: 'Room Type', val: 'Nicobari Oceanfront Villa' },
+                        { label: 'Inclusions', val: 'Snorkeling Gear, Breakfast, Sunset Cruise' },
+                        { label: 'Cancellation', val: 'Free cancellation up to 5 days' }
+                    ],
+                    highlights: ['Private Beach', 'PADI Dive Center', 'Eco-Luxury', 'Sunset Cruise']
+                })">
+                    <div class="hotel-img" style="background-image: url('https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=1920&auto=format&fit=crop');">
+                        <div class="hotel-img-overlay"></div>
+                        <div class="hotel-badge">Beachfront Villa &middot; <span style="display:inline-flex; align-items:center; gap:3px;"><svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Verified Partner</span></div>
+                        <button class="dest-card-fav"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+                    </div>
+                    <div class="hotel-body">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                            <h3 class="hotel-name">Barefoot Andaman Sanctuary</h3>
+                            <div class="rating"><span class="rating-star">&#9733;</span><span class="rating-val">4.9</span></div>
+                        </div>
+                        <div class="hotel-loc">
+                            <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            Radhanagar Beach &middot; Havelock, Andaman
+                        </div>
+                        <div class="hotel-amenities">
+                            <span class="chip chip-teal">Private Beach</span>
+                            <span class="chip chip-gold">Dive Center</span>
+                            <span class="chip chip-navy">Eco-Luxury</span>
+                        </div>
+                        <div class="tc-urgency-strip">
+                            <span class="tc-urgency-pill"><span class="tc-pulse-dot"></span> Only 2 villas left</span>
+                            <span class="tc-viewers-pill"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg> 11 people viewing now</span>
+                        </div>
+                        <div class="hotel-footer">
+                            <div class="tc-card-price-comp">
+                                <div class="tc-price-top-row">
+                                    <span class="tc-price-strikethrough">&#8377;10,000</span>
+                                    <span class="tc-savings-tag">Save &#8377;1,800 (18% off)</span>
+                                </div>
+                                <div class="hotel-price">&#8377;8,200</div>
+                                <div class="hotel-price-sub">per night &middot; oceanfront villa</div>
+                                <div class="tc-cancellation-badge">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                    Free cancellation until 48hrs before
+                                </div>
+                            </div>
+                            <button class="btn btn-teal" onclick="event.stopPropagation(); openBookingModal({
+                                title: 'Barefoot Andaman Sanctuary',
+                                category: 'Beachfront Resort',
+                                image: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=1920&auto=format&fit=crop',
+                                price: '&#8377;8,200',
+                                cancellationPolicy: 'Free cancellation until 48hrs before arrival',
+                                description: 'Eco-conscious thatched villas set among tropical rainforest steps away from Radhanagar Beach turquoise waters.',
+                                specs: [
+                                    { label: 'Room Type', val: 'Nicobari Oceanfront Villa' },
+                                    { label: 'Inclusions', val: 'Snorkeling Gear, Breakfast, Sunset Cruise' },
+                                    { label: 'Cancellation', val: 'Free cancellation up to 48 hours' },
+                                    { label: 'Rating', val: '★ 4.9 (290 verified reviews)' }
+                                ]
+                            })">Book Room</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stay 4 -->
+                <div class="hotel-card" onclick="openDetailModal({
+                    title: 'Solang Pine Mountain Retreat',
+                    category: 'Alpine Mountain Lodge',
+                    subtitle: 'Solang Valley &middot; Manali, HP',
+                    image: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=1920&auto=format&fit=crop',
+                    price: '&#8377;4,900',
+                    rating: '4.7 (198 Reviews)',
+                    cancellationPolicy: 'Free cancellation until 24hrs before arrival',
+                    description: 'Alpine cedar wood lodge surrounded by deodar forests with panoramic vistas of Pir Panjal snow peaks, heated floors, and outdoor bonfire lounge.',
+                    specs: [
+                        { label: 'Room Type', val: 'Premier Cedar Mountain Suite' },
+                        { label: 'Inclusions', val: 'Breakfast &amp; Dinner, Bonfire Night, Ski Equipment' },
+                        { label: 'Cancellation', val: 'Free cancellation up to 24 hours' }
+                    ],
+                    highlights: ['Wood Fireplace', 'Snow Peaks View', 'Heated Rooms', 'Bonfire Nights']
+                })">
+                    <div class="hotel-img" style="background-image: url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=1920&auto=format&fit=crop');">
+                        <div class="hotel-img-overlay"></div>
+                        <div class="hotel-badge">Mountain Lodge &middot; <span style="display:inline-flex; align-items:center; gap:3px;"><svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Verified Partner</span></div>
+                        <button class="dest-card-fav"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+                    </div>
+                    <div class="hotel-body">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                            <h3 class="hotel-name">Solang Pine Mountain Retreat</h3>
+                            <div class="rating"><span class="rating-star">&#9733;</span><span class="rating-val">4.7</span></div>
+                        </div>
+                        <div class="hotel-loc">
+                            <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            Solang Valley &middot; Manali, HP
+                        </div>
+                        <div class="hotel-amenities">
+                            <span class="chip chip-gold">Wood Fireplace</span>
+                            <span class="chip chip-teal">Snow Peaks View</span>
+                            <span class="chip chip-navy">Heated Rooms</span>
+                        </div>
+                        <div class="tc-urgency-strip">
+                            <span class="tc-urgency-pill"><span class="tc-pulse-dot"></span> Only 4 rooms left</span>
+                            <span class="tc-viewers-pill"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg> 8 people viewing now</span>
+                        </div>
+                        <div class="hotel-footer">
+                            <div class="tc-card-price-comp">
+                                <div class="tc-price-top-row">
+                                    <span class="tc-price-strikethrough">&#8377;5,980</span>
+                                    <span class="tc-savings-tag">Save &#8377;1,080 (18% off)</span>
+                                </div>
+                                <div class="hotel-price">&#8377;4,900</div>
+                                <div class="hotel-price-sub">per night &middot; cedar suite</div>
+                                <div class="tc-cancellation-badge">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                    Free cancellation until 24hrs before
+                                </div>
+                            </div>
+                            <button class="btn btn-teal" onclick="event.stopPropagation(); openBookingModal({
+                                title: 'Solang Pine Mountain Retreat',
+                                category: 'Mountain Resort',
+                                image: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=1920&auto=format&fit=crop',
+                                price: '&#8377;4,900',
+                                cancellationPolicy: 'Free cancellation until 24hrs before arrival',
+                                description: 'Alpine cedar wood lodge surrounded by deodar forests with panoramic vistas of Pir Panjal snow peaks.',
+                                specs: [
+                                    { label: 'Room Type', val: 'Premier Cedar Mountain Suite' },
+                                    { label: 'Inclusions', val: 'Breakfast &amp; Dinner, Bonfire Night, Ski Equipment' },
+                                    { label: 'Cancellation', val: 'Free cancellation up to 24 hours' },
+                                    { label: 'Rating', val: '★ 4.7 (198 verified reviews)' }
+                                ]
+                            })">Book Room</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stay 5 -->
+                <div class="hotel-card" onclick="openDetailModal({
+                    title: 'Zostel Munnar Social Hub',
+                    category: 'Boutique Solo Friendly Stay',
+                    subtitle: 'Devikulam Road &middot; Munnar, Kerala',
+                    image: 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?q=80&w=1920&auto=format&fit=crop',
+                    price: '&#8377;1,250',
+                    rating: '4.8 (840 Reviews)',
+                    description: 'Award-winning traveler hostel with private pods, communal lounge, female dorms, bonfire pit, and daily guided sunrise walks.',
+                    specs: [
+                        { label: 'Room Type', val: 'Private Superior Room or Ensuite Dorm Pod' },
+                        { label: 'Inclusions', val: 'High Speed WiFi, Community Kitchen, Sunrise Trek' },
+                        { label: 'Cancellation', val: 'Free cancellation up to 24 hours' }
+                    ],
+                    highlights: ['Community Cafe', 'Coworking Space', 'Female Dorms', 'Keycard Security']
+                })">
+                    <div class="hotel-img" style="background-image: url('https://images.unsplash.com/photo-1555854877-bab0e564b8d5?q=80&w=1920&auto=format&fit=crop');">
+                        <div class="hotel-img-overlay"></div>
+                        <div class="hotel-badge">Solo Friendly &middot; <span style="display:inline-flex; align-items:center; gap:3px;"><svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Verified Partner</span></div>
+                        <button class="dest-card-fav"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+                    </div>
+                    <div class="hotel-body">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                            <h3 class="hotel-name">Zostel Munnar Social Hub</h3>
+                            <div class="rating"><span class="rating-star">&#9733;</span><span class="rating-val">4.8</span></div>
+                        </div>
+                        <div class="hotel-loc">
+                            <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            Devikulam Road &middot; Munnar, Kerala
+                        </div>
+                        <div class="hotel-amenities">
+                            <span class="chip chip-teal">Community Cafe</span>
+                            <span class="chip chip-gold">Coworking</span>
+                            <span class="chip chip-green">Female Dorms</span>
+                        </div>
+                        <div class="tc-urgency-strip">
+                            <span class="tc-urgency-pill"><span class="tc-pulse-dot"></span> Only 3 beds left</span>
+                            <span class="tc-viewers-pill"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg> 24 people viewing now</span>
+                        </div>
+                        <div class="hotel-footer">
+                            <div class="tc-card-price-comp">
+                                <div class="tc-price-top-row">
+                                    <span class="tc-price-strikethrough">&#8377;1,550</span>
+                                    <span class="tc-savings-tag">Save &#8377;300 (19% off)</span>
+                                </div>
+                                <div class="hotel-price">&#8377;1,250</div>
+                                <div class="hotel-price-sub">per night &middot; private / dorm</div>
+                                <div class="tc-cancellation-badge">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                    Free cancellation until 24hrs before
+                                </div>
+                            </div>
+                            <button class="btn btn-teal" onclick="event.stopPropagation(); openBookingModal({
+                                title: 'Zostel Munnar Social Hub',
+                                category: 'Boutique Hostel',
+                                image: 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?q=80&w=1920&auto=format&fit=crop',
+                                price: '&#8377;1,250',
+                                cancellationPolicy: 'Free cancellation until 24hrs before arrival',
+                                description: 'Award-winning traveler hostel with private pods, communal lounge, bonfire pit, and daily guided sunrise walks.',
+                                specs: [
+                                    { label: 'Room Type', val: 'Private Superior Room or Ensuite Dorm Pod' },
+                                    { label: 'Inclusions', val: 'High Speed WiFi, Community Kitchen, Sunrise Trek' },
+                                    { label: 'Cancellation', val: 'Free cancellation up to 24 hours' },
+                                    { label: 'Rating', val: '★ 4.8 (840 verified reviews)' }
+                                ]
+                            })">Book Room</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stay 6 -->
+                <div class="hotel-card" onclick="openDetailModal({
+                    title: 'Fort Aguada Coastal Resort',
+                    category: '5-Star Coastal Luxury Resort',
+                    subtitle: 'Sinquerim Beach &middot; North Goa',
+                    image: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=1920&auto=format&fit=crop',
+                    price: '&#8377;7,500',
+                    rating: '4.8 (620 Reviews)',
+                    cancellationPolicy: 'Free cancellation until 48hrs before arrival',
+                    description: 'Historic clifftop luxury resort with Arabian Sea panoramic views, private beach access, infinity pool, and award-winning dining.',
+                    specs: [
+                        { label: 'Room Type', val: 'Sea Facing Deluxe Balcony Suite' },
+                        { label: 'Inclusions', val: 'Champagne Breakfast, Airport Pickup, Spa Credit' },
+                        { label: 'Cancellation', val: 'Free cancellation up to 48 hours' }
+                    ],
+                    highlights: ['Infinity Pool', 'Seafood Bistro', 'Private Beach', 'Spa &amp; Yoga']
+                })">
+                    <div class="hotel-img" style="background-image: url('https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=1920&auto=format&fit=crop');">
+                        <div class="hotel-img-overlay"></div>
+                        <div class="hotel-badge">Coastal Resort &middot; <span style="display:inline-flex; align-items:center; gap:3px;"><svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Verified Partner</span></div>
+                        <button class="dest-card-fav"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+                    </div>
+                    <div class="hotel-body">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                            <h3 class="hotel-name">Fort Aguada Coastal Resort</h3>
+                            <div class="rating"><span class="rating-star">&#9733;</span><span class="rating-val">4.8</span></div>
+                        </div>
+                        <div class="hotel-loc">
+                            <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            Sinquerim Beach &middot; North Goa
+                        </div>
+                        <div class="hotel-amenities">
+                            <span class="chip chip-teal">Infinity Pool</span>
+                            <span class="chip chip-gold">Seafood Bistro</span>
+                            <span class="chip chip-navy">Spa &amp; Yoga</span>
+                        </div>
+                        <div class="tc-urgency-strip">
+                            <span class="tc-urgency-pill"><span class="tc-pulse-dot"></span> Only 1 room left</span>
+                            <span class="tc-viewers-pill"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg> 15 people viewing now</span>
+                        </div>
+                        <div class="hotel-footer">
+                            <div class="tc-card-price-comp">
+                                <div class="tc-price-top-row">
+                                    <span class="tc-price-strikethrough">&#8377;9,200</span>
+                                    <span class="tc-savings-tag">Save &#8377;1,700 (18% off)</span>
+                                </div>
+                                <div class="hotel-price">&#8377;7,500</div>
+                                <div class="hotel-price-sub">per night &middot; ocean suite</div>
+                                <div class="tc-cancellation-badge">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                    Free cancellation until 48hrs before
+                                </div>
+                            </div>
+                            <button class="btn btn-teal" onclick="event.stopPropagation(); openBookingModal({
+                                title: 'Fort Aguada Coastal Resort',
+                                category: 'Luxury Resort',
+                                image: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=1920&auto=format&fit=crop',
+                                price: '&#8377;7,500',
+                                cancellationPolicy: 'Free cancellation until 48hrs before arrival',
+                                description: 'Historic clifftop luxury resort with Arabian Sea panoramic views, private beach access, and award-winning dining.',
+                                specs: [
+                                    { label: 'Room Type', val: 'Sea Facing Deluxe Balcony Suite' },
+                                    { label: 'Inclusions', val: 'Champagne Breakfast, Airport Pickup, Spa Credit' },
+                                    { label: 'Cancellation', val: 'Free cancellation up to 48 hours' },
+                                    { label: 'Rating', val: '★ 4.8 (620 verified reviews)' }
+                                ]
+                            })">Book Room</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pagination">
+                <button class="page-btn active">1</button>
+                <button class="page-btn">2</button>
+                <button class="page-btn">&rarr;</button>
+            </div>
+        </main>
+    </div>
+
+    <footer class="footer">
+    <div class="footer-grid">
+        <div class="footer-brand">
+            <div class="footer-logo">
+                <div class="nav-logo-mark">
+                    <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                </div>
+                <span>TripCraft</span>
+            </div>
+            <p>AI-orchestrated end-to-end travel intelligence platform. Engineered for seamless discovery, instant reservations, solo safety, and creator photobook monetization.</p>
+            <div class="footer-social-strip">
+                <a href="https://twitter.com" target="_blank" class="footer-social-link" title="Twitter / X"><svg viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg></a>
+                <a href="https://instagram.com" target="_blank" class="footer-social-link" title="Instagram"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
+                <a href="https://linkedin.com" target="_blank" class="footer-social-link" title="LinkedIn"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a>
+                <a href="https://github.com" target="_blank" class="footer-social-link" title="GitHub"><svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg></a>
+            </div>
+        </div>
+        <div class="footer-col">
+            <h4>Explore</h4>
+            <ul>
+                <li><a href="destinations.html">Destinations</a></li>
+                <li><a href="packages.html">Curated Packages</a></li>
+                <li><a href="hotels.html">Stays &amp; Resorts</a></li>
+                <li><a href="transport.html">Flights &amp; Rail</a></li>
+                <li><a href="vehicle.html">Car &amp; Bike Rentals</a></li>
+                <li><a href="guides.html">Certified Local Guides</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Special Hubs</h4>
+            <ul>
+                <li><a href="solo.html">Solo Traveler Engine</a></li>
+                <li><a href="community.html">Community &amp; Buddies</a></li>
+                <li><a href="album.html">Photo Album Studio</a></li>
+                <li><a href="budget.html">40/25/20/15 Budgeter</a></li>
+                <li><a href="itinerary.html">Interactive Itinerary</a></li>
+                <li><a href="wishlist.html">Saved Wishlist</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Trust &amp; Legal</h4>
+            <ul>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="contact.html">Customer Support</a></li>
+                <li><a href="faq.html">FAQ &amp; Help Desk</a></li>
+                <li><a href="terms.html">Terms &amp; Conditions</a></li>
+                <li><a href="privacy.html">Privacy Policy</a></li>
+                <li><a href="refund.html">Refund Policy</a></li>
+                <li><a href="sitemap.html">Sitemap</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <div>&copy; 2026 TripCraft Technologies Inc. All rights reserved. 256-bit SSL Encrypted Booking System.</div>
+        <div style="display:flex; gap:16px;">
+            <a href="terms.html">Terms</a>
+            <a href="privacy.html">Privacy</a>
+            <a href="refund.html">Refunds</a>
+            <a href="sitemap.html">Sitemap</a>
+        </div>
+    </div>
+</footer>
+
+    <script src="tc-config.js"></script>
+    <script src="shared.js"></script>
+    <script src="tc-layer.js"></script>
+</body>
+</html>

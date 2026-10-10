@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saved Wishlist & Recently Viewed Escapes — TripCraft</title>
+    <meta name="description" content="Save dream stays, vehicles, and tour packages to your personal wishlist with instant 1-click booking access.">
+    <meta property="og:title" content="Saved Wishlist & Recently Viewed Escapes — TripCraft">
+    <meta property="og:description" content="Save dream stays, vehicles, and tour packages to your personal wishlist with instant 1-click booking access.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1488646953014-85cb44e25828?q=80&w=1200&auto=format&fit=crop">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="shared.css">
+    <style>
+        .wishlist-meta-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--r-md);
+            padding: 12px 18px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .recent-viewed-section {
+            margin-top: 48px;
+            padding-top: 36px;
+            border-top: 1px solid var(--gray-200);
+        }
+        .recent-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-top: 18px;
+        }
+        @media (max-width: 900px) {
+            .recent-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 500px) {
+            .recent-grid { grid-template-columns: 1fr; }
+        }
+        .recent-card {
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--r-md);
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.2s ease;
+        }
+        .recent-card:hover {
+            border-color: var(--teal);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAV -->
+    <nav class="nav">
+        <a href="index.html" class="nav-logo">
+            <div class="nav-logo-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            </div>
+            <div class="nav-logo-text">Trip<span>Craft</span></div>
+        </a>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="destinations.html">Destinations</a>
+            <a href="transport.html">Transport</a>
+            <a href="hotels.html">Hotels</a>
+            <a href="vehicle.html">Vehicles</a>
+            <a href="guides.html">Local Guides</a>
+            <a href="packages.html">Packages</a>
+            <a href="itinerary.html">Itinerary</a>
+            <a href="budget.html">Budget</a>
+            <a href="community.html">Community</a>
+            <a href="solo.html">Solo Trip</a>
+            <a href="album.html">Photo Albums</a>
+            <a href="bookings.html">My Bookings</a>
+        </div>
+        <div class="nav-cta">
+            <a href="login.html" class="btn btn-ghost">Sign In</a>
+            <a href="signup.html" class="btn btn-gold">Get Started</a>
+        </div>
+    </nav>
+
+    <!-- BREADCRUMB -->
+    <div class="breadcrumb">
+        <a href="index.html">Home</a>
+        <span class="breadcrumb-sep">&gt;</span>
+        <span>My Wishlist</span>
+    </div>
+
+    <!-- HERO -->
+    <div class="tc-wishlist-hero">
+        <div class="tc-wishlist-hero-overlay"></div>
+        <div class="tc-wishlist-hero-content">
+            <div style="display:inline-flex; align-items:center; gap:6px; background:rgba(225,29,72,0.2); border:1px solid rgba(225,29,72,0.4); color:#FDA4AF; padding:4px 12px; border-radius:var(--r-full); font-size:12px; font-weight:700; margin-bottom:12px;">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="#FDA4AF" stroke="none"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                Personal Travel Collection
+            </div>
+            <h1>Saved Escapes &amp; <em>Wishlist</em></h1>
+            <p>Your curated bucket list of luxury villas, heritage havelis, and guided tour circuits. Easily compare dates, pricing, and book your verified getaway.</p>
+        </div>
+    </div>
+
+    <!-- MAIN WISHLIST CONTAINER -->
+    <div class="container" style="padding-top: 32px; padding-bottom: 64px;">
+        <div class="wishlist-meta-bar">
+            <div style="display:flex; align-items:center; gap:10px;">
+                <span style="font-weight:700; color:var(--navy); font-size:15px;">Saved Items</span>
+                <span class="chip chip-teal" id="wishlistTotalCount">3 Items</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:10px;">
+                <a href="destinations.html" class="btn btn-ghost" style="font-size:12.5px; border-color:var(--gray-300);">
+                    + Add More Escapes
+                </a>
+                <button class="btn btn-ghost" style="font-size:12.5px; color:#DC2626; border-color:#FCA5A5;" onclick="if(confirm('Are you sure you want to clear your wishlist?')) TripCraftWishlist.clear()">
+                    Clear All
+                </button>
+            </div>
+        </div>
+
+        <!-- Wishlist Grid Mount -->
+        <div id="wishlistGridMount"></div>
+
+        <!-- COMBINED: RECENTLY VIEWED SECTION -->
+        <div class="recent-viewed-section">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <div>
+                    <h2 style="font-family:'Bricolage Grotesque', 'Plus Jakarta Sans', sans-serif; font-size:22px; color:var(--navy); margin-bottom:4px;">Recently Viewed</h2>
+                    <p style="font-size:13px; color:var(--text-muted);">Pages, accommodations, and routes you navigated during this session.</p>
+                </div>
+                <button class="btn btn-ghost" style="font-size:12px; border-color:var(--gray-300);" onclick="localStorage.removeItem('tripcraft_recently_accessed'); location.reload();">
+                    Clear History
+                </button>
+            </div>
+            <div id="recentViewedMount"></div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+    <div class="footer-grid">
+        <div class="footer-brand">
+            <div class="footer-logo">
+                <div class="nav-logo-mark">
+                    <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                </div>
+                <span>TripCraft</span>
+            </div>
+            <p>AI-orchestrated end-to-end travel intelligence platform. Engineered for seamless discovery, instant reservations, solo safety, and creator photobook monetization.</p>
+            <div class="footer-social-strip">
+                <a href="https://twitter.com" target="_blank" class="footer-social-link" title="Twitter / X"><svg viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg></a>
+                <a href="https://instagram.com" target="_blank" class="footer-social-link" title="Instagram"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
+                <a href="https://linkedin.com" target="_blank" class="footer-social-link" title="LinkedIn"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a>
+                <a href="https://github.com" target="_blank" class="footer-social-link" title="GitHub"><svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg></a>
+            </div>
+        </div>
+        <div class="footer-col">
+            <h4>Explore</h4>
+            <ul>
+                <li><a href="destinations.html">Destinations</a></li>
+                <li><a href="packages.html">Curated Packages</a></li>
+                <li><a href="hotels.html">Stays &amp; Resorts</a></li>
+                <li><a href="transport.html">Flights &amp; Rail</a></li>
+                <li><a href="vehicle.html">Car &amp; Bike Rentals</a></li>
+                <li><a href="guides.html">Certified Local Guides</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Special Hubs</h4>
+            <ul>
+                <li><a href="solo.html">Solo Traveler Engine</a></li>
+                <li><a href="community.html">Community &amp; Buddies</a></li>
+                <li><a href="album.html">Photo Album Studio</a></li>
+                <li><a href="budget.html">40/25/20/15 Budgeter</a></li>
+                <li><a href="itinerary.html">Interactive Itinerary</a></li>
+                <li><a href="wishlist.html">Saved Wishlist</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Trust &amp; Legal</h4>
+            <ul>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="contact.html">Customer Support</a></li>
+                <li><a href="faq.html">FAQ &amp; Help Desk</a></li>
+                <li><a href="terms.html">Terms &amp; Conditions</a></li>
+                <li><a href="privacy.html">Privacy Policy</a></li>
+                <li><a href="refund.html">Refund Policy</a></li>
+                <li><a href="sitemap.html">Sitemap</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <div>&copy; 2026 TripCraft Technologies Inc. All rights reserved. 256-bit SSL Encrypted Booking System.</div>
+        <div style="display:flex; gap:16px;">
+            <a href="terms.html">Terms</a>
+            <a href="privacy.html">Privacy</a>
+            <a href="refund.html">Refunds</a>
+            <a href="sitemap.html">Sitemap</a>
+        </div>
+    </div>
+</footer>
+
+    <script src="tc-config.js"></script>
+    <script src="shared.js"></script>
+    <script src="tc-layer.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Render Wishlist
+            if (window.TripCraftWishlist) {
+                TripCraftWishlist.renderWishlistPage();
+            }
+
+            // Render Recently Viewed
+            if (window.TripCraftHistory) {
+                const recentItems = TripCraftHistory.getAll();
+                const recentMount = document.getElementById('recentViewedMount');
+                if (recentMount) {
+                    if (recentItems.length === 0) {
+                        recentMount.innerHTML = '<div style="font-size:13px; color:var(--text-muted); padding:16px 0;">No recently viewed items recorded in this session.</div>';
+                    } else {
+                        let html = '<div class="recent-grid">';
+                        recentItems.forEach(item => {
+                            html += `
+                                <div class="recent-card">
+                                    <div>
+                                        <span class="chip chip-navy" style="font-size:10px; margin-bottom:8px; display:inline-block;">${item.type || 'Travel Page'}</span>
+                                        <div style="font-weight:700; color:var(--navy); font-size:14px; margin-bottom:4px;">${item.title}</div>
+                                        <div style="font-size:12px; color:var(--text-muted);">${item.subtitle || 'Verified Destination'}</div>
+                                    </div>
+                                    <div style="margin-top:14px;">
+                                        <a href="${item.url}" class="btn btn-ghost" style="width:100%; font-size:11.5px; padding:6px 10px; text-align:center; display:block;">
+                                            Revisit Page &rarr;
+                                        </a>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        html += '</div>';
+                        recentMount.innerHTML = html;
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

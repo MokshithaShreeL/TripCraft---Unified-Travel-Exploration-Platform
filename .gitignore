@@ -1,0 +1,10 @@
+node_modules/
+server/node_modules/
+.env
+.env.local
+server/.env
+dist/
+scratch/
+*.log
+.DS_Store
+Thumbs.db
